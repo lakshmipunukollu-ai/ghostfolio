@@ -1,0 +1,143 @@
+<!-- Floating trigger button -->
+<button
+  class="ai-fab"
+  [class.ai-fab--open]="isOpen"
+  (click)="togglePanel()"
+  aria-label="Open Portfolio Assistant"
+>
+  <span class="ai-fab__icon">🤖</span>
+  <span class="ai-fab__label" [class.ai-fab__label--hidden]="isOpen">Ask AI</span>
+</button>
+
+<!-- Slide-in panel -->
+<div class="ai-panel" [class.ai-panel--visible]="isOpen" role="complementary" aria-label="Portfolio Assistant">
+
+  <!-- Panel header -->
+  <div class="ai-panel__header">
+    <div class="ai-panel__header-left">
+      <span class="ai-panel__avatar">🤖</span>
+      <div>
+        <span class="ai-panel__title">Portfolio Assistant</span>
+        <span class="ai-panel__subtitle">Powered by Claude</span>
+      </div>
+    </div>
+    <button class="ai-panel__close" (click)="closePanel()" aria-label="Close">✕</button>
+  </div>
+
+  <!-- Success banner -->
+  @if (successBanner) {
+    <div class="ai-banner ai-banner--success">{{ successBanner }}</div>
+  }
+
+  <!-- Messages area -->
+  <div class="ai-messages" #messagesContainer>
+    @for (msg of messages; track $index) {
+      <div class="ai-message" [class.ai-message--user]="msg.role === 'user'" [class.ai-message--assistant]="msg.role === 'assistant'">
+
+        <!-- Bubble -->
+        <div class="ai-bubble" [innerHTML]="msg.content | aiMarkdown"></div>
+
+        <!-- Assistant metadata row -->
+        @if (msg.role === 'assistant' && msg.confidence !== undefined) {
+          <div class="ai-meta">
+
+            <!-- Low confidence warning -->
+            @if (msg.confidence < 0.6) {
+              <div class="ai-meta__warning">⚠️ Low confidence — some data may be incomplete</div>
+            }
+
+            <div class="ai-meta__row">
+              <!-- Confidence badge -->
+              <span class="ai-badge" [class]="confidenceClass(msg.confidence)">
+                {{ confidenceLabel(msg.confidence) }} ({{ (msg.confidence * 100).toFixed(0) }}%)
+              </span>
+
+              <!-- Tools used chips -->
+              @for (tool of msg.toolsUsed; track tool) {
+                <span class="ai-chip">{{ tool }}</span>
+              }
+
+              <!-- Latency -->
+              <span class="ai-meta__latency">{{ msg.latency?.toFixed(1) }}s</span>
+
+              <!-- Feedback -->
+              <div class="ai-feedback">
+                <button
+                  class="ai-feedback__btn"
+                  [class.ai-feedback__btn--active-up]="msg.feedbackGiven === 1"
+                  [disabled]="msg.feedbackGiven !== null"
+                  (click)="giveFeedback($index, 1)"
+                  aria-label="Thumbs up"
+                >👍</button>
+                <button
+                  class="ai-feedback__btn"
+                  [class.ai-feedback__btn--active-down]="msg.feedbackGiven === -1"
+                  [disabled]="msg.feedbackGiven !== null"
+                  (click)="giveFeedback($index, -1)"
+                  aria-label="Thumbs down"
+                >👎</button>
+              </div>
+            </div>
+
+          </div>
+        }
+
+      </div>
+    }
+
+    <!-- Typing indicator -->
+    @if (isThinking) {
+      <div class="ai-message ai-message--assistant">
+        <div class="ai-bubble ai-bubble--typing">
+          <span class="ai-dot"></span>
+          <span class="ai-dot"></span>
+          <span class="ai-dot"></span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Confirmation buttons (shown when awaiting yes/no) -->
+  @if (awaitingConfirmation && !isThinking) {
+    <div class="ai-confirm-bar">
+      <span class="ai-confirm-bar__label">Confirm this transaction?</span>
+      <button class="ai-confirm-bar__btn ai-confirm-bar__btn--yes" (click)="confirmWrite()">✅ Confirm</button>
+      <button class="ai-confirm-bar__btn ai-confirm-bar__btn--no" (click)="cancelWrite()">❌ Cancel</button>
+    </div>
+  }
+
+  <!-- Input area -->
+  @if (!awaitingConfirmation || isThinking) {
+    <div class="ai-input-area">
+      <textarea
+        #inputField
+        class="ai-input"
+        rows="1"
+        placeholder="Ask about your portfolio..."
+        [disabled]="isThinking"
+        [(ngModel)]="inputValue"
+        (keydown)="onKeydown($event)"
+      ></textarea>
+      <button
+        class="ai-send"
+        [disabled]="isThinking || !inputValue.trim()"
+        (click)="sendMessage()"
+        aria-label="Send"
+      >
+        @if (isThinking) {
+          <span class="ai-send__spinner"></span>
+        } @else {
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        }
+      </button>
+    </div>
+  }
+
+</div>
+
+<!-- Backdrop (mobile) -->
+@if (isOpen) {
+  <div class="ai-backdrop" (click)="closePanel()"></div>
+}

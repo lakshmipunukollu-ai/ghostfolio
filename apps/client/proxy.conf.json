@@ -6,5 +6,12 @@
   "/assets": {
     "target": "http://0.0.0.0:3333",
     "secure": false
+  },
+  "/agent": {
+    "target": "http://localhost:8000",
+    "secure": false,
+    "pathRewrite": {
+      "^/agent": ""
+    }
   }
 }

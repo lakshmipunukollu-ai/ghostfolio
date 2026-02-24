@@ -33,6 +33,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
+import { GfAiChatComponent } from './components/ai-chat/ai-chat.component';
 import { GfFooterComponent } from './components/footer/footer.component';
 import { GfHeaderComponent } from './components/header/header.component';
 import { GfHoldingDetailDialogComponent } from './components/holding-detail-dialog/holding-detail-dialog.component';
@@ -43,7 +44,7 @@ import { UserService } from './services/user/user.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [GfFooterComponent, GfHeaderComponent, RouterLink, RouterOutlet],
+  imports: [GfAiChatComponent, GfFooterComponent, GfHeaderComponent, RouterLink, RouterOutlet],
   selector: 'gf-root',
   styleUrls: ['./app.component.scss'],
   templateUrl: './app.component.html'
