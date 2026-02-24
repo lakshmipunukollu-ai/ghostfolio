@@ -15,38 +15,6 @@
 
 </div>
 
----
-
-## 🤖 AI Portfolio Agent
-
-Natural language portfolio Q&A built on top of Ghostfolio.
-Powered by Claude + LangGraph + FastAPI.
-
-### Eval Results
-| Suite | Result |
-|---|---|
-| Golden Sets (baseline correctness) | 10/10 passing |
-| Labeled Scenarios (coverage analysis) | 14/15 passing |
-| Full Eval Suite (50 cases) | 49/50 (98%) |
-
-### Eval Files
-- [Golden Sets](agent/evals/golden_sets.yaml) — 10 baseline correctness cases
-- [Labeled Scenarios](agent/evals/labeled_scenarios.yaml) — 15 tagged coverage cases
-- [Full Test Suite](agent/evals/test_cases.json) — 50 comprehensive cases
-- [Latest Results](agent/evals/golden_results.json) — most recent run
-
-### Run Evals Yourself
-```bash
-cd agent && source venv/bin/activate
-python evals/run_golden_sets.py   # golden sets + labeled scenarios
-python evals/run_evals.py         # full 50-case suite
-```
-
-### Agent Setup
-[see agent/README.md](agent/README.md)
-
----
-
 **Ghostfolio** is an open source wealth management software built with web technology. The application empowers busy people to keep track of stocks, ETFs or cryptocurrencies and make solid, data-driven investment decisions. The software is designed for personal use in continuous operation.
 
 <div align="center">
