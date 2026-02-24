@@ -3,12 +3,15 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  Inject,
   OnDestroy,
   ViewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { GfEnvironment } from '@ghostfolio/ui/environment';
+import { GF_ENVIRONMENT } from '@ghostfolio/ui/environment';
 
 import { AiMarkdownPipe } from './ai-markdown.pipe';
 
@@ -51,13 +54,18 @@ export class GfAiChatComponent implements OnDestroy {
   private pendingWrite: Record<string, unknown> | null = null;
   public awaitingConfirmation = false;
 
-  private readonly AGENT_URL = '/agent/chat';
-  private readonly FEEDBACK_URL = '/agent/feedback';
+  private readonly AGENT_URL: string;
+  private readonly FEEDBACK_URL: string;
 
   public constructor(
     private changeDetectorRef: ChangeDetectorRef,
-    private http: HttpClient
-  ) {}
+    private http: HttpClient,
+    @Inject(GF_ENVIRONMENT) environment: GfEnvironment
+  ) {
+    const base = (environment.agentUrl ?? '/agent').replace(/\/$/, '');
+    this.AGENT_URL = `${base}/chat`;
+    this.FEEDBACK_URL = `${base}/feedback`;
+  }
 
   public ngOnDestroy() {}
 
