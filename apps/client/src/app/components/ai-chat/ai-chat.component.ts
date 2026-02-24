@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { GfEnvironment } from '@ghostfolio/ui/environment';
 import { GF_ENVIRONMENT } from '@ghostfolio/ui/environment';
+import { TokenStorageService } from '@ghostfolio/client/services/token-storage.service';
 
 import { AiMarkdownPipe } from './ai-markdown.pipe';
 
@@ -60,6 +61,7 @@ export class GfAiChatComponent implements OnDestroy {
   public constructor(
     private changeDetectorRef: ChangeDetectorRef,
     private http: HttpClient,
+    private tokenStorageService: TokenStorageService,
     @Inject(GF_ENVIRONMENT) environment: GfEnvironment
   ) {
     const base = (environment.agentUrl ?? '/agent').replace(/\/$/, '');
@@ -124,6 +126,7 @@ export class GfAiChatComponent implements OnDestroy {
       query: string;
       history: { role: string; content: string }[];
       pending_write?: Record<string, unknown>;
+      bearer_token?: string;
     } = {
       query,
       history: this.messages
@@ -133,6 +136,14 @@ export class GfAiChatComponent implements OnDestroy {
 
     if (this.pendingWrite) {
       body.pending_write = this.pendingWrite;
+    }
+
+    // Send the logged-in user's token so the agent uses their own data.
+    // When not logged in, the field is omitted and the agent falls back to
+    // the shared env-var token (useful for demo/unauthenticated access).
+    const userToken = this.tokenStorageService.getToken();
+    if (userToken) {
+      body.bearer_token = userToken;
     }
 
     this.http.post<AgentResponse>(this.AGENT_URL, body).subscribe({
