@@ -29,6 +29,20 @@
     <div class="ai-banner ai-banner--success">{{ successBanner }}</div>
   }
 
+  <!-- Empty portfolio seed banner -->
+  @if (showSeedBanner && !isSeeding) {
+    <div class="ai-banner ai-banner--seed">
+      <span>Your portfolio is empty. Load demo data to try the AI?</span>
+      <div class="ai-banner__actions">
+        <button class="ai-banner__btn ai-banner__btn--primary" (click)="seedPortfolio()">🌱 Load demo data</button>
+        <button class="ai-banner__btn ai-banner__btn--dismiss" (click)="showSeedBanner = false">Dismiss</button>
+      </div>
+    </div>
+  }
+  @if (isSeeding) {
+    <div class="ai-banner ai-banner--seed">⏳ Loading demo portfolio…</div>
+  }
+
   <!-- Messages area -->
   <div class="ai-messages" #messagesContainer>
     @for (msg of messages; track $index) {

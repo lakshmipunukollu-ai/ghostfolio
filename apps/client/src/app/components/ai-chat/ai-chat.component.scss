@@ -159,6 +159,51 @@
       color: #a7f3d0;
     }
   }
+
+  &--seed {
+    background: #eff6ff;
+    color: #1e40af;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-weight: 500;
+
+    :host-context(.theme-dark) & {
+      background: #1e3a5f;
+      color: #bfdbfe;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.4rem;
+    flex-shrink: 0;
+  }
+
+  &__btn {
+    border: none;
+    border-radius: 6px;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+
+    &:hover { opacity: 0.85; }
+
+    &--primary {
+      background: #2563eb;
+      color: #fff;
+    }
+
+    &--dismiss {
+      background: transparent;
+      color: inherit;
+      opacity: 0.6;
+    }
+  }
 }
 
 @keyframes slideDown {

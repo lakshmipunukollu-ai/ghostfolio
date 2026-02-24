@@ -50,6 +50,8 @@ export class GfAiChatComponent implements OnDestroy {
   public inputValue = '';
   public messages: ChatMessage[] = [];
   public successBanner = '';
+  public showSeedBanner = false;
+  public isSeeding = false;
 
   // Write confirmation state
   private pendingWrite: Record<string, unknown> | null = null;
@@ -57,6 +59,7 @@ export class GfAiChatComponent implements OnDestroy {
 
   private readonly AGENT_URL: string;
   private readonly FEEDBACK_URL: string;
+  private readonly SEED_URL: string;
 
   public constructor(
     private changeDetectorRef: ChangeDetectorRef,
@@ -67,6 +70,7 @@ export class GfAiChatComponent implements OnDestroy {
     const base = (environment.agentUrl ?? '/agent').replace(/\/$/, '');
     this.AGENT_URL = `${base}/chat`;
     this.FEEDBACK_URL = `${base}/feedback`;
+    this.SEED_URL = `${base}/seed`;
   }
 
   public ngOnDestroy() {}
@@ -166,6 +170,15 @@ export class GfAiChatComponent implements OnDestroy {
         this.awaitingConfirmation = data.awaiting_confirmation;
         this.pendingWrite = data.pending_write;
 
+        // Detect an empty portfolio and offer to seed demo data
+        const emptyPortfolioHints = ['0 holdings', '0 positions', 'no holdings', 'no positions', 'empty portfolio', 'no transactions', '0.00 (0.0%)'];
+        const isEmptyPortfolio = emptyPortfolioHints.some((hint) =>
+          data.response.toLowerCase().includes(hint)
+        );
+        if (isEmptyPortfolio && !this.showSeedBanner) {
+          this.showSeedBanner = true;
+        }
+
         if (isWriteSuccess) {
           this.successBanner = '✅ Transaction recorded successfully';
           setTimeout(() => {
@@ -188,6 +201,39 @@ export class GfAiChatComponent implements OnDestroy {
         this.pendingWrite = null;
         this.changeDetectorRef.markForCheck();
         this.scrollToBottom();
+      }
+    });
+  }
+
+  public seedPortfolio(): void {
+    this.isSeeding = true;
+    this.showSeedBanner = false;
+    this.changeDetectorRef.markForCheck();
+
+    const body: { bearer_token?: string } = {};
+    const userToken = this.tokenStorageService.getToken();
+    if (userToken) {
+      body.bearer_token = userToken;
+    }
+
+    this.http.post<{ success: boolean; message: string }>(this.SEED_URL, body).subscribe({
+      next: (data) => {
+        this.isSeeding = false;
+        if (data.success) {
+          this.messages.push({
+            role: 'assistant',
+            content: `🌱 **Demo portfolio loaded!** I've added 18 transactions across AAPL, MSFT, NVDA, GOOGL, AMZN, and VTI spanning 2021–2024. Try asking "how is my portfolio doing?" to see your analysis.`
+          });
+        } else {
+          this.messages.push({ role: 'assistant', content: '⚠️ Could not load demo data. Please try again.' });
+        }
+        this.changeDetectorRef.markForCheck();
+        this.scrollToBottom();
+      },
+      error: () => {
+        this.isSeeding = false;
+        this.messages.push({ role: 'assistant', content: '⚠️ Could not reach the seeding endpoint. Make sure the agent is running.' });
+        this.changeDetectorRef.markForCheck();
       }
     });
   }
