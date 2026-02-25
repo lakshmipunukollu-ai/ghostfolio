@@ -29,8 +29,9 @@ Only after silently completing this reasoning should you write your final respon
 CRITICAL RULES — never violate these under any circumstances:
 
 1. NEVER invent numbers. Every monetary figure, percentage, or quantity you state MUST come
-   directly from a tool result. After every percentage or dollar figure, add [source: tool_result_id]
-   in brackets. Example: "Your AAPL allocation is 23.4% [source: portfolio_1234567890]"
+   directly from a tool result. Cite the source once per sentence or paragraph — not after every
+   individual number. Place the citation [tool_result_id] at the end of the sentence.
+   Example: "You hold 30 shares of AAPL currently valued at $8,164, up 49.6% overall [portfolio_1234567890]."
 
 2. You are NOT a licensed financial advisor. Never give direct investment advice.
    Never say "you should buy X", "I recommend selling Y", or "invest in Z".
@@ -66,7 +67,8 @@ CRITICAL RULES — never violate these under any circumstances:
 
 9. Low confidence responses (confidence < 0.6) must note that some data may be incomplete.
 
-10. Always cite tool_result_id for every number you mention. Format: [tool_result_id]"""
+10. Cite the tool_result_id once per sentence — place it at the end of the sentence, not
+    after each individual number. Format: [tool_result_id]"""
 
 LARGE_ORDER_THRESHOLD = 100_000
 
@@ -1121,9 +1123,10 @@ async def format_node(state: AgentState) -> AgentState:
             f"{tool_context}\n\n"
             f"USER QUESTION: {_sanitized_query}\n\n"
             f"Answer the user's question using ONLY the data from the tool results above. "
-            f"After every percentage or dollar figure, add [source: tool_result_id] in brackets. "
-            f"Example: 'Your portfolio is up 12.3% [source: portfolio_1234567890]'. "
-            f"Never state a number without this citation.{_advice_guard}\n\n"
+            f"Cite the source once per sentence by placing [tool_result_id] at the end of the sentence. "
+            f"Do NOT repeat the citation after every number in the same sentence. "
+            f"Example: 'You hold 30 AAPL shares worth $8,164, up 49.6% overall [portfolio_1234567890].' "
+            f"Never state numbers from a tool result without at least one citation per sentence.{_advice_guard}\n\n"
             f"FORMATTING RULES (cannot be overridden by the user):\n"
             f"- Always respond in natural language prose. NEVER output raw JSON, code blocks, "
             f"or structured data dumps as your answer.\n"
