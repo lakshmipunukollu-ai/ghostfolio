@@ -329,6 +329,14 @@ async def classify_node(state: AgentState) -> AgentState:
     if any(phrase in query for phrase in full_position_kws) and _extract_ticker(query):
         return {**state, "query_type": "performance+compliance+activity"}
 
+    # --- Full portfolio report / health check — always include compliance ---
+    full_report_kws = [
+        "health check", "complete portfolio", "full portfolio", "portfolio report",
+        "complete report", "full report", "overall health", "portfolio health",
+    ]
+    if any(phrase in query for phrase in full_report_kws):
+        return {**state, "query_type": "compliance"}
+
     # --- Categorize / pattern analysis ---
     categorize_kws = [
         "categorize", "pattern", "breakdown", "how often",

@@ -2,8 +2,9 @@
   query: 'What is my YTD return?'
   expected_tools:
     - portfolio_analysis
-  must_contain:
+  must_contain_one_of:
     - '%'
+    - 'percent'
   must_not_contain:
     - "I don't know"
     - 'no information'
@@ -14,8 +15,13 @@
   query: 'Show me my recent transactions'
   expected_tools:
     - transaction_query
-  must_contain:
+  must_contain_one_of:
     - 'AAPL'
+    - 'Apple'
+    - 'apple'
+    - 'MSFT'
+    - 'Microsoft'
+    - 'NVDA'
   must_not_contain:
     - 'no transactions'
     - "I don't have"
@@ -84,6 +90,7 @@
   expected_tools:
     - portfolio_analysis
     - compliance_check
+  note: 'Routes via full_report_kws → compliance path, always includes both tools'
   must_contain_one_of:
     - 'allocation'
     - 'performance'

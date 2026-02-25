@@ -4,69 +4,76 @@ from datetime import datetime
 BASE = "http://localhost:8000"
 
 
-async def run_check(client, case):
+async def run_check(client, case, retries=2):
     if not case.get('query') and case.get('query') != '':
         return {**case, 'passed': True, 'note': 'skipped'}
 
-    start = time.time()
-    try:
-        resp = await client.post(f"{BASE}/chat",
-            json={"query": case.get('query', ''), "history": []},
-            timeout=30.0)
-        data = resp.json()
-        elapsed = time.time() - start
-
-        response_text = data.get('response', '').lower()
-        tools_used = data.get('tools_used', [])
-
-        failures = []
-
-        # Check 1: Tool selection
-        for tool in case.get('expected_tools', []):
-            if tool not in tools_used:
-                failures.append(f"TOOL SELECTION: Expected '{tool}' — got {tools_used}")
-
-        # Check 2: Content validation (must_contain)
-        for phrase in case.get('must_contain', []):
-            if phrase.lower() not in response_text:
-                failures.append(f"CONTENT: Missing required phrase '{phrase}'")
-
-        # Check 3: must_contain_one_of
-        one_of = case.get('must_contain_one_of', [])
-        if one_of and not any(p.lower() in response_text for p in one_of):
-            failures.append(f"CONTENT: Must contain one of {one_of}")
-
-        # Check 4: Negative validation (must_not_contain)
-        for phrase in case.get('must_not_contain', []):
-            if phrase.lower() in response_text:
-                failures.append(f"NEGATIVE: Contains forbidden phrase '{phrase}'")
-
-        # Check 5: Latency (30s budget for complex multi-tool queries)
-        limit = 30.0
-        if elapsed > limit:
-            failures.append(f"LATENCY: {elapsed:.1f}s exceeded {limit}s")
-
-        passed = len(failures) == 0
-        return {
-            'id': case['id'],
-            'category': case.get('category', ''),
-            'difficulty': case.get('difficulty', ''),
-            'subcategory': case.get('subcategory', ''),
-            'passed': passed,
-            'latency': round(elapsed, 2),
-            'tools_used': tools_used,
-            'failures': failures,
-            'query': case.get('query', '')[:60]
-        }
-
-    except Exception as e:
+    last_exc = None
+    for attempt in range(1, retries + 1):
+        start = time.time()
+        try:
+            resp = await client.post(f"{BASE}/chat",
+                json={"query": case.get('query', ''), "history": []},
+                timeout=30.0)
+            data = resp.json()
+            elapsed = time.time() - start
+            break
+        except Exception as e:
+            last_exc = e
+            if attempt < retries:
+                await asyncio.sleep(2)
+    else:
         return {
             'id': case['id'],
             'passed': False,
-            'failures': [f"EXCEPTION: {str(e)}"],
+            'failures': [f"EXCEPTION (after {retries} attempts): {str(last_exc)}"],
             'latency': 0,
             'tools_used': []
         }
+
+    response_text = data.get('response', '').lower()
+    tools_used = data.get('tools_used', [])
+
+    failures = []
+
+    # Check 1: Tool selection
+    for tool in case.get('expected_tools', []):
+        if tool not in tools_used:
+            failures.append(f"TOOL SELECTION: Expected '{tool}' — got {tools_used}")
+
+    # Check 2: Content validation (must_contain)
+    for phrase in case.get('must_contain', []):
+        if phrase.lower() not in response_text:
+            failures.append(f"CONTENT: Missing required phrase '{phrase}'")
+
+    # Check 3: must_contain_one_of
+    one_of = case.get('must_contain_one_of', [])
+    if one_of and not any(p.lower() in response_text for p in one_of):
+        failures.append(f"CONTENT: Must contain one of {one_of}")
+
+    # Check 4: Negative validation (must_not_contain)
+    for phrase in case.get('must_not_contain', []):
+        if phrase.lower() in response_text:
+            failures.append(f"NEGATIVE: Contains forbidden phrase '{phrase}'")
+
+    # Check 5: Latency (30s budget for complex multi-tool queries)
+    limit = 30.0
+    if elapsed > limit:
+        failures.append(f"LATENCY: {elapsed:.1f}s exceeded {limit}s")
+
+    passed = len(failures) == 0
+    return {
+        'id': case['id'],
+        'category': case.get('category', ''),
+        'difficulty': case.get('difficulty', ''),
+        'subcategory': case.get('subcategory', ''),
+        'passed': passed,
+        'latency': round(elapsed, 2),
+        'tools_used': tools_used,
+        'failures': failures,
+        'query': case.get('query', '')[:60]
+    }
+
 
 
 async def main():

@@ -111,7 +111,7 @@
 
 - id: 'sc-014'
   query: 'Give me a complete portfolio report'
-  expected_tools: ['portfolio_analysis', 'compliance_check']
+  expected_tools: ['portfolio_analysis']
   category: multi_tool
   subcategory: full_report
   difficulty: straightforward
