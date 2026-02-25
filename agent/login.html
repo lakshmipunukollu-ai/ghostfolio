@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Sign in — Ghostfolio AI Agent</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0a0d14;
+        --surface: #111520;
+        --surface2: #181e2e;
+        --border: #1f2840;
+        --border2: #2a3550;
+        --indigo: #6366f1;
+        --indigo2: #818cf8;
+        --text: #e2e8f0;
+        --text2: #94a3b8;
+        --text3: #475569;
+        --red: #ef4444;
+        --radius: 12px;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Subtle grid background */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(99, 102, 241, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(99, 102, 241, 0.04) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 380px;
+        padding: 36px 32px 32px;
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        border-radius: 18px;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+        position: relative;
+        z-index: 1;
+      }
+
+      .brand {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 28px;
+      }
+
+      .brand-logo {
+        width: 52px;
+        height: 52px;
+        background: linear-gradient(135deg, var(--indigo), #8b5cf6);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+      }
+
+      .brand h1 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .brand p {
+        font-size: 13px;
+        color: var(--text3);
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 16px;
+      }
+
+      label {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text2);
+        letter-spacing: 0.3px;
+      }
+
+      input {
+        width: 100%;
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        color: var(--text);
+        font-size: 14px;
+        font-family: inherit;
+        padding: 10px 14px;
+        outline: none;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      input:focus {
+        border-color: var(--indigo);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+      }
+      input::placeholder {
+        color: var(--text3);
+      }
+
+      .error-msg {
+        font-size: 12px;
+        color: var(--red);
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin-bottom: 16px;
+        display: none;
+      }
+      .error-msg.show {
+        display: block;
+      }
+
+      .sign-in-btn {
+        width: 100%;
+        padding: 11px;
+        border-radius: var(--radius);
+        border: none;
+        background: linear-gradient(135deg, var(--indigo), #8b5cf6);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition:
+          opacity 0.15s,
+          transform 0.1s;
+        margin-top: 4px;
+        position: relative;
+      }
+      .sign-in-btn:hover {
+        opacity: 0.9;
+      }
+      .sign-in-btn:active {
+        transform: scale(0.99);
+      }
+      .sign-in-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .spinner {
+        display: none;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      .sign-in-btn.loading .spinner {
+        display: block;
+      }
+      @keyframes spin {
+        to {
+          transform: translateY(-50%) rotate(360deg);
+        }
+      }
+
+      .demo-hint {
+        text-align: center;
+        font-size: 11px;
+        color: var(--text3);
+        margin-top: 20px;
+      }
+      .demo-hint code {
+        font-family: 'SF Mono', 'Fira Code', monospace;
+        color: var(--text2);
+        background: var(--surface2);
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="brand">
+        <div class="brand-logo">📈</div>
+        <h1>Ghostfolio AI Agent</h1>
+        <p>Sign in to your account</p>
+      </div>
+
+      <div class="error-msg" id="error-msg"></div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          autocomplete="email"
+          id="email"
+          placeholder="you@example.com"
+          type="email"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          autocomplete="current-password"
+          id="password"
+          placeholder="••••••••"
+          type="password"
+        />
+      </div>
+
+      <button class="sign-in-btn" id="sign-in-btn" onclick="signIn()">
+        Sign in
+        <div class="spinner"></div>
+      </button>
+
+      <p class="demo-hint">
+        MVP demo — use <code>test@example.com</code> / <code>password</code>
+      </p>
+    </div>
+
+    <script>
+      const emailEl = document.getElementById('email');
+      const passEl = document.getElementById('password');
+      const btnEl = document.getElementById('sign-in-btn');
+      const errorEl = document.getElementById('error-msg');
+
+      // Redirect if already logged in
+      if (localStorage.getItem('gf_token')) {
+        window.location.replace('/');
+      }
+
+      // Enter key submits
+      [emailEl, passEl].forEach((el) => {
+        el.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') signIn();
+        });
+      });
+
+      async function signIn() {
+        const email = emailEl.value.trim();
+        const password = passEl.value;
+
+        if (!email || !password) {
+          showError('Please enter your email and password.');
+          return;
+        }
+
+        setLoading(true);
+        hideError();
+
+        try {
+          const res = await fetch('/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+
+          if (!data.success) {
+            showError(data.message || 'Invalid credentials.');
+            return;
+          }
+
+          localStorage.setItem('gf_token', data.token);
+          localStorage.setItem('gf_user_name', data.name);
+          localStorage.setItem('gf_user_email', data.email);
+          window.location.replace('/');
+        } catch {
+          showError('Could not reach the server. Please try again.');
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      function setLoading(on) {
+        btnEl.disabled = on;
+        btnEl.classList.toggle('loading', on);
+        btnEl.childNodes[0].textContent = on ? 'Signing in…' : 'Sign in';
+      }
+
+      function showError(msg) {
+        errorEl.textContent = msg;
+        errorEl.classList.add('show');
+      }
+
+      function hideError() {
+        errorEl.classList.remove('show');
+      }
+    </script>
+  </body>
+</html>

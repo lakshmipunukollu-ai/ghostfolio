@@ -1,0 +1,1428 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Ghostfolio AI Agent</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0a0d14;
+        --surface: #111520;
+        --surface2: #181e2e;
+        --border: #1f2840;
+        --border2: #2a3550;
+        --indigo: #6366f1;
+        --indigo2: #818cf8;
+        --indigo-bg: #1a1d3a;
+        --green: #22c55e;
+        --yellow: #f59e0b;
+        --red: #ef4444;
+        --text: #e2e8f0;
+        --text2: #94a3b8;
+        --text3: #475569;
+        --radius: 12px;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* ── Header ── */
+      header {
+        padding: 12px 20px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+        z-index: 10;
+      }
+
+      .logo {
+        width: 34px;
+        height: 34px;
+        background: linear-gradient(135deg, var(--indigo), #8b5cf6);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+        flex-shrink: 0;
+      }
+
+      .header-titles h1 {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .header-titles p {
+        font-size: 11px;
+        color: var(--text3);
+        margin-top: 1px;
+      }
+
+      .header-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .status-pill {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        color: var(--text3);
+      }
+
+      .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 5px var(--green);
+        animation: pulse 2s infinite;
+      }
+      .dot.offline {
+        background: var(--red);
+        box-shadow: 0 0 5px var(--red);
+        animation: none;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.35;
+        }
+      }
+
+      .latency-chip {
+        font-size: 11px;
+        color: var(--text3);
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 3px 9px;
+        transition: opacity 0.2s;
+      }
+      .latency-chip.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .user-badge {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .user-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: 0.5px;
+      }
+      .user-name {
+        font-size: 12px;
+        color: var(--text2);
+      }
+
+      .clear-btn {
+        font-size: 12px;
+        padding: 5px 12px;
+        border-radius: 8px;
+        border: 1px solid var(--border2);
+        background: transparent;
+        color: var(--text2);
+        cursor: pointer;
+        transition: all 0.15s;
+        white-space: nowrap;
+      }
+      .clear-btn:hover {
+        border-color: var(--indigo);
+        color: var(--indigo2);
+        background: var(--indigo-bg);
+      }
+
+      /* ── Session summary toast ── */
+      .session-toast {
+        position: fixed;
+        top: 60px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-10px);
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        padding: 10px 18px;
+        font-size: 12px;
+        color: var(--text2);
+        z-index: 100;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s;
+        white-space: nowrap;
+      }
+      .session-toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      /* ── Chat area ── */
+      .chat-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      /* ── Empty state ── */
+      .empty-state {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        color: var(--text3);
+        text-align: center;
+        padding-bottom: 40px;
+      }
+      .empty-icon {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, var(--indigo), #8b5cf6);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+      }
+      .empty-state h2 {
+        font-size: 18px;
+        color: var(--text2);
+        font-weight: 600;
+      }
+      .empty-state p {
+        font-size: 13px;
+        max-width: 320px;
+        line-height: 1.6;
+      }
+
+      .quick-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        max-width: 560px;
+      }
+      .quick-category {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .quick-cat-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: var(--text3);
+        padding-left: 2px;
+      }
+      .quick-row {
+        display: flex;
+        gap: 8px;
+      }
+      .quick-btn {
+        flex: 1;
+        font-size: 12px;
+        padding: 8px 12px;
+        border-radius: 9px;
+        border: 1px solid var(--border2);
+        background: var(--surface2);
+        color: var(--text2);
+        cursor: pointer;
+        transition: all 0.15s;
+        text-align: left;
+        line-height: 1.4;
+      }
+      .quick-btn:hover {
+        border-color: var(--indigo);
+        color: var(--indigo2);
+        background: var(--indigo-bg);
+      }
+      .quick-btn .qb-icon {
+        display: block;
+        margin-bottom: 3px;
+        font-size: 14px;
+      }
+      .quick-btn .qb-title {
+        font-weight: 600;
+        display: block;
+        font-size: 12px;
+      }
+      .quick-btn .qb-sub {
+        font-size: 10px;
+        color: var(--text3);
+        display: block;
+        margin-top: 1px;
+      }
+
+      /* ── Messages ── */
+      .message {
+        display: flex;
+        flex-direction: column;
+        max-width: 740px;
+      }
+      .message.user {
+        align-self: flex-end;
+        align-items: flex-end;
+      }
+      .message.agent {
+        align-self: flex-start;
+        align-items: flex-start;
+      }
+
+      .bubble {
+        padding: 11px 15px;
+        border-radius: 14px;
+        font-size: 13.5px;
+        line-height: 1.65;
+        white-space: pre-wrap;
+        word-break: break-word;
+        position: relative;
+      }
+      .message.user .bubble {
+        background: linear-gradient(135deg, var(--indigo), #8b5cf6);
+        color: #fff;
+        border-bottom-right-radius: 4px;
+      }
+      .message.agent .bubble {
+        background: var(--surface2);
+        color: var(--text);
+        border-bottom-left-radius: 4px;
+        border: 1px solid var(--border2);
+      }
+
+      /* Copy button on hover */
+      .copy-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        border: 1px solid var(--border2);
+        background: var(--surface);
+        color: var(--text3);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        opacity: 0;
+        transition:
+          opacity 0.15s,
+          color 0.15s;
+      }
+      .message.agent .bubble:hover .copy-btn {
+        opacity: 1;
+      }
+      .copy-btn:hover {
+        color: var(--indigo2);
+        border-color: var(--indigo);
+      }
+      .copy-btn.copied {
+        color: var(--green);
+        border-color: var(--green);
+        opacity: 1;
+      }
+
+      /* ── Message footer (badges, confidence, timestamp) ── */
+      .msg-footer {
+        margin-top: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .badge-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        align-items: center;
+      }
+
+      .badge {
+        font-size: 11px;
+        padding: 2px 9px;
+        border-radius: 999px;
+        border: 1px solid var(--border2);
+        color: var(--text2);
+        background: var(--surface);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .badge.tool {
+        border-color: var(--indigo);
+        color: var(--indigo2);
+        background: var(--indigo-bg);
+      }
+      .badge.pass {
+        border-color: var(--green);
+        color: #86efac;
+        background: #052e16;
+      }
+      .badge.flag {
+        border-color: var(--yellow);
+        color: #fcd34d;
+        background: #1c1205;
+      }
+      .badge.fail {
+        border-color: var(--red);
+        color: #fca5a5;
+        background: #1c0505;
+      }
+      .badge.time {
+        color: var(--text3);
+      }
+
+      /* Confidence bar */
+      .confidence-bar-wrap {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .confidence-bar-label {
+        font-size: 10px;
+        color: var(--text3);
+        white-space: nowrap;
+      }
+      .confidence-bar-track {
+        width: 80px;
+        height: 4px;
+        background: var(--border);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .confidence-bar-fill {
+        height: 100%;
+        border-radius: 2px;
+        transition: width 0.4s ease;
+      }
+      .confidence-bar-fill.high {
+        background: var(--green);
+      }
+      .confidence-bar-fill.med {
+        background: var(--yellow);
+      }
+      .confidence-bar-fill.low {
+        background: var(--red);
+      }
+
+      /* Timestamp */
+      .msg-ts {
+        font-size: 10px;
+        color: var(--text3);
+      }
+
+      /* Retry button */
+      .retry-btn {
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 7px;
+        border: 1px solid var(--border2);
+        background: transparent;
+        color: var(--text3);
+        cursor: pointer;
+        transition: all 0.15s;
+        margin-top: 4px;
+        align-self: flex-start;
+      }
+      .retry-btn:hover {
+        border-color: var(--indigo);
+        color: var(--indigo2);
+        background: var(--indigo-bg);
+      }
+
+      /* Confirmation banner */
+      .confirm-banner {
+        background: #1c1205;
+        border: 1px solid rgba(245, 158, 11, 0.35);
+        border-radius: 9px;
+        padding: 8px 12px;
+        font-size: 12px;
+        color: #fcd34d;
+        margin-top: 6px;
+      }
+
+      /* ── Debug panel ── */
+      .debug-panel {
+        margin-top: 6px;
+        width: 100%;
+      }
+      .debug-panel summary {
+        cursor: pointer;
+        user-select: none;
+        list-style: none;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 10px;
+        color: var(--text3);
+        padding: 2px 0;
+      }
+      .debug-panel summary::-webkit-details-marker {
+        display: none;
+      }
+      .debug-body {
+        font-family: 'SF Mono', 'Fira Code', monospace;
+        font-size: 11px;
+        padding: 8px 12px;
+        background: #07090f;
+        color: var(--text);
+        border-radius: 6px;
+        margin-top: 4px;
+        border: 1px solid var(--border);
+        overflow-x: auto;
+        line-height: 1.7;
+      }
+      .db-row {
+        display: flex;
+        gap: 8px;
+      }
+      .db-key {
+        color: var(--indigo2);
+        min-width: 110px;
+      }
+      .db-val {
+        color: var(--text2);
+      }
+      .db-val.pass {
+        color: var(--green);
+      }
+      .db-val.flag {
+        color: var(--yellow);
+      }
+      .db-val.fail {
+        color: var(--red);
+      }
+      .db-val.high {
+        color: var(--green);
+      }
+      .db-val.med {
+        color: var(--yellow);
+      }
+      .db-val.low {
+        color: var(--red);
+      }
+
+      /* ── Live thinking panel ── */
+      .thinking-panel {
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        padding: 12px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-width: 480px;
+        align-self: flex-start;
+      }
+      .thinking-header {
+        font-size: 11px;
+        color: var(--text3);
+        font-weight: 500;
+        letter-spacing: 0.3px;
+      }
+      .step-list {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .step-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--text2);
+      }
+      .step-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        flex-shrink: 0;
+      }
+      .step-icon.running {
+        border: 2px solid var(--indigo);
+        animation: spin 1s linear infinite;
+      }
+      .step-icon.done {
+        background: var(--green);
+        color: #000;
+      }
+      .step-icon.pending {
+        border: 2px solid var(--border2);
+        color: var(--text3);
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .step-label {
+        flex: 1;
+      }
+      .step-tools {
+        font-size: 10px;
+        color: var(--indigo2);
+      }
+
+      /* ── Typing indicator (fallback) ── */
+      .typing {
+        display: flex;
+        gap: 4px;
+        padding: 12px 16px;
+        background: var(--surface2);
+        border-radius: 14px;
+        border-bottom-left-radius: 4px;
+        border: 1px solid var(--border2);
+        width: fit-content;
+      }
+      .typing span {
+        width: 6px;
+        height: 6px;
+        background: var(--indigo);
+        border-radius: 50%;
+        animation: bounce 1.2s infinite;
+      }
+      .typing span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes bounce {
+        0%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-5px);
+        }
+      }
+
+      /* ── Restored session notice ── */
+      .session-restored {
+        align-self: center;
+        font-size: 11px;
+        color: var(--text3);
+        background: var(--surface2);
+        border: 1px dashed var(--border2);
+        border-radius: 999px;
+        padding: 4px 14px;
+      }
+
+      /* ── /tools panel ── */
+      .tools-panel {
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        padding: 14px 16px;
+        align-self: flex-start;
+        max-width: 540px;
+      }
+      .tools-panel h3 {
+        font-size: 12px;
+        color: var(--text2);
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+      .tool-entry {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 7px;
+      }
+      .tool-entry-name {
+        font-size: 11px;
+        color: var(--indigo2);
+        font-family: 'SF Mono', 'Fira Code', monospace;
+        min-width: 160px;
+      }
+      .tool-entry-desc {
+        font-size: 11px;
+        color: var(--text2);
+        line-height: 1.4;
+      }
+
+      /* ── Input area ── */
+      .input-wrap {
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        padding: 12px 20px;
+        flex-shrink: 0;
+      }
+      .input-row {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+      }
+      textarea {
+        flex: 1;
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius);
+        color: var(--text);
+        font-size: 13.5px;
+        font-family: inherit;
+        padding: 10px 14px;
+        resize: none;
+        min-height: 44px;
+        max-height: 140px;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      textarea:focus {
+        border-color: var(--indigo);
+      }
+      textarea::placeholder {
+        color: var(--text3);
+      }
+      .send-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius);
+        border: none;
+        background: linear-gradient(135deg, var(--indigo), #8b5cf6);
+        color: #fff;
+        font-size: 18px;
+        cursor: pointer;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.15s;
+      }
+      .send-btn:hover {
+        opacity: 0.85;
+      }
+      .send-btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ── Header ── -->
+    <header>
+      <div class="logo">📈</div>
+      <div class="header-titles">
+        <h1>Ghostfolio AI Agent</h1>
+        <p>Powered by Claude + LangGraph</p>
+      </div>
+      <div class="header-right">
+        <div class="status-pill">
+          <div class="dot" id="dot"></div>
+          <span id="status-label">Connecting…</span>
+        </div>
+        <span class="latency-chip hidden" id="latency-chip">—</span>
+        <div class="user-badge">
+          <div class="user-avatar" id="user-avatar">??</div>
+          <span class="user-name" id="user-name">Loading…</span>
+        </div>
+        <button class="clear-btn" id="clear-btn">Clear session</button>
+        <button
+          class="clear-btn"
+          id="logout-btn"
+          style="border-color: #2a3550; color: #64748b"
+          title="Sign out"
+        >
+          Sign out
+        </button>
+      </div>
+    </header>
+
+    <!-- ── Session toast ── -->
+    <div class="session-toast" id="session-toast"></div>
+
+    <!-- ── Chat area ── -->
+    <div class="chat-area" id="chat">
+      <!-- Empty state -->
+      <div class="empty-state" id="empty">
+        <div class="empty-icon">💼</div>
+        <h2>What would you like to know?</h2>
+        <p>
+          Ask about your portfolio, check live prices, log a trade, or run a
+          compliance check.
+        </p>
+
+        <div class="quick-grid">
+          <div class="quick-category">
+            <span class="quick-cat-label">📊 Portfolio</span>
+            <div class="quick-row">
+              <button
+                class="quick-btn"
+                onclick="sendQuick('What is my YTD return?')"
+              >
+                <span class="qb-icon">📈</span>
+                <span class="qb-title">YTD Return</span>
+                <span class="qb-sub">Year-to-date performance</span>
+              </button>
+              <button
+                class="quick-btn"
+                onclick="sendQuick('Give me a full portfolio summary')"
+              >
+                <span class="qb-icon">📋</span>
+                <span class="qb-title">Portfolio Summary</span>
+                <span class="qb-sub">Allocation &amp; value overview</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="quick-category">
+            <span class="quick-cat-label">🛡️ Risk &amp; Compliance</span>
+            <div class="quick-row">
+              <button
+                class="quick-btn"
+                onclick="sendQuick('Am I over-concentrated in any stock?')"
+              >
+                <span class="qb-icon">⚖️</span>
+                <span class="qb-title">Concentration Check</span>
+                <span class="qb-sub">Detect overweight positions</span>
+              </button>
+              <button
+                class="quick-btn"
+                onclick="sendQuick('Estimate my tax liability')"
+              >
+                <span class="qb-icon">🧾</span>
+                <span class="qb-title">Tax Estimate</span>
+                <span class="qb-sub">Capital gains &amp; liability</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="quick-category">
+            <span class="quick-cat-label">💹 Market</span>
+            <div class="quick-row">
+              <button
+                class="quick-btn"
+                onclick="sendQuick('What is AAPL trading at today?')"
+              >
+                <span class="qb-icon">🍎</span>
+                <span class="qb-title">Live Quote</span>
+                <span class="qb-sub">AAPL real-time price</span>
+              </button>
+              <button
+                class="quick-btn"
+                onclick="sendQuick('Show me my recent transactions')"
+              >
+                <span class="qb-icon">🔄</span>
+                <span class="qb-title">Recent Trades</span>
+                <span class="qb-sub">Activity history</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Input area ── -->
+    <div class="input-wrap">
+      <div class="input-row">
+        <textarea
+          id="input"
+          placeholder="Ask anything about your portfolio… (type /tools to see available tools)"
+          rows="1"
+        ></textarea>
+        <button class="send-btn" id="send-btn" onclick="send()">➤</button>
+      </div>
+    </div>
+
+    <script>
+      // ── State ──
+      const STORAGE_KEY = 'gf_agent_chat';
+      let history = []; // [{role, content}]
+      let pendingWrite = null; // echoed back to agent on confirmation
+      let sessionStats = { messages: 0, toolCalls: 0, latencies: [] };
+      let lastQuery = ''; // for retry
+
+      const chat = document.getElementById('chat');
+      const input = document.getElementById('input');
+      const sendBtn = document.getElementById('send-btn');
+      const emptyEl = document.getElementById('empty');
+      const dotEl = document.getElementById('dot');
+      const statusLbl = document.getElementById('status-label');
+      const latChip = document.getElementById('latency-chip');
+      const toastEl = document.getElementById('session-toast');
+
+      const TOOL_CATALOG = [
+        {
+          name: 'portfolio_analysis',
+          desc: 'Fetch your full portfolio snapshot from Ghostfolio — value, returns, holdings breakdown.'
+        },
+        {
+          name: 'transaction_query',
+          desc: 'Query activity and transaction history with optional ticker filter.'
+        },
+        {
+          name: 'compliance_check',
+          desc: 'Run concentration and risk-allocation rules against your current holdings.'
+        },
+        {
+          name: 'market_data',
+          desc: 'Get a live stock price from Yahoo Finance for any symbol.'
+        },
+        {
+          name: 'market_overview',
+          desc: 'Fetch a broad market summary: top movers, sector performance.'
+        },
+        {
+          name: 'tax_estimate',
+          desc: 'Estimate capital gains tax liability based on realized P&L.'
+        },
+        {
+          name: 'write_transaction',
+          desc: 'Record a BUY, SELL, DIVIDEND, or CASH transaction into Ghostfolio (requires confirmation).'
+        },
+        {
+          name: 'transaction_categorize',
+          desc: 'Analyze your trading patterns — frequency, style, category breakdown.'
+        }
+      ];
+
+      // ── Health check ──
+      (async () => {
+        try {
+          const r = await fetch('/health');
+          const d = await r.json();
+          if (d.status === 'ok') {
+            dotEl.classList.remove('offline');
+            statusLbl.textContent = d.ghostfolio_reachable
+              ? 'Live'
+              : 'Online · Ghostfolio unreachable';
+          } else throw new Error();
+        } catch {
+          dotEl.classList.add('offline');
+          statusLbl.textContent = 'Agent offline';
+        }
+      })();
+
+      // ── Auth guard — redirect to login if no token ──
+      const _token = localStorage.getItem('gf_token');
+      if (!_token) {
+        window.location.replace('/login');
+      }
+
+      // ── Load user profile from localStorage (set at login) ──
+      (function loadUser() {
+        const name = localStorage.getItem('gf_user_name') || 'Investor';
+        const initials = name.slice(0, 2).toUpperCase();
+        document.getElementById('user-avatar').textContent = initials;
+        document.getElementById('user-name').textContent = name;
+      })();
+
+      // ── Restore session from localStorage ──
+      (function restoreSession() {
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (!saved) return;
+          const { hist, stats } = JSON.parse(saved);
+          if (!hist || hist.length === 0) return;
+          history = hist;
+          if (stats) sessionStats = stats;
+          emptyEl.style.display = 'none';
+          const notice = document.createElement('div');
+          notice.className = 'session-restored';
+          notice.textContent = `↑ Restored ${Math.floor(hist.length / 2)} messages from last session`;
+          chat.appendChild(notice);
+          // Replay messages into DOM
+          for (let i = 0; i < hist.length; i += 2) {
+            const u = hist[i];
+            const a = hist[i + 1];
+            if (u) addMessage('user', u.content, null, true);
+            if (a) addMessage('agent', a.content, null, true);
+          }
+        } catch {
+          /* silently skip */
+        }
+      })();
+
+      function saveSession() {
+        try {
+          localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({ hist: history, stats: sessionStats })
+          );
+        } catch {
+          /* quota exceeded */
+        }
+      }
+
+      // ── Textarea auto-resize + Enter to send ──
+      input.addEventListener('input', () => {
+        input.style.height = 'auto';
+        input.style.height = Math.min(input.scrollHeight, 140) + 'px';
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          send();
+        }
+      });
+
+      function sendQuick(text) {
+        input.value = text;
+        send();
+      }
+
+      // ── /tools easter egg ──
+      function handleToolsCommand() {
+        emptyEl.style.display = 'none';
+        addMessage('user', '/tools');
+        const panel = document.createElement('div');
+        panel.className = 'message agent';
+        const inner = document.createElement('div');
+        inner.className = 'tools-panel';
+        inner.innerHTML =
+          `<h3>🔧 Available Agent Tools</h3>` +
+          TOOL_CATALOG.map(
+            (t) =>
+              `<div class="tool-entry"><span class="tool-entry-name">${t.name}</span><span class="tool-entry-desc">${t.desc}</span></div>`
+          ).join('');
+        panel.appendChild(inner);
+        chat.appendChild(panel);
+        chat.scrollTop = chat.scrollHeight;
+      }
+
+      // ── Main send ──
+      async function send() {
+        const query = input.value.trim();
+        if (!query || sendBtn.disabled) return;
+
+        if (query === '/tools') {
+          input.value = '';
+          input.style.height = 'auto';
+          handleToolsCommand();
+          return;
+        }
+
+        lastQuery = query;
+        input.value = '';
+        input.style.height = 'auto';
+        sendBtn.disabled = true;
+        emptyEl.style.display = 'none';
+
+        addMessage('user', query);
+
+        // Live thinking panel
+        const thinkingEl = createThinkingPanel();
+        chat.appendChild(thinkingEl);
+        chat.scrollTop = chat.scrollHeight;
+
+        let metaData = null;
+        let responseText = '';
+        let agentBubbleEl = null;
+        let agentMsgEl = null;
+
+        try {
+          const res = await fetch('/chat/steps', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              query,
+              history,
+              pending_write: pendingWrite
+            })
+          });
+
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = '';
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop();
+
+            for (const line of lines) {
+              if (!line.startsWith('data: ')) continue;
+              let evt;
+              try {
+                evt = JSON.parse(line.slice(6));
+              } catch {
+                continue;
+              }
+
+              if (evt.type === 'step') {
+                updateThinkingPanel(thinkingEl, evt);
+              } else if (evt.type === 'meta') {
+                metaData = evt;
+                pendingWrite = evt.pending_write || null;
+                updateLatency(evt.latency_seconds);
+                sessionStats.toolCalls += (evt.tools_used || []).length;
+                if (evt.latency_seconds)
+                  sessionStats.latencies.push(evt.latency_seconds);
+              } else if (evt.type === 'token') {
+                if (!agentMsgEl) {
+                  thinkingEl.remove();
+                  agentMsgEl = document.createElement('div');
+                  agentMsgEl.className = 'message agent';
+                  agentBubbleEl = document.createElement('div');
+                  agentBubbleEl.className = 'bubble';
+                  agentBubbleEl.style.paddingRight = '38px'; // space for copy btn
+                  agentMsgEl.appendChild(agentBubbleEl);
+                  chat.appendChild(agentMsgEl);
+                }
+                responseText += evt.token;
+                agentBubbleEl.innerHTML =
+                  renderBubble(responseText) + copyBtnHTML();
+                chat.scrollTop = chat.scrollHeight;
+              } else if (evt.type === 'done') {
+                if (agentMsgEl && metaData) {
+                  appendMessageFooter(agentMsgEl, metaData, responseText);
+                }
+                history.push({ role: 'user', content: query });
+                history.push({ role: 'assistant', content: responseText });
+                sessionStats.messages++;
+                saveSession();
+              } else if (evt.type === 'error') {
+                thinkingEl.remove();
+                addErrorMessage(evt.message, query);
+              }
+            }
+          }
+        } catch (err) {
+          thinkingEl.remove();
+          if (agentMsgEl) agentMsgEl.remove();
+          addErrorMessage(
+            'Could not reach the agent. Please try again.',
+            query
+          );
+        } finally {
+          sendBtn.disabled = false;
+          input.focus();
+        }
+      }
+
+      // ── Thinking panel ──
+      function createThinkingPanel() {
+        const wrap = document.createElement('div');
+        wrap.className = 'message agent';
+        const panel = document.createElement('div');
+        panel.className = 'thinking-panel';
+        panel.innerHTML = `<div class="thinking-header">Agent is thinking…</div><div class="step-list" id="step-list-${Date.now()}"></div>`;
+        wrap.appendChild(panel);
+        return wrap;
+      }
+
+      function updateThinkingPanel(wrapEl, evt) {
+        const list = wrapEl.querySelector('.step-list');
+        if (!list) return;
+
+        // Update header
+        const header = wrapEl.querySelector('.thinking-header');
+        if (header)
+          header.textContent =
+            evt.status === 'running' ? `${evt.label}…` : 'Agent thinking…';
+
+        let existing = list.querySelector(`[data-node="${evt.node}"]`);
+        if (!existing) {
+          existing = document.createElement('div');
+          existing.className = 'step-item';
+          existing.setAttribute('data-node', evt.node);
+          list.appendChild(existing);
+        }
+
+        const iconHtml =
+          evt.status === 'running'
+            ? '<div class="step-icon running"></div>'
+            : '<div class="step-icon done">✓</div>';
+
+        let toolsHtml = '';
+        if (evt.tools && evt.tools.length) {
+          toolsHtml = `<span class="step-tools">${evt.tools.join(', ')}</span>`;
+        }
+
+        existing.innerHTML = `${iconHtml}<span class="step-label">${evt.label}</span>${toolsHtml}`;
+        chat.scrollTop = chat.scrollHeight;
+      }
+
+      // ── Render helpers ──
+      function renderBubble(text) {
+        const stripped = text.replace(/\[source:[^\]]+\]/g, '');
+        const escaped = stripped
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+        const bolded = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        return bolded.replace(/\n/g, '<br>');
+      }
+
+      function copyBtnHTML() {
+        return `<button class="copy-btn" title="Copy response" onclick="copyBubble(this)">⎘</button>`;
+      }
+
+      function copyBubble(btn) {
+        const bubble = btn.parentElement;
+        const text = bubble.innerText.replace('⎘', '').trim();
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.textContent = '✓';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.textContent = '⎘';
+          }, 1800);
+        });
+      }
+
+      function addMessage(role, text, meta = null, restored = false) {
+        emptyEl.style.display = 'none';
+        const wrap = document.createElement('div');
+        wrap.className = `message ${role}`;
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        if (role === 'agent') bubble.style.paddingRight = '38px';
+        bubble.innerHTML =
+          renderBubble(text) + (role === 'agent' ? copyBtnHTML() : '');
+        wrap.appendChild(bubble);
+
+        if (role === 'agent' && meta) {
+          appendMessageFooter(wrap, meta, text);
+        }
+
+        chat.appendChild(wrap);
+        chat.scrollTop = chat.scrollHeight;
+        return wrap;
+      }
+
+      function appendMessageFooter(wrapEl, meta, text) {
+        const footer = document.createElement('div');
+        footer.className = 'msg-footer';
+
+        // Row 1: tool badges + verification badge
+        const badgeRow = document.createElement('div');
+        badgeRow.className = 'badge-row';
+
+        (meta.tools_used || []).forEach((t) => {
+          const b = document.createElement('span');
+          b.className = 'badge tool';
+          b.innerHTML = `<span>🔧</span>${t}`;
+          badgeRow.appendChild(b);
+        });
+
+        if (meta.verification_outcome) {
+          const isPass = meta.verification_outcome === 'pass';
+          const isFlag = meta.verification_outcome === 'flag';
+          const b = document.createElement('span');
+          b.className = `badge ${isPass ? 'pass' : isFlag ? 'flag' : 'fail'}`;
+          b.textContent = isPass
+            ? '✓ Verified'
+            : isFlag
+              ? '⚠ Flagged'
+              : '✕ Failed';
+          badgeRow.appendChild(b);
+        }
+
+        if (meta.latency_seconds != null) {
+          const b = document.createElement('span');
+          b.className = 'badge time';
+          b.textContent = `${meta.latency_seconds}s`;
+          badgeRow.appendChild(b);
+        }
+
+        footer.appendChild(badgeRow);
+
+        // Row 2: confidence bar + timestamp
+        if (meta.confidence_score != null) {
+          const confRow = document.createElement('div');
+          confRow.className = 'badge-row';
+          const pct = Math.round(meta.confidence_score * 100);
+          const cls =
+            meta.confidence_score >= 0.8
+              ? 'high'
+              : meta.confidence_score >= 0.5
+                ? 'med'
+                : 'low';
+          confRow.innerHTML = `
+        <div class="confidence-bar-wrap">
+          <span class="confidence-bar-label">Confidence</span>
+          <div class="confidence-bar-track">
+            <div class="confidence-bar-fill ${cls}" style="width:${pct}%"></div>
+          </div>
+          <span class="confidence-bar-label">${pct}%</span>
+        </div>
+        <span class="msg-ts">${formatTs()}</span>`;
+          footer.appendChild(confRow);
+        }
+
+        // Confirmation banner
+        if (meta.awaiting_confirmation && meta.pending_write) {
+          const banner = document.createElement('div');
+          banner.className = 'confirm-banner';
+          banner.textContent =
+            '⚠️ Awaiting your confirmation — reply yes or no.';
+          footer.appendChild(banner);
+        }
+
+        // Debug panel
+        const details = document.createElement('details');
+        details.className = 'debug-panel';
+        const toolList = (meta.tools_used || []).join(', ') || 'none';
+        const confPct =
+          meta.confidence_score != null
+            ? Math.round(meta.confidence_score * 100) + '%'
+            : '—';
+        const confCls =
+          meta.confidence_score >= 0.8
+            ? 'high'
+            : meta.confidence_score >= 0.5
+              ? 'med'
+              : 'low';
+        const outCls =
+          meta.verification_outcome === 'pass'
+            ? 'pass'
+            : meta.verification_outcome === 'flag'
+              ? 'flag'
+              : 'fail';
+        details.innerHTML = `
+      <summary>🔍 debug</summary>
+      <div class="debug-body">
+        <div class="db-row"><span class="db-key">tools_called</span><span class="db-val">${toolList}</span></div>
+        <div class="db-row"><span class="db-key">verification</span><span class="db-val ${outCls}">${meta.verification_outcome || '—'}</span></div>
+        <div class="db-row"><span class="db-key">confidence</span><span class="db-val ${confCls}">${confPct}</span></div>
+        <div class="db-row"><span class="db-key">latency</span><span class="db-val">${meta.latency_seconds != null ? meta.latency_seconds + 's' : '—'}</span></div>
+        <div class="db-row"><span class="db-key">citations</span><span class="db-val">${(meta.citations || []).join(', ') || 'none'}</span></div>
+      </div>`;
+        footer.appendChild(details);
+
+        wrapEl.appendChild(footer);
+      }
+
+      function addErrorMessage(msg, origQuery) {
+        const wrap = document.createElement('div');
+        wrap.className = 'message agent';
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.innerHTML = `❌ ${renderBubble(msg)}`;
+        wrap.appendChild(bubble);
+
+        const retryBtn = document.createElement('button');
+        retryBtn.className = 'retry-btn';
+        retryBtn.textContent = '↻ Retry';
+        retryBtn.onclick = () => {
+          wrap.remove();
+          input.value = origQuery;
+          send();
+        };
+        wrap.appendChild(retryBtn);
+        chat.appendChild(wrap);
+        chat.scrollTop = chat.scrollHeight;
+      }
+
+      // ── Latency tracker ──
+      function updateLatency(sec) {
+        if (sec == null) return;
+        latChip.classList.remove('hidden');
+        latChip.textContent = `last: ${sec}s`;
+      }
+
+      // ── Timestamp helper ──
+      function formatTs() {
+        const now = new Date();
+        return now.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+
+      // ── Sign out ──
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('gf_token');
+        localStorage.removeItem('gf_user_name');
+        localStorage.removeItem('gf_user_email');
+        localStorage.removeItem(STORAGE_KEY);
+        window.location.replace('/login');
+      });
+
+      // ── Clear session ──
+      document.getElementById('clear-btn').addEventListener('click', () => {
+        const msgs = sessionStats.messages;
+        const tools = sessionStats.toolCalls;
+        const avgLat = sessionStats.latencies.length
+          ? (
+              sessionStats.latencies.reduce((a, b) => a + b, 0) /
+              sessionStats.latencies.length
+            ).toFixed(1)
+          : '—';
+
+        // Flash summary toast
+        toastEl.textContent = `Session ended · ${msgs} msg${msgs !== 1 ? 's' : ''} · ${tools} tool call${tools !== 1 ? 's' : ''} · avg ${avgLat}s`;
+        toastEl.classList.add('show');
+        setTimeout(() => toastEl.classList.remove('show'), 2800);
+
+        // Reset state
+        history = [];
+        pendingWrite = null;
+        sessionStats = { messages: 0, toolCalls: 0, latencies: [] };
+        localStorage.removeItem(STORAGE_KEY);
+
+        // Reset DOM
+        chat.innerHTML = '';
+        chat.appendChild(emptyEl);
+        emptyEl.style.display = '';
+
+        latChip.classList.add('hidden');
+      });
+    </script>
+  </body>
+</html>
