@@ -77,4 +77,53 @@ TOOL_REGISTRY = {
         "parameters": {},
         "returns": "list of symbols with current price and daily change %",
     },
+    # --- Real Estate tools (feature-flagged: ENABLE_REAL_ESTATE=true) ---
+    "real_estate_neighborhood": {
+        "name": "real_estate_neighborhood",
+        "description": (
+            "Returns housing market statistics for a US city or neighborhood: "
+            "median price, price/sqft, days on market, YoY price change, "
+            "inventory level, walk score, and rental yield estimate. "
+            "Requires ENABLE_REAL_ESTATE=true."
+        ),
+        "parameters": {
+            "location": "city or neighborhood name (e.g. 'Austin', 'San Francisco', 'Denver')",
+        },
+        "returns": (
+            "median_price, price_per_sqft, median_days_on_market, "
+            "price_change_yoy_pct, inventory_level, walk_score, "
+            "gross_rental_yield_pct, market_summary"
+        ),
+    },
+    "real_estate_search": {
+        "name": "real_estate_search",
+        "description": (
+            "Searches active real estate listings by city or neighborhood. "
+            "Returns up to 5 normalized listings with price, bedrooms, sqft, "
+            "days on market, estimated rent, and cap rate. "
+            "Requires ENABLE_REAL_ESTATE=true."
+        ),
+        "parameters": {
+            "query": "city or neighborhood name (e.g. 'Austin TX', 'Seattle', 'New York')",
+        },
+        "returns": "list of listings: id, address, price, bedrooms, bathrooms, sqft, DOM, cap_rate",
+    },
+    "real_estate_compare": {
+        "name": "real_estate_compare",
+        "description": (
+            "Compares two US cities or neighborhoods side by side on affordability, "
+            "rental yield, walkability, price trend, and inventory. "
+            "Ideal for questions like 'compare Austin vs Denver for investment'. "
+            "Requires ENABLE_REAL_ESTATE=true."
+        ),
+        "parameters": {
+            "location_a": "first city/neighborhood (e.g. 'Austin')",
+            "location_b": "second city/neighborhood (e.g. 'Denver')",
+        },
+        "returns": (
+            "side-by-side comparison of median_price, price_per_sqft, "
+            "rental_yield, days_on_market, walk_score, YoY price change, "
+            "inventory level, and market summaries for both locations"
+        ),
+    },
 }

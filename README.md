@@ -301,6 +301,116 @@ Grant access of type _Public_ in the _Access_ tab of _My Ghostfolio_.
 }
 ```
 
+## 🏠 Real Estate / Housing Integration (AgentForge)
+
+This project extends the Ghostfolio AI Agent with a **Housing & Real Estate** capability — an example of brownfield AgentForge integration where a new tool is added to an existing LangGraph agent without touching core portfolio functionality.
+
+### Feature Flag
+
+The feature is **off by default** and must be explicitly enabled:
+
+```bash
+# agent/.env
+ENABLE_REAL_ESTATE=true    # activate
+ENABLE_REAL_ESTATE=false   # deactivate (default) — zero behavior change
+```
+
+When `false`, all real estate keywords are ignored and the agent behaves exactly as it did before this feature was added.
+
+### What it adds
+
+Three new agent capabilities accessible through the existing AI chat interface:
+
+| Capability              | Example prompt                                                  |
+| ----------------------- | --------------------------------------------------------------- |
+| Neighborhood snapshot   | `"What's the housing market like in Austin?"`                   |
+| Listing search          | `"Show me listings in Seattle"`                                 |
+| Neighborhood comparison | `"Compare Austin vs Denver for affordability and rental yield"` |
+| Cashflow analysis       | `"Estimate rental cashflow for Chicago real estate"`            |
+
+### 2-Minute Demo (Friday)
+
+**Step 1 — start the agent** (if not already running):
+
+```bash
+cd ghostfolio/agent
+source venv/bin/activate
+uvicorn main:app --reload --port 8000
+```
+
+**Step 2 — confirm the flag is on**:
+Open `agent/.env` and verify `ENABLE_REAL_ESTATE=true`.
+
+**Step 3 — open the AI chat** in the Ghostfolio app (the floating chat FAB button).
+
+**Step 4 — run these demo prompts in order:**
+
+```
+1. "What's the housing market like in Austin?"
+   → Shows: median price, price/sqft, DOM, YoY change, inventory, rental yield
+
+2. "Show me listings in Seattle"
+   → Shows: 2 active listings with price, beds/baths, sqft, cap rate
+
+3. "Compare Austin vs Chicago for real estate investment"
+   → Shows: side-by-side metrics + which market wins on affordability, yield, walkability
+
+4. "Estimate rental cashflow for a Chicago investment property"
+   → Agent synthesizes cap rate, rent estimate, and mortgage estimate
+```
+
+**Expected output**: Conversational responses with specific data points, no raw JSON, citations included.
+
+### Architecture (how it integrates)
+
+```
+graph.py  classify_node  ──► detects real estate keywords
+                         ──► routes to query_type = real_estate_snapshot | real_estate_search | real_estate_compare
+
+graph.py  tools_node     ──► calls tools/real_estate.py functions
+                             (get_neighborhood_snapshot / search_listings / compare_neighborhoods)
+
+tools/real_estate.py     ──► MockProvider with realistic 2024 data for 10 US cities
+                             TTL cache (5 min) to avoid repeat computation
+                             Feature flag guard on every function
+
+tools/__init__.py        ──► 3 new entries in TOOL_REGISTRY (append-only)
+```
+
+**Critical paths untouched**: `state.py`, `main.py` endpoints, existing tool files, Angular routes, Ghostfolio NestJS API — none of these files were modified.
+
+### Running the tests
+
+```bash
+cd ghostfolio/agent
+source venv/bin/activate
+python -m pytest evals/test_real_estate.py -v
+# → 5 passed in < 1s
+```
+
+### Rollback
+
+1. **Instant off**: Set `ENABLE_REAL_ESTATE=false` in `.env` → restart agent. Zero UI or behavior change.
+2. **Full revert**: `git checkout main` — removes all real estate code.
+3. **Partial revert**: `git revert` the specific commits tagged `feat(real-estate)`.
+
+### Supported Cities (Mock Provider)
+
+Austin TX · San Francisco CA · New York NY · Denver CO · Seattle WA ·
+Miami FL · Chicago IL · Phoenix AZ · Nashville TN · Dallas TX
+
+### Next Steps (real provider)
+
+To swap in live data, replace `MockProvider` calls in `tools/real_estate.py` with an HTTP call to:
+
+- **Attom Data API** (comprehensive, paid) — `REAL_ESTATE_API_KEY` env var
+- **RealtyMole / Realty in US** (RapidAPI) — free tier available
+- **HUD Fair Market Rents API** (free, government data, rent estimates)
+
+The normalized return schema is identical — no changes to `graph.py` needed.
+
+---
+
 ## Community Projects
 
 Discover a variety of community projects for Ghostfolio: https://github.com/topics/ghostfolio
