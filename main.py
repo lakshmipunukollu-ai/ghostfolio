@@ -592,6 +592,8 @@ async def health():
         "status": "ok",
         "ghostfolio_reachable": ghostfolio_ok,
         "timestamp": datetime.utcnow().isoformat(),
+        "version": "2.0.0-complete-showcase",
+        "features": ["relocation_runway", "wealth_gap", "life_decision", "equity_unlock", "family_planner"],
     }
 
 
