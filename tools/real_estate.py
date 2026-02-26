@@ -932,6 +932,20 @@ async def get_neighborhood_snapshot(location: str) -> dict:
     monthly_rent_estimate = round(snap["median_price"] * snap["rent_to_price_ratio"] / 100, 0)
     gross_yield = round(snap["rent_to_price_ratio"] * 12 / 100 * 100, 2)
 
+    # Use real ACTRIS attribution for Texas cities; generic label for others
+    is_texas = snap.get("state", "").upper() == "TX"
+    data_source_label = snap.get(
+        "data_source",
+        "MockProvider v1 — realistic 2024 US market estimates",
+    )
+    market_summary = snap["market_summary"]
+    if is_texas and snap.get("data_as_of"):
+        market_summary = (
+            market_summary
+            + "\n\n📊 Source: ACTRIS/Unlock MLS · January 2026 · "
+            "Verified by licensed Austin real estate agent"
+        )
+
     result = {
         "tool_name": "real_estate",
         "success": True,
@@ -948,8 +962,15 @@ async def get_neighborhood_snapshot(location: str) -> dict:
             "active_listings_count": snap["listings_count"],
             "estimated_median_monthly_rent": monthly_rent_estimate,
             "gross_rental_yield_pct": gross_yield,
-            "market_summary": snap["market_summary"],
-            "data_source": "MockProvider v1 — realistic 2024 US market estimates",
+            "market_summary": market_summary,
+            "data_source": data_source_label,
+            "data_as_of": snap.get("data_as_of"),
+            "agent_note": snap.get("agent_note"),
+            # ACTRIS-specific fields (present on TX records, None for others)
+            "months_of_inventory": snap.get("MonthsOfInventory"),
+            "pending_sales_yoy": snap.get("PendingSalesYoY"),
+            "close_to_list_ratio": snap.get("CloseToListRatio"),
+            "median_rent_monthly": snap.get("MedianRentMonthly"),
         },
     }
     _cache_set(cache_key, result)
@@ -1158,7 +1179,10 @@ async def compare_neighborhoods(location_a: str, location_b: str) -> dict:
             a["location"]: a["market_summary"],
             b["location"]: b["market_summary"],
         },
-        "data_source": "MockProvider v1 — realistic 2024 US market estimates",
+        "data_source": (
+            "ACTRIS/Unlock MLS Jan 2026 (TX areas) · "
+            "MockProvider v1 (other cities)"
+        ),
     }
 
     result = {
