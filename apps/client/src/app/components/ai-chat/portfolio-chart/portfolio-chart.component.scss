@@ -1,0 +1,30 @@
+.pc-card {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  background: var(--light-background, #fff);
+  padding: 0.6rem 0.75rem 0.5rem;
+  margin-top: 0.4rem;
+  max-width: 320px;
+
+  :host-context(.theme-dark) & {
+    background: #22223a;
+    border-color: rgba(99, 102, 241, 0.25);
+  }
+
+  &__label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #6366f1;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.02em;
+
+    :host-context(.theme-dark) & {
+      color: #a5b4fc;
+    }
+  }
+
+  canvas {
+    display: block;
+    max-width: 100%;
+  }
+}

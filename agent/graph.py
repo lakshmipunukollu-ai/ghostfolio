@@ -21,6 +21,13 @@ from tools.real_estate import (
     compare_neighborhoods,
     is_real_estate_enabled,
 )
+from tools.property_tracker import (
+    add_property,
+    list_properties,
+    get_real_estate_equity,
+    remove_property as remove_tracked_property,
+    is_property_tracking_enabled,
+)
 from verification.fact_checker import verify_claims
 
 SYSTEM_PROMPT = """You are a portfolio analysis assistant integrated with Ghostfolio wealth management software.
@@ -395,6 +402,32 @@ async def classify_node(state: AgentState) -> AgentState:
             return {**state, "query_type": "compliance+tax"}
         return {**state, "query_type": "tax"}
 
+    # --- Property Tracker (feature-flagged) — checked BEFORE general real estate
+    #     so "add my property" doesn't fall through to real_estate_snapshot ---
+    if is_property_tracking_enabled():
+        property_add_kws = [
+            "add my property", "add property", "track my property",
+            "track my home", "add my home", "add my house", "add my condo",
+            "i own a house", "i own a home", "i own a condo", "i own a property",
+            "record my property", "log my property",
+        ]
+        property_list_kws = [
+            "my properties", "list my properties", "show my properties",
+            "my real estate holdings", "properties i own", "my property portfolio",
+            "what properties", "show my homes",
+        ]
+        property_net_worth_kws = [
+            "net worth including", "net worth with real estate",
+            "total net worth", "total wealth", "all my assets",
+            "real estate net worth", "net worth and real estate",
+        ]
+        if any(kw in query for kw in property_add_kws):
+            return {**state, "query_type": "property_add"}
+        if any(kw in query for kw in property_list_kws):
+            return {**state, "query_type": "property_list"}
+        if any(kw in query for kw in property_net_worth_kws):
+            return {**state, "query_type": "property_net_worth"}
+
     # --- Real Estate (feature-flagged) — checked AFTER tax/compliance so portfolio
     #     queries like "housing allocation" still route to portfolio tools ---
     if is_real_estate_enabled():
@@ -411,7 +444,16 @@ async def classify_node(state: AgentState) -> AgentState:
             "under $", "rent estimate", "for sale", "open house",
             "property search", "find homes", "home value",
         ]
-        has_real_estate = any(kw in query for kw in real_estate_kws)
+        # Location-based routing: known city/county + a real estate intent signal
+        # (avoids misrouting portfolio queries that happen to mention a city name)
+        _location_intent_kws = [
+            "compare", "vs ", "versus", "market", "county", "neighborhood",
+            "tell me about", "how is", "what about", "what's the", "whats the",
+            "area", "prices in", "homes in", "housing in", "rent in",
+        ]
+        has_known_location = any(city in query for city in _KNOWN_CITIES)
+        has_location_re_intent = has_known_location and any(kw in query for kw in _location_intent_kws)
+        has_real_estate = any(kw in query for kw in real_estate_kws) or has_location_re_intent
         if has_real_estate:
             # Determine sub-type from context
             if any(kw in query for kw in ["compare neighborhood", "compare cit", "vs "]):
@@ -780,10 +822,113 @@ async def write_execute_node(state: AgentState) -> AgentState:
 # ---------------------------------------------------------------------------
 
 _KNOWN_CITIES = [
+    # Original US metros
     "austin", "san francisco", "new york", "new york city", "nyc",
     "denver", "seattle", "miami", "chicago", "phoenix", "nashville", "dallas",
     "brooklyn", "manhattan", "sf", "atx", "dfw",
+    # ACTRIS / Greater Austin locations
+    "travis county", "travis",
+    "williamson county", "williamson", "round rock", "cedar park", "georgetown", "leander",
+    "hays county", "hays", "kyle", "buda", "san marcos", "wimberley",
+    "bastrop county", "bastrop", "elgin", "smithville",
+    "caldwell county", "caldwell", "lockhart", "luling",
+    "greater austin", "austin metro", "austin msa",
 ]
+
+
+def _extract_property_details(query: str) -> dict:
+    """
+    Extracts property details from a natural language add-property query.
+
+    Looks for:
+      - address: text in quotes, or "at <address>" up to a comma/period
+      - purchase_price: dollar amount near "bought", "paid", "purchased", "purchase price"
+      - current_value: dollar amount near "worth", "value", "estimate", "current"
+      - mortgage_balance: dollar amount near "mortgage", "owe", "loan", "outstanding"
+      - county_key: derived from location keywords in the query
+    """
+    import re as _re
+
+    def _parse_price(raw: str) -> float:
+        """Convert '450k', '1.2m', '450,000' → float."""
+        raw = raw.replace(",", "")
+        suffix = ""
+        if raw and raw[-1].lower() in ("k", "m"):
+            suffix = raw[-1].lower()
+            raw = raw[:-1]
+        try:
+            amount = float(raw)
+        except ValueError:
+            return 0.0
+        if suffix == "k":
+            amount *= 1_000
+        elif suffix == "m":
+            amount *= 1_000_000
+        return amount
+
+    price_re = r"\$?([\d,]+(?:\.\d+)?[km]?)"
+
+    # Address: quoted string first, then "at <text>" until comma/period/end
+    address = ""
+    quoted = _re.search(r'["\'](.+?)["\']', query)
+    if quoted:
+        address = quoted.group(1).strip()
+    else:
+        at_match = _re.search(r'\bat\s+(.+?)(?:[,.]|purchase|bought|worth|mortgage|$)', query, _re.I)
+        if at_match:
+            address = at_match.group(1).strip()
+
+    # Purchase price: amount near "bought for", "paid", "purchased for", "purchase price"
+    purchase_price = 0.0
+    pp_match = _re.search(
+        r'(?:bought\s+for|paid|purchased\s+for|purchase\s+price\s+(?:of|is|was)?)\s*' + price_re,
+        query, _re.I,
+    )
+    if pp_match:
+        purchase_price = _parse_price(pp_match.group(1))
+
+    # Current value: amount near "worth", "valued at", "current value", "estimate"
+    current_value = None
+    cv_match = _re.search(
+        r"(?:worth|valued\s+at|current\s+value\s+(?:of|is)?|now\s+worth|estimate[sd]?\s+at)\s*" + price_re,
+        query, _re.I,
+    )
+    if cv_match:
+        current_value = _parse_price(cv_match.group(1))
+
+    # Mortgage balance: amount near "mortgage", "owe", "loan balance", "outstanding"
+    mortgage_balance = 0.0
+    mb_match = _re.search(
+        r"(?:mortgage\s+(?:of|balance|is)?|owe[sd]?|loan\s+(?:balance|of)?|outstanding\s+(?:loan|balance)?)\s*" + price_re,
+        query, _re.I,
+    )
+    if mb_match:
+        mortgage_balance = _parse_price(mb_match.group(1))
+
+    # County key: use normalized city lookup from real_estate tool
+    from tools.real_estate import _normalize_city
+    county_key = _normalize_city(query) or "austin"
+
+    # Property type from keywords
+    property_type = "Single Family"
+    q_lower = query.lower()
+    if any(kw in q_lower for kw in ["condo", "condominium", "apartment"]):
+        property_type = "Condo"
+    elif any(kw in q_lower for kw in ["townhouse", "townhome", "town home"]):
+        property_type = "Townhouse"
+    elif any(kw in q_lower for kw in ["multi-family", "multifamily", "duplex", "triplex"]):
+        property_type = "Multi-Family"
+    elif "land" in q_lower or "lot" in q_lower:
+        property_type = "Land"
+
+    return {
+        "address": address,
+        "purchase_price": purchase_price,
+        "current_value": current_value,
+        "mortgage_balance": mortgage_balance,
+        "county_key": county_key,
+        "property_type": property_type,
+    }
 
 
 def _extract_real_estate_location(query: str) -> str:
@@ -1058,6 +1203,30 @@ async def tools_node(state: AgentState) -> AgentState:
         listing_id = id_match.group(1).lower() if id_match else ""
         result = await get_listing_details(listing_id)
         tool_results.append(result)
+
+    # --- Property Tracker (feature-flagged) ---
+    elif query_type == "property_add":
+        details = _extract_property_details(user_query)
+        result = await add_property(
+            address=details["address"] or "Address not specified",
+            purchase_price=details["purchase_price"] or 0.0,
+            current_value=details["current_value"],
+            mortgage_balance=details["mortgage_balance"],
+            county_key=details["county_key"],
+            property_type=details["property_type"],
+        )
+        tool_results.append(result)
+
+    elif query_type == "property_list":
+        result = await list_properties()
+        tool_results.append(result)
+
+    elif query_type == "property_net_worth":
+        equity_result = await get_real_estate_equity()
+        tool_results.append(equity_result)
+        # Also fetch the financial portfolio so the agent can combine both
+        perf_result = await portfolio_analysis(token=state.get("bearer_token"))
+        tool_results.append(perf_result)
 
     return {
         **state,

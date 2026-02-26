@@ -24,7 +24,21 @@
       <span class="ai-panel__avatar">🤖</span>
       <div>
         <span class="ai-panel__title">Portfolio Assistant</span>
-        <span class="ai-panel__subtitle">Powered by Claude</span>
+        <span class="ai-panel__subtitle">
+          Powered by Claude
+          <span
+            class="ai-status-dot"
+            [class.ai-status-dot--offline]="agentReachable === false"
+            [class.ai-status-dot--online]="agentReachable === true"
+            [title]="
+              agentReachable === true
+                ? 'Agent online'
+                : agentReachable === false
+                  ? 'Agent offline'
+                  : 'Checking…'
+            "
+          ></span>
+        </span>
       </div>
     </div>
     <div class="ai-panel__header-actions">
@@ -42,13 +56,96 @@
     </div>
   </div>
 
+  <!-- Tab bar -->
+  <div class="ai-tabs">
+    <button
+      class="ai-tab"
+      [class.ai-tab--active]="activeTab === 'chat'"
+      (click)="switchTab('chat')"
+    >
+      💬 Chat
+    </button>
+    @if (enableRealEstate) {
+      <button
+        class="ai-tab"
+        [class.ai-tab--active]="activeTab === 'log'"
+        (click)="switchTab('log')"
+      >
+        📊 Activity Log
+      </button>
+    }
+  </div>
+
   <!-- Success banner -->
   @if (successBanner) {
     <div class="ai-banner ai-banner--success">{{ successBanner }}</div>
   }
 
+  <!-- Activity log view -->
+  @if (activeTab === 'log') {
+    <div class="ai-log">
+      <!-- Stats bar -->
+      <div class="ai-log__stats">
+        <span>{{ activityStats?.total_invocations ?? 0 }} calls</span>
+        <span class="ai-log__dot">·</span>
+        <span>avg {{ avgLatency() }}</span>
+        <span class="ai-log__dot">·</span>
+        <span>{{ successRate() }} success</span>
+        @if (isLoadingLog) {
+          <span class="ai-log__refreshing">↻</span>
+        }
+      </div>
+
+      <!-- Log entries -->
+      @if (activityLog.length === 0 && !isLoadingLog) {
+        <div class="ai-log__empty">
+          <span>No tool calls yet — start chatting</span>
+          <span class="ai-log__empty-hint"
+            >Real estate queries appear here in real time</span
+          >
+        </div>
+      }
+      @if (activityLog.length > 0) {
+        <div class="ai-log__table-wrap">
+          <table class="ai-log__table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Tool</th>
+                <th>Query</th>
+                <th>ms</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (entry of activityLog; track entry.timestamp) {
+                <tr [class.ai-log__row--fail]="!entry.success">
+                  <td class="ai-log__time">
+                    {{ logEntryTime(entry.timestamp) }}
+                  </td>
+                  <td class="ai-log__fn">
+                    {{ entry.function.replace('_', ' ') }}
+                  </td>
+                  <td class="ai-log__query" [title]="entry.query">
+                    {{ entry.query }}
+                  </td>
+                  <td class="ai-log__ms">
+                    {{ entry.duration_ms | number: '1.0-0' }}
+                  </td>
+                  <td class="ai-log__status">
+                    {{ entry.success ? '✓' : '✗' }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
+
   <!-- Empty portfolio seed banner -->
-  @if (showSeedBanner && !isSeeding) {
+  @if (activeTab === 'chat' && showSeedBanner && !isSeeding) {
     <div class="ai-banner ai-banner--seed">
       <span>Your portfolio is empty. Load demo data to try the AI?</span>
       <div class="ai-banner__actions">
@@ -71,187 +168,208 @@
     <div class="ai-banner ai-banner--seed">⏳ Loading demo portfolio…</div>
   }
 
-  <!-- Messages area -->
-  <div #messagesContainer class="ai-messages">
-    @for (msg of messages; track $index) {
-      <div
-        class="ai-message"
-        [class.ai-message--assistant]="msg.role === 'assistant'"
-        [class.ai-message--user]="msg.role === 'user'"
-      >
-        <!-- Bubble -->
-        <div class="ai-bubble" [innerHTML]="msg.content | aiMarkdown"></div>
+  <!-- Chat view -->
+  @if (activeTab === 'chat') {
+    <!-- Messages area -->
+    <div #messagesContainer class="ai-messages">
+      @for (msg of messages; track $index) {
+        <div
+          class="ai-message"
+          [class.ai-message--assistant]="msg.role === 'assistant'"
+          [class.ai-message--user]="msg.role === 'user'"
+        >
+          <!-- Bubble -->
+          <div class="ai-bubble" [innerHTML]="msg.content | aiMarkdown"></div>
 
-        <!-- Assistant metadata row -->
-        @if (msg.role === 'assistant' && msg.confidence !== undefined) {
-          <div class="ai-meta">
-            <!-- Low confidence warning -->
-            @if (msg.confidence < 0.6) {
-              <div class="ai-meta__warning">
-                ⚠️ Low confidence — some data may be incomplete
-              </div>
-            }
+          <!-- Real estate comparison card -->
+          @if (msg.comparisonCard) {
+            <gf-real-estate-card [card]="msg.comparisonCard" />
+          }
 
-            <div class="ai-meta__row">
-              <!-- Confidence badge -->
-              <span class="ai-badge" [class]="confidenceClass(msg.confidence)">
-                {{ confidenceLabel(msg.confidence) }} ({{
-                  (msg.confidence * 100).toFixed(0)
-                }}%)
-              </span>
+          <!-- Portfolio allocation chart -->
+          @if (msg.chartData) {
+            <gf-portfolio-chart [chartData]="msg.chartData" />
+          }
 
-              <!-- Tools used chips -->
-              @for (tool of msg.toolsUsed; track tool) {
-                <span class="ai-chip">{{ tool }}</span>
+          <!-- Assistant metadata row -->
+          @if (msg.role === 'assistant' && msg.confidence !== undefined) {
+            <div class="ai-meta">
+              <!-- Low confidence warning -->
+              @if (msg.confidence < 0.6) {
+                <div class="ai-meta__warning">
+                  ⚠️ Low confidence — some data may be incomplete
+                </div>
               }
 
-              <!-- Latency -->
-              <span class="ai-meta__latency"
-                >{{ msg.latency?.toFixed(1) }}s</span
-              >
+              <div class="ai-meta__row">
+                <!-- Confidence badge -->
+                <span
+                  class="ai-badge"
+                  [class]="confidenceClass(msg.confidence)"
+                >
+                  {{ confidenceLabel(msg.confidence) }} ({{
+                    (msg.confidence * 100).toFixed(0)
+                  }}%)
+                </span>
 
-              <!-- Feedback -->
-              <div class="ai-feedback">
-                <button
-                  aria-label="Thumbs up"
-                  class="ai-feedback__btn"
-                  [class.ai-feedback__btn--active-up]="msg.feedbackGiven === 1"
-                  [disabled]="msg.feedbackGiven !== null"
-                  (click)="giveFeedback($index, 1)"
+                <!-- Tools used chips -->
+                @for (tool of msg.toolsUsed; track tool) {
+                  <span class="ai-chip"
+                    >{{ toolIcon(tool) }} {{ toolLabel(tool) }}</span
+                  >
+                }
+
+                <!-- Latency -->
+                <span class="ai-meta__latency"
+                  >{{ msg.latency?.toFixed(1) }}s</span
                 >
-                  👍
-                </button>
-                <button
-                  aria-label="Thumbs down"
-                  class="ai-feedback__btn"
-                  [class.ai-feedback__btn--active-down]="
-                    msg.feedbackGiven === -1
-                  "
-                  [disabled]="msg.feedbackGiven !== null"
-                  (click)="giveFeedback($index, -1)"
-                >
-                  👎
-                </button>
+
+                <!-- Feedback -->
+                <div class="ai-feedback">
+                  <button
+                    aria-label="Thumbs up"
+                    class="ai-feedback__btn"
+                    [class.ai-feedback__btn--active-up]="
+                      msg.feedbackGiven === 1
+                    "
+                    [disabled]="msg.feedbackGiven !== null"
+                    (click)="giveFeedback($index, 1)"
+                  >
+                    👍
+                  </button>
+                  <button
+                    aria-label="Thumbs down"
+                    class="ai-feedback__btn"
+                    [class.ai-feedback__btn--active-down]="
+                      msg.feedbackGiven === -1
+                    "
+                    [disabled]="msg.feedbackGiven !== null"
+                    (click)="giveFeedback($index, -1)"
+                  >
+                    👎
+                  </button>
+                </div>
               </div>
             </div>
+          }
+        </div>
+      }
+
+      <!-- Typing indicator -->
+      @if (isThinking) {
+        <div class="ai-message ai-message--assistant">
+          <div class="ai-bubble ai-bubble--typing">
+            <span class="ai-dot"></span>
+            <span class="ai-dot"></span>
+            <span class="ai-dot"></span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Suggestion chips (visible only before first user message) -->
+    @if (showSuggestions && !isThinking) {
+      <div class="ai-suggestions">
+        <!-- Row 1: Portfolio chips — always shown -->
+        <div class="ai-suggestions__row">
+          <button
+            class="ai-suggestion-chip"
+            (click)="clickChip('How is my portfolio doing?')"
+          >
+            📈 My portfolio performance
+          </button>
+          <button
+            class="ai-suggestion-chip"
+            (click)="clickChip('Do I have any concentration risk?')"
+          >
+            ⚠️ Any concentration risk?
+          </button>
+          <button
+            class="ai-suggestion-chip"
+            (click)="clickChip('Estimate my taxes for this year')"
+          >
+            💰 Estimate my taxes
+          </button>
+        </div>
+        <!-- Row 2: Real Estate chips — only when feature flag is on -->
+        @if (enableRealEstate) {
+          <div class="ai-suggestions__row ai-suggestions__row--realestate">
+            <button
+              class="ai-suggestion-chip ai-suggestion-chip--re"
+              (click)="clickChip('Show me Austin homes under $500k')"
+            >
+              🏠 Austin under $500k
+            </button>
+            <button
+              class="ai-suggestion-chip ai-suggestion-chip--re"
+              (click)="
+                clickChip('Compare Austin vs Denver for housing affordability')
+              "
+            >
+              📊 Austin vs Denver
+            </button>
+            <button
+              class="ai-suggestion-chip ai-suggestion-chip--re"
+              (click)="
+                clickChip('Give me a neighborhood snapshot for San Francisco')
+              "
+            >
+              🏘️ SF snapshot
+            </button>
           </div>
         }
       </div>
     }
 
-    <!-- Typing indicator -->
-    @if (isThinking) {
-      <div class="ai-message ai-message--assistant">
-        <div class="ai-bubble ai-bubble--typing">
-          <span class="ai-dot"></span>
-          <span class="ai-dot"></span>
-          <span class="ai-dot"></span>
-        </div>
+    <!-- Confirmation buttons (shown when awaiting yes/no) -->
+    @if (awaitingConfirmation && !isThinking) {
+      <div class="ai-confirm-bar">
+        <span class="ai-confirm-bar__label">Confirm this transaction?</span>
+        <button
+          class="ai-confirm-bar__btn ai-confirm-bar__btn--yes"
+          (click)="confirmWrite()"
+        >
+          ✅ Confirm
+        </button>
+        <button
+          class="ai-confirm-bar__btn ai-confirm-bar__btn--no"
+          (click)="cancelWrite()"
+        >
+          ❌ Cancel
+        </button>
       </div>
     }
-  </div>
 
-  <!-- Suggestion chips (visible only before first user message) -->
-  @if (showSuggestions && !isThinking) {
-    <div class="ai-suggestions">
-      <!-- Row 1: Portfolio chips — always shown -->
-      <div class="ai-suggestions__row">
+    <!-- Input area -->
+    @if (!awaitingConfirmation || isThinking) {
+      <div class="ai-input-area">
+        <textarea
+          #inputField
+          class="ai-input"
+          placeholder="Ask about your portfolio..."
+          rows="1"
+          [disabled]="isThinking"
+          [(ngModel)]="inputValue"
+          (keydown)="onKeydown($event)"
+        ></textarea>
         <button
-          class="ai-suggestion-chip"
-          (click)="clickChip('How is my portfolio doing?')"
+          aria-label="Send"
+          class="ai-send"
+          [disabled]="isThinking || !inputValue.trim()"
+          (click)="sendMessage()"
         >
-          📈 My portfolio performance
-        </button>
-        <button
-          class="ai-suggestion-chip"
-          (click)="clickChip('Do I have any concentration risk?')"
-        >
-          ⚠️ Any concentration risk?
-        </button>
-        <button
-          class="ai-suggestion-chip"
-          (click)="clickChip('Estimate my taxes for this year')"
-        >
-          💰 Estimate my taxes
+          @if (isThinking) {
+            <span class="ai-send__spinner"></span>
+          } @else {
+            <svg fill="currentColor" height="18" viewBox="0 0 24 24" width="18">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+            </svg>
+          }
         </button>
       </div>
-      <!-- Row 2: Real Estate chips — only when feature flag is on -->
-      @if (enableRealEstate) {
-        <div class="ai-suggestions__row ai-suggestions__row--realestate">
-          <button
-            class="ai-suggestion-chip ai-suggestion-chip--re"
-            (click)="clickChip('Show me Austin homes under $500k')"
-          >
-            🏠 Austin under $500k
-          </button>
-          <button
-            class="ai-suggestion-chip ai-suggestion-chip--re"
-            (click)="
-              clickChip('Compare Austin vs Denver for housing affordability')
-            "
-          >
-            📊 Austin vs Denver
-          </button>
-          <button
-            class="ai-suggestion-chip ai-suggestion-chip--re"
-            (click)="
-              clickChip('Give me a neighborhood snapshot for San Francisco')
-            "
-          >
-            🏘️ SF snapshot
-          </button>
-        </div>
-      }
-    </div>
+    }
   }
-
-  <!-- Confirmation buttons (shown when awaiting yes/no) -->
-  @if (awaitingConfirmation && !isThinking) {
-    <div class="ai-confirm-bar">
-      <span class="ai-confirm-bar__label">Confirm this transaction?</span>
-      <button
-        class="ai-confirm-bar__btn ai-confirm-bar__btn--yes"
-        (click)="confirmWrite()"
-      >
-        ✅ Confirm
-      </button>
-      <button
-        class="ai-confirm-bar__btn ai-confirm-bar__btn--no"
-        (click)="cancelWrite()"
-      >
-        ❌ Cancel
-      </button>
-    </div>
-  }
-
-  <!-- Input area -->
-  @if (!awaitingConfirmation || isThinking) {
-    <div class="ai-input-area">
-      <textarea
-        #inputField
-        class="ai-input"
-        placeholder="Ask about your portfolio..."
-        rows="1"
-        [disabled]="isThinking"
-        [(ngModel)]="inputValue"
-        (keydown)="onKeydown($event)"
-      ></textarea>
-      <button
-        aria-label="Send"
-        class="ai-send"
-        [disabled]="isThinking || !inputValue.trim()"
-        (click)="sendMessage()"
-      >
-        @if (isThinking) {
-          <span class="ai-send__spinner"></span>
-        } @else {
-          <svg fill="currentColor" height="18" viewBox="0 0 24 24" width="18">
-            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-          </svg>
-        }
-      </button>
-    </div>
-  }
+  <!-- end @if activeTab === 'chat' -->
 </div>
 
 <!-- Backdrop (mobile) -->

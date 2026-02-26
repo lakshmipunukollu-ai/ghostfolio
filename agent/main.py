@@ -106,6 +106,86 @@ async def chat(req: ChatRequest):
 
     tools_used = [r["tool_name"] for r in result.get("tool_results", [])]
 
+    # Extract structured comparison card when compare_neighborhoods ran
+    comparison_card = None
+    for r in result.get("tool_results", []):
+        if (
+            r.get("tool_name") == "real_estate"
+            and r.get("success")
+            and isinstance(r.get("result"), dict)
+            and "location_a" in r["result"]
+        ):
+            res = r["result"]
+            m = res["metrics"]
+            # Count advantages per city to form a verdict
+            advantages: dict[str, int] = {res["location_a"]: 0, res["location_b"]: 0}
+            for metric_data in m.values():
+                if isinstance(metric_data, dict):
+                    for winner_key in ("more_affordable", "higher_yield", "more_walkable"):
+                        winner_city = metric_data.get(winner_key)
+                        if winner_city in advantages:
+                            advantages[winner_city] += 1
+            winner = max(advantages, key=lambda c: advantages[c])
+            loser = [c for c in advantages if c != winner][0]
+            verdict = (
+                f"{winner} leads on affordability & yield "
+                f"({advantages[winner]} vs {advantages[loser]} metrics)."
+            )
+            comparison_card = {
+                "city_a": {
+                    "name": res["location_a"],
+                    "median_price": m["median_price"]["a"],
+                    "price_per_sqft": m["price_per_sqft"]["a"],
+                    "days_on_market": m["days_on_market"]["a"],
+                    "walk_score": m["walk_score"]["a"],
+                    "yoy_change": m["yoy_price_change_pct"]["a"],
+                    "inventory": m["inventory"]["a"],
+                },
+                "city_b": {
+                    "name": res["location_b"],
+                    "median_price": m["median_price"]["b"],
+                    "price_per_sqft": m["price_per_sqft"]["b"],
+                    "days_on_market": m["days_on_market"]["b"],
+                    "walk_score": m["walk_score"]["b"],
+                    "yoy_change": m["yoy_price_change_pct"]["b"],
+                    "inventory": m["inventory"]["b"],
+                },
+                "winners": {
+                    "median_price": m["median_price"].get("more_affordable"),
+                    "price_per_sqft": m["price_per_sqft"].get("more_affordable"),
+                    "days_on_market": m["days_on_market"].get("less_competitive"),
+                    "walk_score": m["walk_score"].get("more_walkable"),
+                },
+                "verdict": verdict,
+            }
+            break
+
+    # Extract portfolio allocation chart data when portfolio_analysis ran
+    chart_data = None
+    for r in result.get("tool_results", []):
+        if (
+            r.get("tool_name") == "portfolio_analysis"
+            and r.get("success")
+            and isinstance(r.get("result"), dict)
+        ):
+            holdings = r["result"].get("holdings", [])
+            if holdings:
+                # Use top 6 holdings by allocation; group the rest as "Other"
+                sorted_h = sorted(holdings, key=lambda h: h.get("allocation_pct", 0), reverse=True)
+                top = sorted_h[:6]
+                other_alloc = sum(h.get("allocation_pct", 0) for h in sorted_h[6:])
+                labels = [h.get("symbol", "?") for h in top]
+                values = [round(h.get("allocation_pct", 0), 1) for h in top]
+                if other_alloc > 0.1:
+                    labels.append("Other")
+                    values.append(round(other_alloc, 1))
+                chart_data = {
+                    "type": "allocation_pie",
+                    "labels": labels,
+                    "values": values,
+                }
+            break
+
     return {
         "response": result.get("final_response", "No response generated."),
         "confidence_score": result.get("confidence_score", 0.0),
@@ -116,6 +196,8 @@ async def chat(req: ChatRequest):
         "tools_used": tools_used,
         "citations": result.get("citations", []),
         "latency_seconds": elapsed,
+        "comparison_card": comparison_card,
+        "chart_data": chart_data,
     }
 
 

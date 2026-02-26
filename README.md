@@ -1,3 +1,10 @@
+## 🤖 AI Agent Integration
+
+This fork includes an AI Portfolio Assistant powered by Claude + LangGraph.
+See [AGENT_README.md](./AGENT_README.md) for setup, demo, and architecture.
+
+---
+
 <div align="center">
 
 [<img src="https://avatars.githubusercontent.com/u/82473144?s=200" width="100" alt="Ghostfolio logo">](https://ghostfol.io)

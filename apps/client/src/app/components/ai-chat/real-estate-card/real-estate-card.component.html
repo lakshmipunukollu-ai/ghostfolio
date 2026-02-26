@@ -1,0 +1,142 @@
+<div class="re-card">
+  <!-- Header row -->
+  <div class="re-card__header">
+    <span class="re-card__label">🏠 Market Comparison</span>
+    <button class="re-card__copy" (click)="copyToClipboard()">
+      {{ copyLabel }}
+    </button>
+  </div>
+
+  <!-- City name row -->
+  <div class="re-table">
+    <div class="re-table__row re-table__row--header">
+      <div class="re-table__metric"></div>
+      <div
+        class="re-table__city"
+        [class.re-table__city--winner]="
+          isWinner(card.city_a.name, 'median_price')
+        "
+      >
+        {{ card.city_a.name }}
+        @if (isWinner(card.city_a.name, 'median_price')) {
+          <span class="re-crown">★</span>
+        }
+      </div>
+      <div
+        class="re-table__city"
+        [class.re-table__city--winner]="
+          isWinner(card.city_b.name, 'median_price')
+        "
+      >
+        {{ card.city_b.name }}
+        @if (isWinner(card.city_b.name, 'median_price')) {
+          <span class="re-crown">★</span>
+        }
+      </div>
+    </div>
+
+    <!-- Median Price -->
+    <div class="re-table__row">
+      <div class="re-table__metric">Median Price</div>
+      <div
+        class="re-table__val"
+        [class.re-table__val--win]="isWinner(card.city_a.name, 'median_price')"
+      >
+        {{ formatPrice(card.city_a.median_price) }}
+      </div>
+      <div
+        class="re-table__val"
+        [class.re-table__val--win]="isWinner(card.city_b.name, 'median_price')"
+      >
+        {{ formatPrice(card.city_b.median_price) }}
+      </div>
+    </div>
+
+    <!-- Price per sqft -->
+    <div class="re-table__row">
+      <div class="re-table__metric">Price / sqft</div>
+      <div
+        class="re-table__val"
+        [class.re-table__val--win]="
+          isWinner(card.city_a.name, 'price_per_sqft')
+        "
+      >
+        ${{ card.city_a.price_per_sqft }}
+      </div>
+      <div
+        class="re-table__val"
+        [class.re-table__val--win]="
+          isWinner(card.city_b.name, 'price_per_sqft')
+        "
+      >
+        ${{ card.city_b.price_per_sqft }}
+      </div>
+    </div>
+
+    <!-- Days on Market -->
+    <div class="re-table__row">
+      <div class="re-table__metric">Days on Market</div>
+      <div
+        class="re-table__val"
+        [class.re-table__val--win]="
+          isWinner(card.city_a.name, 'days_on_market')
+        "
+      >
+        {{ card.city_a.days_on_market }}d
+      </div>
+      <div
+        class="re-table__val"
+        [class.re-table__val--win]="
+          isWinner(card.city_b.name, 'days_on_market')
+        "
+      >
+        {{ card.city_b.days_on_market }}d
+      </div>
+    </div>
+
+    <!-- Walk Score -->
+    <div class="re-table__row">
+      <div class="re-table__metric">Walk Score</div>
+      <div
+        class="re-table__val"
+        [class.re-table__val--win]="isWinner(card.city_a.name, 'walk_score')"
+      >
+        {{ card.city_a.walk_score }}
+      </div>
+      <div
+        class="re-table__val"
+        [class.re-table__val--win]="isWinner(card.city_b.name, 'walk_score')"
+      >
+        {{ card.city_b.walk_score }}
+      </div>
+    </div>
+
+    <!-- YoY Change -->
+    <div class="re-table__row">
+      <div class="re-table__metric">YoY Price</div>
+      <div class="re-table__val">
+        <span [class]="yoyClass(card.city_a.yoy_change)">{{
+          formatYoy(card.city_a.yoy_change)
+        }}</span>
+      </div>
+      <div class="re-table__val">
+        <span [class]="yoyClass(card.city_b.yoy_change)">{{
+          formatYoy(card.city_b.yoy_change)
+        }}</span>
+      </div>
+    </div>
+
+    <!-- Inventory -->
+    <div class="re-table__row">
+      <div class="re-table__metric">Inventory</div>
+      <div class="re-table__val">{{ card.city_a.inventory }}</div>
+      <div class="re-table__val">{{ card.city_b.inventory }}</div>
+    </div>
+  </div>
+
+  <!-- Verdict -->
+  <div class="re-card__verdict">
+    <span class="re-card__verdict-icon">⚖️</span>
+    {{ card.verdict }}
+  </div>
+</div>
