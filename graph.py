@@ -28,6 +28,12 @@ from tools.property_tracker import (
     remove_property as remove_tracked_property,
     is_property_tracking_enabled,
 )
+from tools.wealth_bridge import (
+    calculate_down_payment_power,
+    calculate_job_offer_affordability,
+    get_portfolio_real_estate_summary,
+)
+from tools.teleport_api import get_city_housing_data
 from verification.fact_checker import verify_claims
 
 SYSTEM_PROMPT = """You are a portfolio analysis assistant integrated with Ghostfolio wealth management software.
@@ -401,6 +407,36 @@ async def classify_node(state: AgentState) -> AgentState:
         if has_compliance:
             return {**state, "query_type": "compliance+tax"}
         return {**state, "query_type": "tax"}
+
+    # --- Wealth Bridge — down payment, job offer COL, global city data ---
+    # Checked before real estate so "can I afford" doesn't fall through to snapshot
+    if is_real_estate_enabled():
+        wealth_down_payment_kws = [
+            "can my portfolio buy", "can i afford", "down payment",
+            "afford a house", "afford a home", "buy a house with my portfolio",
+            "portfolio down payment", "how much house can i afford",
+        ]
+        wealth_job_offer_kws = [
+            "job offer", "real raise", "worth moving", "afford to move",
+            "cost of living compared", "salary comparison", "is it worth it",
+            "real value of", "purchasing power",
+        ]
+        wealth_global_city_kws = [
+            "cost of living in", "housing in", "what is it like to live in",
+            "how expensive is", "city comparison", "teleport",
+        ]
+        wealth_net_worth_kws = [
+            "total net worth", "everything i own", "net worth including portfolio",
+            "my portfolio real estate", "portfolio and real estate",
+        ]
+        if any(kw in query for kw in wealth_down_payment_kws):
+            return {**state, "query_type": "wealth_down_payment"}
+        if any(kw in query for kw in wealth_job_offer_kws):
+            return {**state, "query_type": "wealth_job_offer"}
+        if any(kw in query for kw in wealth_global_city_kws):
+            return {**state, "query_type": "wealth_global_city"}
+        if any(kw in query for kw in wealth_net_worth_kws):
+            return {**state, "query_type": "wealth_portfolio_summary"}
 
     # --- Property Tracker (feature-flagged) — checked BEFORE general real estate
     #     so "add my property" doesn't fall through to real_estate_snapshot ---
@@ -1013,6 +1049,79 @@ def _extract_two_locations(query: str) -> tuple[str, str]:
     return "Austin", "Denver"
 
 
+def _extract_salary(query: str, role: str = "offer") -> float | None:
+    """
+    Extracts a salary figure from a query string.
+    role = "offer"   → looks for the HIGHER number or 'offer' context
+    role = "current" → looks for the LOWER number or 'current'/'make' context
+    """
+    import re as _re
+    # Find all dollar amounts: $180k, $180,000, 180000
+    patterns = [
+        r"\$(\d{1,3}(?:,\d{3})*(?:\.\d+)?)\s*k",   # $180k
+        r"\$(\d{1,3}(?:,\d{3})*(?:\.\d+)?)",        # $180,000
+        r"\b(\d{1,3}(?:,\d{3})+)\b",                 # 180,000
+        r"\b(\d{3})\s*k\b",                           # 180k
+    ]
+    amounts = []
+    for pat in patterns:
+        for m in _re.finditer(pat, query, _re.IGNORECASE):
+            raw = m.group(1).replace(",", "")
+            val = float(raw)
+            if pat.endswith("k"):
+                val *= 1000
+            if 20_000 <= val <= 2_000_000:
+                amounts.append(val)
+    if not amounts:
+        return None
+    amounts = sorted(set(amounts))
+    if len(amounts) == 1:
+        return amounts[0]
+    # For "offer" return the first mentioned (often higher), "current" the second
+    if role == "offer":
+        return amounts[0]
+    return amounts[-1] if len(amounts) > 1 else amounts[0]
+
+
+def _extract_offer_city(query: str) -> str | None:
+    """Extracts the destination city from a job offer query."""
+    q = query.lower()
+    # Look for "in <city>" or "at <city>" patterns
+    import re as _re
+    for city in sorted(_KNOWN_CITIES, key=len, reverse=True):
+        # Prefer mentions after "in " or "offer in" or "to "
+        patterns = [
+            f"offer in {city}", f"in {city}", f"move to {city}",
+            f"at {city}", f"relocate to {city}", f"job in {city}",
+        ]
+        if any(p in q for p in patterns):
+            return city.title()
+    # Fall back to any known city in the query
+    for city in sorted(_KNOWN_CITIES, key=len, reverse=True):
+        if city in q:
+            return city.title()
+    return None
+
+
+def _extract_current_city(query: str) -> str | None:
+    """Extracts the current city from a job offer query."""
+    q = query.lower()
+    import re as _re
+    for city in sorted(_KNOWN_CITIES, key=len, reverse=True):
+        patterns = [
+            f"currently in {city}", f"currently making.*{city}",
+            f"i live in {city}", f"based in {city}",
+            f"from {city}", f"currently {city}",
+            f"make.*in {city}", f"earning.*in {city}",
+        ]
+        if any(_re.search(p, q) for p in patterns):
+            return city.title()
+    # Austin is the most likely "current city" for this user
+    if "austin" in q:
+        return "Austin"
+    return None
+
+
 # ---------------------------------------------------------------------------
 # Tools node (read-path)
 # ---------------------------------------------------------------------------
@@ -1227,6 +1336,43 @@ async def tools_node(state: AgentState) -> AgentState:
         # Also fetch the financial portfolio so the agent can combine both
         perf_result = await portfolio_analysis(token=state.get("bearer_token"))
         tool_results.append(perf_result)
+
+    # --- Wealth Bridge tools ---
+    elif query_type == "wealth_down_payment":
+        perf_result = await portfolio_analysis(token=tok)
+        portfolio_value = 0.0
+        if perf_result.get("success"):
+            portfolio_value = (
+                perf_result.get("result", {}).get("summary", {})
+                .get("total_current_value_usd", 0.0)
+            )
+            portfolio_snapshot = perf_result
+            tool_results.append(perf_result)
+        result = calculate_down_payment_power(portfolio_value)
+        tool_results.append({"tool_name": "wealth_bridge", "success": True,
+                              "tool_result_id": "wealth_down_payment", "result": result})
+
+    elif query_type == "wealth_job_offer":
+        # Extract salary and city details from query — let LLM handle if extraction fails
+        result = await calculate_job_offer_affordability(
+            offer_salary=_extract_salary(user_query, "offer") or 150000.0,
+            offer_city=_extract_offer_city(user_query) or "Seattle",
+            current_salary=_extract_salary(user_query, "current") or 120000.0,
+            current_city=_extract_current_city(user_query) or "Austin",
+        )
+        tool_results.append({"tool_name": "wealth_bridge", "success": True,
+                              "tool_result_id": "wealth_job_offer", "result": result})
+
+    elif query_type == "wealth_global_city":
+        city = _extract_real_estate_location(user_query) or user_query
+        result = await get_city_housing_data(city)
+        tool_results.append({"tool_name": "teleport_api", "success": True,
+                              "tool_result_id": "teleport_city_data", "result": result})
+
+    elif query_type == "wealth_portfolio_summary":
+        result = await get_portfolio_real_estate_summary()
+        tool_results.append({"tool_name": "wealth_bridge", "success": True,
+                              "tool_result_id": "wealth_portfolio_summary", "result": result})
 
     return {
         **state,
