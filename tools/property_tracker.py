@@ -639,3 +639,143 @@ async def get_total_net_worth(portfolio_value: float) -> dict:
             "summary": summary,
         },
     }
+
+
+def analyze_equity_options(
+    property_id: str,
+    market_return_assumption: float = 0.07,
+) -> dict:
+    """Analyzes 3 options for home equity: leave untouched,
+    cash-out refi and invest, or use for rental property."""
+
+    db_path = os.path.join(
+        os.path.dirname(__file__), '..', 'data', 'properties.db'
+    )
+
+    try:
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT * FROM properties WHERE id=? AND is_active=1",
+            (property_id,),
+        )
+        row = cur.fetchone()
+        conn.close()
+    except Exception as e:
+        return {
+            "error": f"Database error: {str(e)}",
+            "property_id": property_id,
+        }
+
+    if not row:
+        return {
+            "error": f"Property {property_id} not found",
+            "property_id": property_id,
+        }
+
+    current_value = row["current_value"]
+    mortgage_balance = row["mortgage_balance"] or 0
+    equity = current_value - mortgage_balance
+    accessible = equity * 0.80
+
+    if accessible <= 0:
+        return {
+            "property_address": row["address"],
+            "current_value": current_value,
+            "mortgage_balance": mortgage_balance,
+            "current_equity": equity,
+            "accessible_equity": 0,
+            "message": "Insufficient equity for cash-out options",
+            "options": {},
+        }
+
+    monthly_rate = 0.0695 / 12
+    n = 360
+
+    # Option A: Leave untouched
+    projected_value_a = current_value * (1.04 ** 10)
+    equity_a = projected_value_a - mortgage_balance
+
+    # Option B: Cash-out refi + invest
+    new_balance = mortgage_balance + accessible
+    new_payment = new_balance * (
+        monthly_rate * (1 + monthly_rate) ** n
+    ) / ((1 + monthly_rate) ** n - 1)
+
+    old_payment = (
+        mortgage_balance
+        * (monthly_rate * (1 + monthly_rate) ** n)
+        / ((1 + monthly_rate) ** n - 1)
+        if mortgage_balance > 0
+        else 0
+    )
+
+    payment_increase = new_payment - old_payment
+    invested_b = accessible * ((1 + market_return_assumption) ** 10)
+    home_equity_b = (current_value * 1.04 ** 10) - new_balance
+    total_b = home_equity_b + invested_b
+
+    # Option C: Rental property
+    rental_price = current_value * 0.9
+    rental_down = accessible
+    rental_mortgage_balance = rental_price - rental_down
+    rental_payment = (
+        rental_mortgage_balance
+        * (monthly_rate * (1 + monthly_rate) ** n)
+        / ((1 + monthly_rate) ** n - 1)
+        if rental_mortgage_balance > 0
+        else 0
+    )
+
+    monthly_rent_income = current_value * 0.007
+    monthly_cash_flow = monthly_rent_income - rental_payment
+    ten_yr_cash_flow = monthly_cash_flow * 120
+
+    return {
+        "property_address": row["address"],
+        "current_value": current_value,
+        "mortgage_balance": mortgage_balance,
+        "current_equity": round(equity),
+        "accessible_equity": round(accessible),
+        "options": {
+            "leave_untouched": {
+                "label": "Option A — Do Nothing",
+                "projected_equity_10yr": round(equity_a),
+                "projected_home_value": round(projected_value_a),
+                "upside": "No risk, no new debt, steady appreciation",
+                "downside": "Equity is illiquid, not generating returns",
+            },
+            "cash_out_invest": {
+                "label": "Option B — Cash-Out Refi + Invest",
+                "cash_extracted": round(accessible),
+                "monthly_payment_increase": round(payment_increase),
+                "invested_value_10yr": round(invested_b),
+                "total_wealth_10yr": round(total_b),
+                "upside": "Equity working harder in the market",
+                "downside": "Higher payment, market risk",
+            },
+            "rental_property": {
+                "label": "Option C — Buy Rental Property",
+                "monthly_cash_flow": round(monthly_cash_flow),
+                "ten_year_cash_flow": round(ten_yr_cash_flow),
+                "upside": "Passive income + appreciation on 2 properties",
+                "downside": "Landlord responsibilities, vacancy risk",
+            },
+        },
+        "recommendation": (
+            f"Option B generates the most total wealth at "
+            f"${total_b:,.0f} by year 10 if markets perform well. "
+            f"Option C provides ${monthly_cash_flow:,.0f}/mo passive income. "
+            f"Option A is best for simplicity and certainty."
+        ),
+        "disclaimer": (
+            "These are projections not guarantees. "
+            "Consult a financial advisor before refinancing."
+        ),
+        "data_source": (
+            "Market assumptions: 4% home appreciation, "
+            f"{market_return_assumption * 100:.0f}% investment return, "
+            "6.95% mortgage rate"
+        ),
+    }
