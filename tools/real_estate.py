@@ -120,17 +120,425 @@ def get_invocation_log() -> list[dict]:
 
 _MOCK_SNAPSHOTS: dict[str, dict] = {
     "austin": {
+        # ── Bridge fields required by get_neighborhood_snapshot ──────────
         "city": "Austin", "state": "TX",
-        "median_price": 485_000, "price_per_sqft": 285,
-        "median_dom": 24, "price_change_yoy_pct": -3.2,
-        "inventory_level": "low", "walk_score": 48,
-        "listings_count": 1_847, "rent_to_price_ratio": 0.48,
-        "market_summary": (
-            "Austin remains a seller's market with limited inventory. "
-            "Prices have cooled slightly YoY (-3.2%) after the pandemic spike, "
-            "creating buying opportunities for long-term investors. "
-            "Tech sector concentration adds income stability to the renter pool."
+        "price_per_sqft": 295,
+        "median_dom": 82,
+        "price_change_yoy_pct": -5.0,
+        "inventory_level": "moderate",
+        "walk_score": 48,
+        "listings_count": 3262,
+        "rent_to_price_ratio": 0.40,
+        # ── ACTRIS / Unlock MLS — January 2026 ──────────────────────────
+        "region": "City of Austin",
+        "data_source": "ACTRIS / Unlock MLS — January 2026",
+        "data_as_of": "January 2026",
+        "agent_note": (
+            "Market data provided by a licensed Austin real estate "
+            "agent (ACTRIS member). Figures reflect current MLS "
+            "conditions as of January 2026."
         ),
+        "ListPrice": 522500,
+        "median_price": 522500,
+        "ListPriceYoYChange": -0.05,
+        "ClosedSales": 509,
+        "ClosedSalesYoY": -0.088,
+        "SalesDollarVolume": 369_000_000,
+        "MonthsOfInventory": 3.9,
+        "MonthsOfInventoryYoY": -2.0,
+        "NewListings": 1169,
+        "NewListingsYoY": -0.12,
+        "ActiveListings": 3262,
+        "ActiveListingsYoY": -0.01,
+        "PendingSales": 797,
+        "PendingSalesYoY": 0.093,
+        "DaysOnMarket": 82,
+        "dom": 82,
+        "DaysOnMarketYoY": -5,
+        "CloseToListRatio": 0.908,
+        "CloseToListRatioPrevYear": 0.913,
+        "MedianRentMonthly": 2100,
+        "MedianRentYoY": -0.045,
+        "ClosedLeases": 1211,
+        "ClosedLeasesYoY": -0.018,
+        "LeaseDollarVolume": 2_850_000,
+        "LeaseMonthsOfInventory": 3.7,
+        "NewLeases": 1852,
+        "NewLeasesYoY": 0.244,
+        "ActiveLeases": 4016,
+        "ActiveLeasesYoY": 0.885,
+        "PendingLeases": 1387,
+        "PendingLeasesYoY": 0.044,
+        "LeaseDaysOnMarket": 64,
+        "LeaseDaysOnMarketYoY": 2,
+        "CloseToRentRatio": 0.954,
+        "CloseToRentRatioPrevYear": 0.951,
+        "market_summary": (
+            "Austin City (Jan 2026): Median sale price $522,500 (down 5% YoY). "
+            "Homes sitting 82 days on average — buyers have negotiating power at "
+            "90.8 cents on the dollar. Rental market softer too: median rent "
+            "$2,100/mo (down 4.5%) with 3.7 months of rental inventory. "
+            "Pending sales up 9.3% — early signs of spring demand building."
+        ),
+        "AffordabilityScore": 5.8,
+    },
+    "travis_county": {
+        # ── Bridge fields ────────────────────────────────────────────────
+        "city": "Travis County", "state": "TX",
+        "price_per_sqft": 265,
+        "median_dom": 87,
+        "price_change_yoy_pct": -6.3,
+        "inventory_level": "moderate",
+        "walk_score": 45,
+        "listings_count": 4462,
+        "rent_to_price_ratio": 0.47,
+        # ── ACTRIS / Unlock MLS — January 2026 ──────────────────────────
+        "region": "Travis County",
+        "data_source": "ACTRIS / Unlock MLS — January 2026",
+        "data_as_of": "January 2026",
+        "agent_note": (
+            "Market data provided by a licensed Austin real estate "
+            "agent (ACTRIS member). January 2026 figures."
+        ),
+        "ListPrice": 445000,
+        "median_price": 445000,
+        "ListPriceYoYChange": -0.063,
+        "ClosedSales": 684,
+        "ClosedSalesYoY": -0.124,
+        "SalesDollarVolume": 450_000_000,
+        "MonthsOfInventory": 3.9,
+        "MonthsOfInventoryYoY": -2.0,
+        "NewListings": 1624,
+        "ActiveListings": 4462,
+        "PendingSales": 1044,
+        "PendingSalesYoY": 0.111,
+        "DaysOnMarket": 87,
+        "dom": 87,
+        "DaysOnMarketYoY": 1,
+        "CloseToListRatio": 0.911,
+        "CloseToListRatioPrevYear": 0.919,
+        "MedianRentMonthly": 2100,
+        "MedianRentYoY": -0.042,
+        "ClosedLeases": 1347,
+        "ClosedLeasesYoY": -0.056,
+        "LeaseDollarVolume": 3_190_000,
+        "LeaseMonthsOfInventory": 3.7,
+        "NewLeases": 2035,
+        "NewLeasesYoY": 0.225,
+        "ActiveLeases": 4016,
+        "ActiveLeasesYoY": 0.590,
+        "PendingLeases": 1544,
+        "LeaseDaysOnMarket": 63,
+        "CloseToRentRatio": 0.955,
+        "CloseToRentRatioPrevYear": 0.952,
+        "market_summary": (
+            "Travis County (Jan 2026): Median sale $445,000 (down 6.3%). "
+            "87 days on market. Sellers accepting 91.1 cents on the dollar. "
+            "Rental median $2,100/mo. Pending sales up 11.1% — market "
+            "showing early recovery signs heading into spring."
+        ),
+        "AffordabilityScore": 6.2,
+    },
+    "austin_msa": {
+        # ── Bridge fields ────────────────────────────────────────────────
+        "city": "Austin-Round Rock-San Marcos MSA", "state": "TX",
+        "price_per_sqft": 235,
+        "median_dom": 89,
+        "price_change_yoy_pct": -2.3,
+        "inventory_level": "moderate",
+        "walk_score": 40,
+        "listings_count": 10083,
+        "rent_to_price_ratio": 0.50,
+        # ── ACTRIS / Unlock MLS — January 2026 ──────────────────────────
+        "region": "Greater Austin Metro",
+        "data_source": "ACTRIS / Unlock MLS — January 2026",
+        "data_as_of": "January 2026",
+        "agent_note": (
+            "MSA-level data covering Austin, Round Rock, and San Marcos. "
+            "Provided by a licensed ACTRIS member agent."
+        ),
+        "ListPrice": 400495,
+        "median_price": 400495,
+        "ListPriceYoYChange": -0.023,
+        "ClosedSales": 1566,
+        "ClosedSalesYoY": -0.148,
+        "SalesDollarVolume": 842_000_000,
+        "MonthsOfInventory": 4.0,
+        "MonthsOfInventoryYoY": -1.4,
+        "NewListings": 3470,
+        "ActiveListings": 10083,
+        "ActiveListingsYoY": 0.023,
+        "PendingSales": 2349,
+        "PendingSalesYoY": 0.101,
+        "DaysOnMarket": 89,
+        "dom": 89,
+        "DaysOnMarketYoY": 3,
+        "CloseToListRatio": 0.910,
+        "CloseToListRatioPrevYear": 0.923,
+        "MedianRentMonthly": 2000,
+        "MedianRentYoY": -0.048,
+        "ClosedLeases": 2266,
+        "ClosedLeasesYoY": -0.041,
+        "LeaseDollarVolume": 5_090_000,
+        "LeaseMonthsOfInventory": 3.5,
+        "NewLeases": 3218,
+        "NewLeasesYoY": 0.111,
+        "ActiveLeases": 6486,
+        "ActiveLeasesYoY": 0.473,
+        "PendingLeases": 2674,
+        "PendingLeasesYoY": 0.043,
+        "LeaseDaysOnMarket": 64,
+        "CloseToRentRatio": 0.955,
+        "CloseToRentRatioPrevYear": 0.953,
+        "market_summary": (
+            "Austin-Round Rock-San Marcos MSA (Jan 2026): Broad metro median "
+            "sale $400,495 (down 2.3%). 10,000+ active listings — most supply "
+            "in years. Homes averaging 89 days. Median rent $2,000/mo (down 4.8%). "
+            "Buyer's market across the region with strong pending sales uptick "
+            "of 10.1% suggesting spring demand is building."
+        ),
+        "AffordabilityScore": 6.5,
+    },
+    "williamson_county": {
+        # ── Bridge fields ────────────────────────────────────────────────
+        "city": "Williamson County", "state": "TX",
+        "price_per_sqft": 215,
+        "median_dom": 92,
+        "price_change_yoy_pct": -0.5,
+        "inventory_level": "moderate",
+        "walk_score": 32,
+        "listings_count": 3091,
+        "rent_to_price_ratio": 0.49,
+        # ── ACTRIS / Unlock MLS — January 2026 ──────────────────────────
+        "region": "Williamson County (Round Rock, Cedar Park, Georgetown)",
+        "data_source": "ACTRIS / Unlock MLS — January 2026",
+        "data_as_of": "January 2026",
+        "agent_note": (
+            "Williamson County covers Round Rock, Cedar Park, Georgetown, "
+            "and Leander. ACTRIS member data January 2026."
+        ),
+        "ListPrice": 403500,
+        "median_price": 403500,
+        "ListPriceYoYChange": -0.005,
+        "ClosedSales": 536,
+        "ClosedSalesYoY": -0.161,
+        "SalesDollarVolume": 246_000_000,
+        "MonthsOfInventory": 3.5,
+        "MonthsOfInventoryYoY": -1.1,
+        "NewListings": 1063,
+        "ActiveListings": 3091,
+        "ActiveListingsYoY": 0.056,
+        "PendingSales": 821,
+        "PendingSalesYoY": 0.131,
+        "DaysOnMarket": 92,
+        "dom": 92,
+        "DaysOnMarketYoY": 9,
+        "CloseToListRatio": 0.911,
+        "CloseToListRatioPrevYear": 0.929,
+        "MedianRentMonthly": 1995,
+        "MedianRentYoY": -0.048,
+        "ClosedLeases": 678,
+        "ClosedLeasesYoY": 0.012,
+        "LeaseDollarVolume": 1_400_000,
+        "LeaseMonthsOfInventory": 3.0,
+        "NewLeases": 867,
+        "ActiveLeases": 1726,
+        "ActiveLeasesYoY": 0.322,
+        "PendingLeases": 827,
+        "PendingLeasesYoY": 0.088,
+        "LeaseDaysOnMarket": 65,
+        "CloseToRentRatio": 0.955,
+        "CloseToRentRatioPrevYear": 0.957,
+        "market_summary": (
+            "Williamson County (Jan 2026): Median sale $403,500 — flat YoY. "
+            "92 days on market, up 9 days from last year. "
+            "Rental median $1,995/mo — most affordable major county in metro. "
+            "Pending sales up 13.1%. Best value play in the Austin metro "
+            "for buyers who can commute 20-30 min north."
+        ),
+        "AffordabilityScore": 7.1,
+    },
+    "hays_county": {
+        # ── Bridge fields ────────────────────────────────────────────────
+        "city": "Hays County", "state": "TX",
+        "price_per_sqft": 195,
+        "median_dom": 86,
+        "price_change_yoy_pct": -4.0,
+        "inventory_level": "moderate",
+        "walk_score": 28,
+        "listings_count": 1567,
+        "rent_to_price_ratio": 0.56,
+        # ── ACTRIS / Unlock MLS — January 2026 ──────────────────────────
+        "region": "Hays County (San Marcos, Kyle, Buda, Wimberley)",
+        "data_source": "ACTRIS / Unlock MLS — January 2026",
+        "data_as_of": "January 2026",
+        "agent_note": (
+            "Hays County covers San Marcos, Kyle, Buda, and Wimberley. "
+            "ACTRIS member data January 2026."
+        ),
+        "ListPrice": 344500,
+        "median_price": 344500,
+        "ListPriceYoYChange": -0.04,
+        "ClosedSales": 234,
+        "ClosedSalesYoY": -0.185,
+        "SalesDollarVolume": 107_000_000,
+        "MonthsOfInventory": 4.4,
+        "MonthsOfInventoryYoY": -1.2,
+        "NewListings": 483,
+        "ActiveListings": 1567,
+        "ActiveListingsYoY": -0.013,
+        "PendingSales": 347,
+        "PendingSalesYoY": 0.091,
+        "DaysOnMarket": 86,
+        "dom": 86,
+        "DaysOnMarketYoY": -3,
+        "CloseToListRatio": 0.920,
+        "CloseToListRatioPrevYear": 0.920,
+        "MedianRentMonthly": 1937,
+        "MedianRentYoY": -0.005,
+        "ClosedLeases": 172,
+        "ClosedLeasesYoY": -0.144,
+        "LeaseDollarVolume": 363_000,
+        "LeaseMonthsOfInventory": 3.3,
+        "NewLeases": 221,
+        "ActiveLeases": 513,
+        "ActiveLeasesYoY": 0.103,
+        "PendingLeases": 219,
+        "PendingLeasesYoY": 0.084,
+        "LeaseDaysOnMarket": 67,
+        "CloseToRentRatio": 0.945,
+        "CloseToRentRatioPrevYear": 0.945,
+        "market_summary": (
+            "Hays County (Jan 2026): Median sale $344,500 — most affordable "
+            "county in the metro for buyers. 4.4 months inventory. "
+            "Close-to-list ratio stable at 92%. Rental median $1,937/mo "
+            "essentially flat YoY. Good value for tech workers priced out "
+            "of Travis County — 30-40 min commute to Austin."
+        ),
+        "AffordabilityScore": 7.4,
+    },
+    "bastrop_county": {
+        # ── Bridge fields ────────────────────────────────────────────────
+        "city": "Bastrop County", "state": "TX",
+        "price_per_sqft": 175,
+        "median_dom": 109,
+        "price_change_yoy_pct": -2.9,
+        "inventory_level": "high",
+        "walk_score": 20,
+        "listings_count": 711,
+        "rent_to_price_ratio": 0.55,
+        # ── ACTRIS / Unlock MLS — January 2026 ──────────────────────────
+        "region": "Bastrop County (Bastrop, Elgin, Smithville)",
+        "data_source": "ACTRIS / Unlock MLS — January 2026",
+        "data_as_of": "January 2026",
+        "agent_note": (
+            "Bastrop County — exurban east of Austin. "
+            "ACTRIS member data January 2026."
+        ),
+        "ListPrice": 335970,
+        "median_price": 335970,
+        "ListPriceYoYChange": -0.029,
+        "ClosedSales": 77,
+        "ClosedSalesYoY": -0.206,
+        "SalesDollarVolume": 27_200_000,
+        "MonthsOfInventory": 5.8,
+        "MonthsOfInventoryYoY": -0.9,
+        "NewListings": 225,
+        "NewListingsYoY": 0.154,
+        "ActiveListings": 711,
+        "ActiveListingsYoY": 0.183,
+        "PendingSales": 100,
+        "PendingSalesYoY": -0.138,
+        "DaysOnMarket": 109,
+        "dom": 109,
+        "DaysOnMarketYoY": 8,
+        "CloseToListRatio": 0.884,
+        "CloseToListRatioPrevYear": 0.923,
+        "MedianRentMonthly": 1860,
+        "MedianRentYoY": 0.012,
+        "ClosedLeases": 52,
+        "ClosedLeasesYoY": 0.238,
+        "LeaseDollarVolume": 98_700,
+        "LeaseMonthsOfInventory": 3.1,
+        "NewLeases": 68,
+        "NewLeasesYoY": 0.214,
+        "ActiveLeases": 150,
+        "ActiveLeasesYoY": 1.083,
+        "PendingLeases": 60,
+        "PendingLeasesYoY": 0.132,
+        "LeaseDaysOnMarket": 58,
+        "CloseToRentRatio": 0.979,
+        "CloseToRentRatioPrevYear": 0.960,
+        "market_summary": (
+            "Bastrop County (Jan 2026): Median sale $335,970. "
+            "5.8 months inventory — softening market, 109 avg days. "
+            "Sellers getting only 88.4 cents on the dollar. "
+            "Rental market actually heating up: closed leases +23.8%, "
+            "active leases up 108%. Growing rental demand from Austin "
+            "spillover. Rural/exurban lifestyle 40 min east of Austin."
+        ),
+        "AffordabilityScore": 7.8,
+    },
+    "caldwell_county": {
+        # ── Bridge fields ────────────────────────────────────────────────
+        "city": "Caldwell County", "state": "TX",
+        "price_per_sqft": 150,
+        "median_dom": 73,
+        "price_change_yoy_pct": -17.0,
+        "inventory_level": "very high",
+        "walk_score": 15,
+        "listings_count": 252,
+        "rent_to_price_ratio": 0.74,
+        # ── ACTRIS / Unlock MLS — January 2026 ──────────────────────────
+        "region": "Caldwell County (Lockhart, Luling)",
+        "data_source": "ACTRIS / Unlock MLS — January 2026",
+        "data_as_of": "January 2026",
+        "agent_note": (
+            "Caldwell County — Lockhart and Luling area, south of Austin. "
+            "ACTRIS member data January 2026."
+        ),
+        "ListPrice": 237491,
+        "median_price": 237491,
+        "ListPriceYoYChange": -0.17,
+        "ClosedSales": 35,
+        "ClosedSalesYoY": 0.061,
+        "SalesDollarVolume": 9_450_000,
+        "MonthsOfInventory": 8.4,
+        "MonthsOfInventoryYoY": 3.5,
+        "NewListings": 75,
+        "NewListingsYoY": 0.119,
+        "ActiveListings": 252,
+        "ActiveListingsYoY": 0.703,
+        "PendingSales": 37,
+        "PendingSalesYoY": 0.088,
+        "DaysOnMarket": 73,
+        "dom": 73,
+        "DaysOnMarketYoY": 12,
+        "CloseToListRatio": 0.848,
+        "CloseToListRatioPrevYear": 0.927,
+        "MedianRentMonthly": 1750,
+        "MedianRentYoY": -0.028,
+        "ClosedLeases": 17,
+        "ClosedLeasesYoY": -0.227,
+        "LeaseDollarVolume": 27_700,
+        "LeaseMonthsOfInventory": 4.3,
+        "NewLeases": 27,
+        "NewLeasesYoY": 0.174,
+        "ActiveLeases": 81,
+        "ActiveLeasesYoY": 1.382,
+        "PendingLeases": 24,
+        "PendingLeasesYoY": -0.040,
+        "LeaseDaysOnMarket": 57,
+        "CloseToRentRatio": 0.982,
+        "CloseToRentRatioPrevYear": 0.974,
+        "market_summary": (
+            "Caldwell County (Jan 2026): Most affordable in the ACTRIS region "
+            "at $237,491 median — down 17% YoY. 8.4 months inventory signals "
+            "heavy buyer's market. Sellers getting only 84.8 cents on the dollar. "
+            "Rental median $1,750/mo. Best entry-level price point in the "
+            "Greater Austin area for buyers willing to commute 45+ min."
+        ),
+        "AffordabilityScore": 8.5,
     },
     "san francisco": {
         "city": "San Francisco", "state": "CA",
@@ -433,7 +841,34 @@ def _normalize_city(location: str) -> str:
     """Maps query string to a canonical city key in mock data."""
     loc = location.lower().strip()
     mapping = {
+        # Austin city
         "atx": "austin", "austin tx": "austin", "austin, tx": "austin",
+        # Travis County
+        "travis": "travis_county", "travis county": "travis_county",
+        "travis county tx": "travis_county", "travis county, tx": "travis_county",
+        # Williamson County (Round Rock / Cedar Park / Georgetown)
+        "round rock": "williamson_county", "cedar park": "williamson_county",
+        "georgetown": "williamson_county", "leander": "williamson_county",
+        "williamson": "williamson_county", "williamson county": "williamson_county",
+        "williamson county tx": "williamson_county", "williamson county, tx": "williamson_county",
+        # Hays County (Kyle / Buda / San Marcos)
+        "kyle": "hays_county", "buda": "hays_county",
+        "san marcos": "hays_county", "wimberley": "hays_county",
+        "hays": "hays_county", "hays county": "hays_county",
+        "hays county tx": "hays_county", "hays county, tx": "hays_county",
+        # Bastrop County
+        "bastrop": "bastrop_county", "elgin": "bastrop_county",
+        "smithville": "bastrop_county", "bastrop county": "bastrop_county",
+        "bastrop county tx": "bastrop_county", "bastrop county, tx": "bastrop_county",
+        # Caldwell County
+        "lockhart": "caldwell_county", "luling": "caldwell_county",
+        "caldwell": "caldwell_county", "caldwell county": "caldwell_county",
+        "caldwell county tx": "caldwell_county", "caldwell county, tx": "caldwell_county",
+        # Austin MSA
+        "greater austin": "austin_msa", "austin metro": "austin_msa",
+        "austin msa": "austin_msa", "austin-round rock": "austin_msa",
+        "austin round rock": "austin_msa",
+        # Other US metros
         "sf": "san francisco", "sfo": "san francisco", "san francisco ca": "san francisco",
         "nyc": "new york", "new york city": "new york", "manhattan": "new york", "brooklyn": "new york",
         "denver co": "denver", "denver, co": "denver",
