@@ -317,6 +317,33 @@
               🏘️ SF snapshot
             </button>
           </div>
+          <!-- Row 3: Wealth Bridge chips -->
+          <div class="ai-suggestions__row ai-suggestions__row--wealth">
+            <button
+              class="ai-suggestion-chip ai-suggestion-chip--wealth"
+              (click)="
+                clickChip('Can my portfolio fund a down payment on a house?')
+              "
+            >
+              💰 Can my portfolio buy a house?
+            </button>
+            <button
+              class="ai-suggestion-chip ai-suggestion-chip--wealth"
+              (click)="
+                clickChip(
+                  'I have a job offer for $180k in Seattle. I currently make $120k in Austin. Is it a real raise?'
+                )
+              "
+            >
+              ✈️ Is my job offer a real raise?
+            </button>
+            <button
+              class="ai-suggestion-chip ai-suggestion-chip--wealth"
+              (click)="clickChip('What is the cost of living in Tokyo?')"
+            >
+              🌍 Cost of living in Tokyo
+            </button>
+          </div>
         }
       </div>
     }

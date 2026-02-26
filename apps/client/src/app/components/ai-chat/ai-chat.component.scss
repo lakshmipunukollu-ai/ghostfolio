@@ -590,6 +590,10 @@
     &--realestate {
       padding-top: 0.1rem;
     }
+
+    &--wealth {
+      padding-top: 0.1rem;
+    }
   }
 }
 
@@ -647,6 +651,27 @@
 
       :host-context(.theme-dark) & {
         background: rgba(16, 185, 129, 0.25);
+      }
+    }
+  }
+
+  // Wealth Bridge chips — amber/gold tint for financial planning distinction
+  &--wealth {
+    border-color: rgba(245, 158, 11, 0.3);
+    background: rgba(245, 158, 11, 0.07);
+    color: #b45309;
+
+    :host-context(.theme-dark) & {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fcd34d;
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    &:hover {
+      background: rgba(245, 158, 11, 0.15);
+
+      :host-context(.theme-dark) & {
+        background: rgba(245, 158, 11, 0.25);
       }
     }
   }
