@@ -39,6 +39,37 @@ from tools.wealth_bridge import (
 from tools.teleport_api import get_city_housing_data
 from verification.fact_checker import verify_claims
 
+# New feature tools — wrapped in try/except so graph still loads if files missing
+try:
+    from tools.relocation_runway import calculate_relocation_runway
+    _RUNWAY_AVAILABLE = True
+except ImportError:
+    _RUNWAY_AVAILABLE = False
+
+try:
+    from tools.wealth_visualizer import analyze_wealth_position
+    _VISUALIZER_AVAILABLE = True
+except ImportError:
+    _VISUALIZER_AVAILABLE = False
+
+try:
+    from tools.life_decision_advisor import analyze_life_decision
+    _LIFE_ADVISOR_AVAILABLE = True
+except ImportError:
+    _LIFE_ADVISOR_AVAILABLE = False
+
+try:
+    from tools.property_tracker import analyze_equity_options
+    _EQUITY_ADVISOR_AVAILABLE = True
+except ImportError:
+    _EQUITY_ADVISOR_AVAILABLE = False
+
+try:
+    from tools.family_planner import plan_family_finances
+    _FAMILY_PLANNER_AVAILABLE = True
+except ImportError:
+    _FAMILY_PLANNER_AVAILABLE = False
+
 SYSTEM_PROMPT = """You are a portfolio analysis assistant integrated with Ghostfolio wealth management software.
 
 REASONING PROTOCOL — silently reason through these four steps BEFORE writing your response.
@@ -1462,6 +1493,195 @@ async def tools_node(state: AgentState) -> AgentState:
         result = await get_portfolio_real_estate_summary()
         tool_results.append({"tool_name": "wealth_bridge", "success": True,
                               "tool_result_id": "wealth_portfolio_summary", "result": result})
+
+    # ── Relocation Runway Calculator ──────────────────────────────────────────
+    elif query_type == "relocation_runway":
+        if _RUNWAY_AVAILABLE:
+            # Pull portfolio value from live data if available
+            perf_result = await portfolio_analysis(token=state.get("bearer_token"))
+            portfolio_value = 94000.0  # sensible default
+            if perf_result.get("success"):
+                portfolio_snapshot = perf_result
+                portfolio_value = (
+                    perf_result.get("result", {}).get("summary", {})
+                    .get("total_current_value_usd", 94000.0)
+                )
+            # Extract cities and salaries from the query (best-effort)
+            current_city = _extract_real_estate_location(user_query) or "Austin"
+            dest_city = "Denver"  # default destination
+            # Try to find two city names in query
+            for candidate in ["seattle", "san francisco", "new york", "denver",
+                               "chicago", "miami", "boston", "los angeles",
+                               "nashville", "dallas", "london", "berlin",
+                               "toronto", "sydney", "tokyo", "paris"]:
+                if candidate in user_query.lower() and candidate.title() != current_city:
+                    dest_city = candidate.title()
+                    break
+            # Default salaries — the LLM will note these are estimates
+            current_salary = _extract_price(user_query) or 120000.0
+            offer_salary = current_salary * 1.3  # assume 30% raise if not specified
+            try:
+                result = calculate_relocation_runway(
+                    current_salary=current_salary,
+                    offer_salary=offer_salary,
+                    current_city=current_city,
+                    destination_city=dest_city,
+                    portfolio_value=portfolio_value,
+                )
+                tool_results.append({"tool_name": "relocation_runway", "success": True,
+                                     "tool_result_id": "relocation_runway_result",
+                                     "result": result})
+            except Exception as e:
+                tool_results.append({"tool_name": "relocation_runway", "success": False,
+                                     "error": {"code": "RUNWAY_ERROR", "message": str(e)}})
+        else:
+            tool_results.append({"tool_name": "relocation_runway", "success": False,
+                                 "error": {"code": "TOOL_UNAVAILABLE",
+                                           "message": "relocation_runway tool not available"}})
+
+    # ── Wealth Gap Visualizer ─────────────────────────────────────────────────
+    elif query_type == "wealth_gap":
+        if _VISUALIZER_AVAILABLE:
+            perf_result = await portfolio_analysis(token=state.get("bearer_token"))
+            portfolio_value = 94000.0
+            if perf_result.get("success"):
+                portfolio_snapshot = perf_result
+                portfolio_value = (
+                    perf_result.get("result", {}).get("summary", {})
+                    .get("total_current_value_usd", 94000.0)
+                )
+            # Extract age from query if mentioned
+            age_match = re.search(r'\b(2[0-9]|[3-6][0-9]|7[0-5])\b', user_query)
+            age = int(age_match.group(0)) if age_match else 34
+            income_match = re.search(r'\$?\s*(\d{2,3})[k,]', user_query, re.I)
+            annual_income = float(income_match.group(1)) * 1000 if income_match else 120000.0
+            try:
+                result = analyze_wealth_position(
+                    portfolio_value=portfolio_value,
+                    age=age,
+                    annual_income=annual_income,
+                )
+                tool_results.append({"tool_name": "wealth_visualizer", "success": True,
+                                     "tool_result_id": "wealth_gap_result", "result": result})
+            except Exception as e:
+                tool_results.append({"tool_name": "wealth_visualizer", "success": False,
+                                     "error": {"code": "VISUALIZER_ERROR", "message": str(e)}})
+        else:
+            tool_results.append({"tool_name": "wealth_visualizer", "success": False,
+                                 "error": {"code": "TOOL_UNAVAILABLE",
+                                           "message": "wealth_visualizer tool not available"}})
+
+    # ── Life Decision Advisor ─────────────────────────────────────────────────
+    elif query_type == "life_decision":
+        if _LIFE_ADVISOR_AVAILABLE:
+            perf_result = await portfolio_analysis(token=state.get("bearer_token"))
+            portfolio_value = 94000.0
+            if perf_result.get("success"):
+                portfolio_snapshot = perf_result
+                portfolio_value = (
+                    perf_result.get("result", {}).get("summary", {})
+                    .get("total_current_value_usd", 94000.0)
+                )
+            current_city = _extract_real_estate_location(user_query) or "Austin"
+            dest_city = None
+            for candidate in ["seattle", "san francisco", "new york", "denver",
+                               "chicago", "miami", "boston", "los angeles",
+                               "nashville", "dallas", "london", "berlin",
+                               "toronto", "sydney", "tokyo", "paris"]:
+                if candidate in user_query.lower():
+                    if candidate.title() != current_city:
+                        dest_city = candidate.title()
+                        break
+            # Determine decision type from query
+            q = user_query.lower()
+            if any(kw in q for kw in ["job offer", "salary", "raise", "accept"]):
+                decision_type = "job_offer"
+            elif any(kw in q for kw in ["move", "reloc", "relocat"]):
+                decision_type = "relocation"
+            elif any(kw in q for kw in ["buy", "purchase", "home", "house"]):
+                decision_type = "home_purchase"
+            elif any(kw in q for kw in ["rent or buy", "rent vs buy"]):
+                decision_type = "rent_or_buy"
+            else:
+                decision_type = "general"
+            ctx = {
+                "portfolio_value": portfolio_value,
+                "current_city": current_city,
+                "annual_income": 120000.0,
+            }
+            if dest_city:
+                ctx["destination_city"] = dest_city
+            try:
+                result = analyze_life_decision(decision_type, ctx)
+                tool_results.append({"tool_name": "life_decision_advisor", "success": True,
+                                     "tool_result_id": "life_decision_result", "result": result})
+            except Exception as e:
+                tool_results.append({"tool_name": "life_decision_advisor", "success": False,
+                                     "error": {"code": "LIFE_ADVISOR_ERROR", "message": str(e)}})
+        else:
+            tool_results.append({"tool_name": "life_decision_advisor", "success": False,
+                                 "error": {"code": "TOOL_UNAVAILABLE",
+                                           "message": "life_decision_advisor tool not available"}})
+
+    # ── Equity Unlock Advisor ─────────────────────────────────────────────────
+    elif query_type == "equity_unlock":
+        if _EQUITY_ADVISOR_AVAILABLE:
+            # Try to find a property ID in the query
+            prop_id_match = re.search(r'\bprop_[a-f0-9]{8}\b', user_query, re.I)
+            if prop_id_match:
+                prop_id = prop_id_match.group(0).lower()
+            else:
+                # Get first active property from DB
+                prop_list_result = await get_properties()
+                props = (prop_list_result.get("result", {})
+                         .get("properties", []))
+                prop_id = props[0]["id"] if props else ""
+            if prop_id:
+                try:
+                    result = analyze_equity_options(prop_id)
+                    tool_results.append({"tool_name": "equity_advisor", "success": True,
+                                         "tool_result_id": "equity_unlock_result",
+                                         "result": result})
+                except Exception as e:
+                    tool_results.append({"tool_name": "equity_advisor", "success": False,
+                                         "error": {"code": "EQUITY_ERROR", "message": str(e)}})
+            else:
+                tool_results.append({"tool_name": "equity_advisor", "success": False,
+                                     "error": {
+                                         "code": "NO_PROPERTY_FOUND",
+                                         "message": "No tracked property found. Add a property first with 'track my property'."
+                                     }})
+        else:
+            tool_results.append({"tool_name": "equity_advisor", "success": False,
+                                 "error": {"code": "TOOL_UNAVAILABLE",
+                                           "message": "equity_advisor tool not available"}})
+
+    # ── Family Financial Planner ──────────────────────────────────────────────
+    elif query_type == "family_planner":
+        if _FAMILY_PLANNER_AVAILABLE:
+            current_city = _extract_real_estate_location(user_query) or "Austin"
+            # Try to extract income from query
+            income_match = re.search(r'\$?\s*(\d{2,3})[k,]', user_query, re.I)
+            annual_income = float(income_match.group(1)) * 1000 if income_match else 120000.0
+            # Extract number of children if mentioned
+            children_match = re.search(r'\b([1-4])\s*(?:kid|child|baby|babies|children)', user_query, re.I)
+            num_children = int(children_match.group(1)) if children_match else 1
+            try:
+                result = plan_family_finances(
+                    current_city=current_city,
+                    annual_income=annual_income,
+                    num_planned_children=num_children,
+                )
+                tool_results.append({"tool_name": "family_planner", "success": True,
+                                     "tool_result_id": "family_planner_result",
+                                     "result": result})
+            except Exception as e:
+                tool_results.append({"tool_name": "family_planner", "success": False,
+                                     "error": {"code": "FAMILY_PLANNER_ERROR", "message": str(e)}})
+        else:
+            tool_results.append({"tool_name": "family_planner", "success": False,
+                                 "error": {"code": "TOOL_UNAVAILABLE",
+                                           "message": "family_planner tool not available"}})
 
     return {
         **state,
