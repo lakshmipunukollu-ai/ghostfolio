@@ -344,6 +344,33 @@
               🌍 Cost of living in Tokyo
             </button>
           </div>
+          <!-- Row 4: Life Decisions chips -->
+          <div class="ai-suggestions__row ai-suggestions__row--life">
+            <button
+              class="ai-suggestion-chip ai-suggestion-chip--life"
+              (click)="
+                clickChip(
+                  'How long until I feel financially stable if I move to Denver?'
+                )
+              "
+            >
+              ⏱️ How long to feel stable if I move?
+            </button>
+            <button
+              class="ai-suggestion-chip ai-suggestion-chip--life"
+              (click)="
+                clickChip('Am I ahead or behind financially for my age?')
+              "
+            >
+              📊 Am I ahead or behind financially?
+            </button>
+            <button
+              class="ai-suggestion-chip ai-suggestion-chip--life"
+              (click)="clickChip('Can I afford to have kids in Austin?')"
+            >
+              👶 Can I afford to have kids?
+            </button>
+          </div>
         }
       </div>
     }
