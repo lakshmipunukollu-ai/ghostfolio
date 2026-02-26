@@ -326,6 +326,15 @@
             >About Ghostfolio</a
           >
           <hr class="d-flex d-sm-none m-0" />
+          @if (enableRealEstate) {
+            <button
+              class="d-flex d-sm-none"
+              mat-menu-item
+              (click)="openRealEstateChat()"
+            >
+              🏠 Real Estate
+            </button>
+          }
           <button i18n mat-menu-item (click)="onSignOut()">Log out</button>
         </mat-menu>
       </li>
@@ -407,6 +416,18 @@
             [routerLink]="routerLinkMarkets"
             >Markets</a
           >
+        </li>
+      }
+      @if (enableRealEstate && user) {
+        <li class="list-inline-item">
+          <button
+            class="d-none d-sm-block"
+            mat-flat-button
+            title="Explore housing markets with AI"
+            (click)="openRealEstateChat()"
+          >
+            🏠 Real Estate
+          </button>
         </li>
       }
       <li class="list-inline-item">

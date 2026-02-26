@@ -1,6 +1,7 @@
 import { LoginWithAccessTokenDialogParams } from '@ghostfolio/client/components/login-with-access-token-dialog/interfaces/interfaces';
 import { GfLoginWithAccessTokenDialogComponent } from '@ghostfolio/client/components/login-with-access-token-dialog/login-with-access-token-dialog.component';
 import { LayoutService } from '@ghostfolio/client/core/layout.service';
+import { AiChatService } from '@ghostfolio/client/services/ai-chat.service';
 import { ImpersonationStorageService } from '@ghostfolio/client/services/impersonation-storage.service';
 import {
   KEY_STAY_SIGNED_IN,
@@ -14,6 +15,8 @@ import { hasPermission, permissions } from '@ghostfolio/common/permissions';
 import { internalRoutes, publicRoutes } from '@ghostfolio/common/routes/routes';
 import { DateRange } from '@ghostfolio/common/types';
 import { GfAssistantComponent } from '@ghostfolio/ui/assistant/assistant.component';
+import { GF_ENVIRONMENT } from '@ghostfolio/ui/environment';
+import { GfEnvironment } from '@ghostfolio/ui/environment';
 import { GfLogoComponent } from '@ghostfolio/ui/logo';
 import { NotificationService } from '@ghostfolio/ui/notifications';
 import { GfPremiumIndicatorComponent } from '@ghostfolio/ui/premium-indicator';
@@ -26,6 +29,7 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
   EventEmitter,
   HostListener,
+  Inject,
   Input,
   OnChanges,
   Output,
@@ -102,6 +106,7 @@ export class GfHeaderComponent implements OnChanges {
   @ViewChild('assistant') assistantElement: GfAssistantComponent;
   @ViewChild('assistantTrigger') assistentMenuTriggerElement: MatMenuTrigger;
 
+  public enableRealEstate: boolean;
   public hasFilters: boolean;
   public hasImpersonationId: boolean;
   public hasPermissionForAuthGoogle: boolean;
@@ -134,6 +139,7 @@ export class GfHeaderComponent implements OnChanges {
   private unsubscribeSubject = new Subject<void>();
 
   public constructor(
+    private aiChatService: AiChatService,
     private dataService: DataService,
     private dialog: MatDialog,
     private impersonationStorageService: ImpersonationStorageService,
@@ -142,8 +148,10 @@ export class GfHeaderComponent implements OnChanges {
     private router: Router,
     private settingsStorageService: SettingsStorageService,
     private tokenStorageService: TokenStorageService,
-    private userService: UserService
+    private userService: UserService,
+    @Inject(GF_ENVIRONMENT) environment: GfEnvironment
   ) {
+    this.enableRealEstate = environment.enableRealEstate ?? false;
     this.impersonationStorageService
       .onChangeHasImpersonation()
       .pipe(takeUntil(this.unsubscribeSubject))
@@ -281,6 +289,12 @@ export class GfHeaderComponent implements OnChanges {
 
   public onSignOut() {
     this.signOut.next();
+  }
+
+  public openRealEstateChat(): void {
+    this.aiChatService.openChat(
+      'Compare Austin vs Denver for housing affordability'
+    );
   }
 
   public openLoginDialog() {

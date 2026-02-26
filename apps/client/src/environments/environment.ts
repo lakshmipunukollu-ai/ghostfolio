@@ -6,6 +6,7 @@ import type { GfEnvironment } from '@ghostfolio/ui/environment';
 
 export const environment: GfEnvironment = {
   agentUrl: '/agent',
+  enableRealEstate: true,
   lastPublish: null,
   production: false
 };

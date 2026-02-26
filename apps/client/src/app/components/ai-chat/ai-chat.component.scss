@@ -21,7 +21,9 @@
   cursor: pointer;
   font-size: 0.8rem;
   font-weight: 600;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   white-space: nowrap;
 
   &:hover {
@@ -123,6 +125,32 @@
   letter-spacing: 0.03em;
 }
 
+.ai-panel__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ai-clear-btn {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0.4rem;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.25rem 0.55rem;
+  letter-spacing: 0.02em;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
+  }
+}
+
 .ai-panel__close {
   background: rgba(255, 255, 255, 0.15);
   border: none;
@@ -194,7 +222,9 @@
     cursor: pointer;
     transition: opacity 0.15s;
 
-    &:hover { opacity: 0.85; }
+    &:hover {
+      opacity: 0.85;
+    }
 
     &--primary {
       background: #2563eb;
@@ -322,7 +352,9 @@
 }
 
 @keyframes typingBounce {
-  0%, 60%, 100% {
+  0%,
+  60%,
+  100% {
     transform: translateY(0);
     opacity: 0.4;
   }
@@ -427,7 +459,9 @@
     padding: 0.1rem;
     border-radius: 0.25rem;
     opacity: 0.5;
-    transition: opacity 0.15s ease, background 0.15s ease;
+    transition:
+      opacity 0.15s ease,
+      background 0.15s ease;
 
     &:hover:not([disabled]) {
       opacity: 1;
@@ -486,7 +520,9 @@
     cursor: pointer;
     font-size: 0.8rem;
     font-weight: 600;
-    transition: transform 0.15s ease, opacity 0.15s ease;
+    transition:
+      transform 0.15s ease,
+      opacity 0.15s ease;
 
     &:hover {
       transform: translateY(-1px);
@@ -505,6 +541,92 @@
     &--no {
       background: #ef4444;
       color: #fff;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Suggestion chips
+// ---------------------------------------------------------------------------
+
+.ai-suggestions {
+  padding: 0.5rem 0.75rem 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+
+  :host-context(.theme-dark) & {
+    border-top-color: rgba(255, 255, 255, 0.06);
+  }
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+
+    &--realestate {
+      padding-top: 0.1rem;
+    }
+  }
+}
+
+.ai-suggestion-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.65rem;
+  border-radius: 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease,
+    opacity 0.15s ease;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  background: rgba(99, 102, 241, 0.08);
+  color: #4f46e5;
+  white-space: nowrap;
+
+  :host-context(.theme-dark) & {
+    background: rgba(99, 102, 241, 0.15);
+    color: #a5b4fc;
+    border-color: rgba(99, 102, 241, 0.35);
+  }
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.16);
+    transform: translateY(-1px);
+
+    :host-context(.theme-dark) & {
+      background: rgba(99, 102, 241, 0.28);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    opacity: 0.85;
+  }
+
+  // Real estate row chips — slightly warmer tint to distinguish from portfolio
+  &--re {
+    border-color: rgba(16, 185, 129, 0.3);
+    background: rgba(16, 185, 129, 0.07);
+    color: #047857;
+
+    :host-context(.theme-dark) & {
+      background: rgba(16, 185, 129, 0.15);
+      color: #6ee7b7;
+      border-color: rgba(16, 185, 129, 0.35);
+    }
+
+    &:hover {
+      background: rgba(16, 185, 129, 0.15);
+
+      :host-context(.theme-dark) & {
+        background: rgba(16, 185, 129, 0.25);
+      }
     }
   }
 }
@@ -578,7 +700,9 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: transform 0.15s ease, opacity 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
 
   &:hover:not([disabled]) {
     transform: scale(1.05);

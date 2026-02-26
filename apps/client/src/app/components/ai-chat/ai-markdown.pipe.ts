@@ -31,7 +31,7 @@ export class AiMarkdownPipe implements PipeTransform {
       // Horizontal rule ---
       .replace(/^---+$/gm, '<hr>')
       // Bullet lines starting with "- " or "* "
-      .replace(/^[*\-] (.+)$/gm, '<li>$1</li>')
+      .replace(/^[*-] (.+)$/gm, '<li>$1</li>')
       // Wrap consecutive <li> in <ul>
       .replace(/(<li>.*<\/li>(\n|$))+/g, (block) => `<ul>${block}</ul>`)
       // Newlines → <br> (except inside <ul>)
