@@ -8,33 +8,17 @@ Allows users to track real estate properties they own alongside
 their financial portfolio. Equity is computed as:
     equity = current_value - mortgage_balance
 
-Five capabilities:
+Seven capabilities:
   1. add_property(...)            — record a property you own
-  2. get_properties()             — show all properties with equity computed
+  2. get_properties()             — show all active properties with equity
   3. list_properties()            — alias for get_properties()
-  4. update_property(...)         — update value, mortgage, or rent
+  4. update_property(...)         — update current value, mortgage, or rent
   5. remove_property(id)          — soft-delete (set is_active = 0)
   6. get_real_estate_equity()     — total equity across all properties
   7. get_total_net_worth(...)      — portfolio + real estate combined
 
 Storage: SQLite at agent/data/properties.db
-  (override path with PROPERTIES_DB_PATH env var — used in tests)
-
-Schema:
-  CREATE TABLE IF NOT EXISTS properties (
-    id TEXT PRIMARY KEY,
-    address TEXT NOT NULL,
-    property_type TEXT DEFAULT 'primary',
-    purchase_price REAL,
-    purchase_date TEXT,
-    current_value REAL,
-    mortgage_balance REAL DEFAULT 0,
-    monthly_rent REAL DEFAULT 0,
-    county_key TEXT DEFAULT 'austin',
-    is_active INTEGER DEFAULT 1,
-    created_at TEXT,
-    updated_at TEXT
-  )
+  (override path with PROPERTIES_DB_PATH env var — used in tests for :memory:)
 
 All functions return the standard tool result envelope:
   {tool_name, success, tool_result_id, timestamp, result}  — on success
@@ -74,12 +58,33 @@ _FEATURE_DISABLED_RESPONSE = {
 # SQLite connection helpers
 # ---------------------------------------------------------------------------
 
+_SCHEMA_SQL = """
+    CREATE TABLE IF NOT EXISTS properties (
+        id TEXT PRIMARY KEY,
+        address TEXT NOT NULL,
+        property_type TEXT DEFAULT 'Single Family',
+        purchase_price REAL NOT NULL,
+        purchase_date TEXT,
+        current_value REAL NOT NULL,
+        mortgage_balance REAL DEFAULT 0,
+        monthly_rent REAL DEFAULT 0,
+        county_key TEXT DEFAULT 'austin',
+        is_active INTEGER DEFAULT 1,
+        created_at TEXT,
+        updated_at TEXT
+    )
+"""
+
+# Module-level cached connection for :memory: databases.
+# SQLite :memory: creates a fresh DB per connection — we must reuse the same one.
+_MEMORY_CONN: Optional[sqlite3.Connection] = None
+
+
 def _db_path() -> str:
     """Returns the SQLite database path (configurable via PROPERTIES_DB_PATH)."""
     env_path = os.getenv("PROPERTIES_DB_PATH")
     if env_path:
         return env_path
-    # Default: agent/data/properties.db relative to this file's parent (tools/)
     tools_dir = os.path.dirname(os.path.abspath(__file__))
     agent_dir = os.path.dirname(tools_dir)
     data_dir = os.path.join(agent_dir, "data")
@@ -88,33 +93,38 @@ def _db_path() -> str:
 
 
 def _get_conn() -> sqlite3.Connection:
-    """Opens a SQLite connection and ensures the schema exists."""
+    """
+    Returns a SQLite connection with the schema initialized.
+    For :memory: databases, returns the same connection every time so
+    data persists across calls within a session / test run.
+    """
+    global _MEMORY_CONN
     path = _db_path()
-    conn = sqlite3.connect(path)
+
+    if path == ":memory:":
+        if _MEMORY_CONN is None:
+            _MEMORY_CONN = sqlite3.connect(":memory:", check_same_thread=False)
+            _MEMORY_CONN.row_factory = sqlite3.Row
+            _MEMORY_CONN.execute(_SCHEMA_SQL)
+            _MEMORY_CONN.commit()
+        return _MEMORY_CONN
+
+    conn = sqlite3.connect(path, check_same_thread=False)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS properties (
-            id TEXT PRIMARY KEY,
-            address TEXT NOT NULL,
-            property_type TEXT DEFAULT 'Single Family',
-            purchase_price REAL NOT NULL,
-            purchase_date TEXT,
-            current_value REAL NOT NULL,
-            mortgage_balance REAL DEFAULT 0,
-            monthly_rent REAL DEFAULT 0,
-            county_key TEXT DEFAULT 'austin',
-            is_active INTEGER DEFAULT 1,
-            created_at TEXT,
-            updated_at TEXT
-        )
-    """)
+    conn.execute(_SCHEMA_SQL)
     conn.commit()
     return conn
 
 
+def _close_conn(conn: sqlite3.Connection) -> None:
+    """Closes file-based connections; leaves :memory: connection open."""
+    if _db_path() != ":memory:":
+        conn.close()
+
+
 def _row_to_dict(row: sqlite3.Row) -> dict:
-    """Converts a sqlite3.Row to a plain dict with computed fields."""
+    """Converts a sqlite3.Row to a plain dict with computed equity/appreciation fields."""
     d = dict(row)
     current_value = d.get("current_value", 0) or 0
     mortgage_balance = d.get("mortgage_balance", 0) or 0
@@ -123,31 +133,40 @@ def _row_to_dict(row: sqlite3.Row) -> dict:
     equity = round(current_value - mortgage_balance, 2)
     equity_pct = round((equity / current_value * 100), 2) if current_value > 0 else 0.0
     appreciation = round(current_value - purchase_price, 2)
-    appreciation_pct = round((appreciation / purchase_price * 100), 2) if purchase_price > 0 else 0.0
+    appreciation_pct = (
+        round((appreciation / purchase_price * 100), 2) if purchase_price > 0 else 0.0
+    )
 
     d["equity"] = equity
     d["equity_pct"] = equity_pct
     d["appreciation"] = appreciation
     d["appreciation_pct"] = appreciation_pct
-    # Backward-compat alias: old tests expect "added_at" (previous in-memory schema used this name)
+    # Backward-compat alias: existing tests check for "added_at"
     d["added_at"] = d.get("created_at")
     return d
 
 
 # ---------------------------------------------------------------------------
-# Test helpers  — kept for backward compatibility with existing test suite
+# Test helpers
 # ---------------------------------------------------------------------------
 
 def property_store_clear() -> None:
     """
-    Wipes ALL property records from the database.
-    Used in tests to reset state between test cases.
+    Wipes ALL property records. Used in tests to reset state between cases.
+    For :memory: databases, deletes all rows from the shared connection.
     """
+    global _MEMORY_CONN
+    path = _db_path()
     try:
-        conn = _get_conn()
-        conn.execute("DELETE FROM properties")
-        conn.commit()
-        conn.close()
+        if path == ":memory:":
+            if _MEMORY_CONN is not None:
+                _MEMORY_CONN.execute("DELETE FROM properties")
+                _MEMORY_CONN.commit()
+        else:
+            conn = _get_conn()
+            conn.execute("DELETE FROM properties")
+            conn.commit()
+            _close_conn(conn)
     except Exception:
         pass
 
@@ -170,13 +189,13 @@ async def add_property(
     Records a property in the SQLite store.
 
     Args:
-        address:          Full street address (e.g. "123 Barton Hills Dr, Austin, TX 78704").
+        address:          Full street address.
         purchase_price:   Original purchase price in USD.
-        current_value:    Current estimated market value. Defaults to purchase_price if None.
-        mortgage_balance: Outstanding mortgage balance. Defaults to 0 (paid off / no mortgage).
-        monthly_rent:     Monthly rental income if this is a rental property. Defaults to 0.
-        county_key:       ACTRIS data key for market context (e.g. "austin", "travis_county").
-        property_type:    "Single Family", "Condo", "Townhouse", "Multi-Family", or "Land".
+        current_value:    Current estimated market value. Defaults to purchase_price.
+        mortgage_balance: Outstanding mortgage balance. Defaults to 0.
+        monthly_rent:     Monthly rental income if a rental property. Defaults to 0.
+        county_key:       ACTRIS area key (e.g. "austin", "travis_county").
+        property_type:    "Single Family", "Condo", "Townhouse", etc.
         purchase_date:    Optional ISO date string (YYYY-MM-DD).
     """
     if not is_property_tracking_enabled():
@@ -224,22 +243,17 @@ async def add_property(
             ),
         )
         conn.commit()
-
         row = conn.execute(
             "SELECT * FROM properties WHERE id = ?", (prop_id,)
         ).fetchone()
-        conn.close()
-
+        _close_conn(conn)
         record = _row_to_dict(row)
     except Exception as exc:
         return {
             "tool_name": "property_tracker",
             "success": False,
             "tool_result_id": tool_result_id,
-            "error": {
-                "code": "PROPERTY_TRACKER_DB_ERROR",
-                "message": str(exc),
-            },
+            "error": {"code": "PROPERTY_TRACKER_DB_ERROR", "message": str(exc)},
         }
 
     equity = record["equity"]
@@ -265,7 +279,7 @@ async def add_property(
 async def get_properties() -> dict:
     """
     Returns all active properties with per-property equity and portfolio totals.
-    Alias: also callable as list_properties() for backward compatibility.
+    Primary read function. list_properties() is kept as an alias.
     """
     if not is_property_tracking_enabled():
         return _FEATURE_DISABLED_RESPONSE
@@ -277,7 +291,7 @@ async def get_properties() -> dict:
         rows = conn.execute(
             "SELECT * FROM properties WHERE is_active = 1 ORDER BY created_at"
         ).fetchall()
-        conn.close()
+        _close_conn(conn)
         properties = [_row_to_dict(row) for row in rows]
     except Exception as exc:
         return {
@@ -316,7 +330,9 @@ async def get_properties() -> dict:
     total_value = sum(p["current_value"] for p in properties)
     total_mortgage = sum(p["mortgage_balance"] for p in properties)
     total_equity = round(total_value - total_mortgage, 2)
-    total_equity_pct = round((total_equity / total_value * 100), 2) if total_value > 0 else 0.0
+    total_equity_pct = (
+        round((total_equity / total_value * 100), 2) if total_value > 0 else 0.0
+    )
     total_rent = sum(p.get("monthly_rent", 0) or 0 for p in properties)
 
     return {
@@ -339,7 +355,6 @@ async def get_properties() -> dict:
     }
 
 
-# Backward-compatible alias
 async def list_properties() -> dict:
     """Alias for get_properties() — kept for backward compatibility."""
     return await get_properties()
@@ -376,7 +391,7 @@ async def update_property(
         ).fetchone()
 
         if row is None:
-            conn.close()
+            _close_conn(conn)
             return {
                 "tool_name": "property_tracker",
                 "success": False,
@@ -403,14 +418,17 @@ async def update_property(
             params.append(monthly_rent)
 
         if not updates:
-            conn.close()
+            _close_conn(conn)
             return {
                 "tool_name": "property_tracker",
                 "success": False,
                 "tool_result_id": tool_result_id,
                 "error": {
                     "code": "PROPERTY_TRACKER_INVALID_INPUT",
-                    "message": "At least one of current_value, mortgage_balance, or monthly_rent must be provided.",
+                    "message": (
+                        "At least one of current_value, mortgage_balance, "
+                        "or monthly_rent must be provided."
+                    ),
                 },
             }
 
@@ -428,8 +446,7 @@ async def update_property(
         updated_row = conn.execute(
             "SELECT * FROM properties WHERE id = ?", (prop_id,)
         ).fetchone()
-        conn.close()
-
+        _close_conn(conn)
         record = _row_to_dict(updated_row)
     except Exception as exc:
         return {
@@ -458,9 +475,7 @@ async def update_property(
 async def remove_property(property_id: str) -> dict:
     """
     Soft-deletes a property by setting is_active = 0.
-
-    Args:
-        property_id: ID of the property to remove (e.g. 'prop_a1b2c3d4').
+    Data is preserved for audit purposes.
     """
     if not is_property_tracking_enabled():
         return _FEATURE_DISABLED_RESPONSE
@@ -475,7 +490,7 @@ async def remove_property(property_id: str) -> dict:
         ).fetchone()
 
         if row is None:
-            conn.close()
+            _close_conn(conn)
             return {
                 "tool_name": "property_tracker",
                 "success": False,
@@ -495,7 +510,7 @@ async def remove_property(property_id: str) -> dict:
             (datetime.utcnow().isoformat(), prop_id),
         )
         conn.commit()
-        conn.close()
+        _close_conn(conn)
     except Exception as exc:
         return {
             "tool_name": "property_tracker",
@@ -531,9 +546,10 @@ async def get_real_estate_equity() -> dict:
     try:
         conn = _get_conn()
         rows = conn.execute(
-            "SELECT current_value, mortgage_balance FROM properties WHERE is_active = 1"
+            "SELECT current_value, mortgage_balance "
+            "FROM properties WHERE is_active = 1"
         ).fetchall()
-        conn.close()
+        _close_conn(conn)
     except Exception as exc:
         return {
             "tool_name": "property_tracker",
@@ -563,11 +579,11 @@ async def get_real_estate_equity() -> dict:
 async def get_total_net_worth(portfolio_value: float) -> dict:
     """
     Combines live investment portfolio value with real estate equity
-    to produce a unified net worth view.
+    for a unified net worth view.
 
     Args:
         portfolio_value: Total liquid investment portfolio value in USD
-                         (pass in from portfolio_analysis tool result).
+                         (from portfolio_analysis tool result).
 
     Returns:
         Dict with investment_portfolio, real_estate_equity, total_net_worth,
@@ -583,7 +599,7 @@ async def get_total_net_worth(portfolio_value: float) -> dict:
         rows = conn.execute(
             "SELECT * FROM properties WHERE is_active = 1 ORDER BY created_at"
         ).fetchall()
-        conn.close()
+        _close_conn(conn)
         properties = [_row_to_dict(row) for row in rows]
     except Exception as exc:
         return {
@@ -598,11 +614,13 @@ async def get_total_net_worth(portfolio_value: float) -> dict:
     real_estate_equity = round(total_value - total_mortgage, 2)
     total_net_worth = round(portfolio_value + real_estate_equity, 2)
 
-    summary = (
-        f"Total net worth ${total_net_worth:,.0f} across investments "
-        f"(${portfolio_value:,.0f}) and real estate equity (${real_estate_equity:,.0f})."
-    )
-    if not properties:
+    if properties:
+        summary = (
+            f"Total net worth ${total_net_worth:,.0f} across investments "
+            f"(${portfolio_value:,.0f}) and real estate equity "
+            f"(${real_estate_equity:,.0f})."
+        )
+    else:
         summary = (
             f"Investment portfolio: ${portfolio_value:,.0f}. "
             "No properties tracked yet. Add properties to include real estate equity."
