@@ -411,6 +411,52 @@ async def classify_node(state: AgentState) -> AgentState:
             return {**state, "query_type": "compliance+tax"}
         return {**state, "query_type": "tax"}
 
+    # --- Relocation Runway Calculator ---
+    relocation_runway_kws = [
+        "how long until", "runway", "financially stable",
+        "if i move", "relocation timeline", "stable if",
+        "how long to feel stable", "feel stable after",
+    ]
+    if any(kw in query for kw in relocation_runway_kws):
+        return {**state, "query_type": "relocation_runway"}
+
+    # --- Wealth Gap Visualizer ---
+    wealth_gap_kws = [
+        "am i behind", "am i on track", "wealth gap",
+        "how am i doing financially", "ahead or behind",
+        "net worth compared", "am i ahead",
+        "am i behind for my age", "retirement on track",
+    ]
+    if any(kw in query for kw in wealth_gap_kws):
+        return {**state, "query_type": "wealth_gap"}
+
+    # --- Life Decision Advisor ---
+    life_decision_kws = [
+        "should i take", "help me decide", "what should i do",
+        "is it worth it", "advise me", "what do you think",
+        "should i move", "should i accept",
+    ]
+    if any(kw in query for kw in life_decision_kws):
+        return {**state, "query_type": "life_decision"}
+
+    # --- Equity Unlock Advisor ---
+    equity_unlock_kws = [
+        "home equity", "refinance", "cash out",
+        "equity options", "what should i do with my equity",
+    ]
+    if any(kw in query for kw in equity_unlock_kws):
+        return {**state, "query_type": "equity_unlock"}
+
+    # --- Family Financial Planner ---
+    family_planner_kws = [
+        "afford a family", "afford a baby", "afford kids",
+        "childcare costs", "financial impact of children",
+        "can i afford to have", "family planning",
+        "having kids",
+    ]
+    if any(kw in query for kw in family_planner_kws):
+        return {**state, "query_type": "family_planner"}
+
     # --- Wealth Bridge — down payment, job offer COL, global city data ---
     # Checked before real estate so "can I afford" doesn't fall through to snapshot
     if is_real_estate_enabled():
