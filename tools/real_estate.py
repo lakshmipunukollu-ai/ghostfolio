@@ -44,11 +44,13 @@ _FEATURE_DISABLED_RESPONSE = {
     "tool_name": "real_estate",
     "success": False,
     "tool_result_id": "real_estate_disabled",
-    "error": "FEATURE_DISABLED",
-    "message": (
-        "The Real Estate feature is not currently enabled. "
-        "Set ENABLE_REAL_ESTATE=true in your environment to activate it."
-    ),
+    "error": {
+        "code": "REAL_ESTATE_FEATURE_DISABLED",
+        "message": (
+            "The Real Estate feature is not currently enabled. "
+            "Set ENABLE_REAL_ESTATE=true in your environment to activate it."
+        ),
+    },
 }
 
 
@@ -74,6 +76,42 @@ def _cache_set(key: str, data: dict) -> None:
 def cache_clear() -> None:
     """Clears the entire in-memory cache. Used in tests."""
     _cache.clear()
+
+
+# ---------------------------------------------------------------------------
+# Invocation logging  (in-memory, no sensitive data stored)
+# ---------------------------------------------------------------------------
+
+_invocation_log: list[dict] = []
+_MAX_LOG_ENTRIES = 500  # prevent unbounded growth
+
+
+def _log_invocation(
+    function: str,
+    query: str,
+    duration_ms: float,
+    success: bool,
+) -> None:
+    """
+    Records a single tool call to the in-memory log.
+    query is truncated to 80 chars — no sensitive data stored.
+    """
+    entry = {
+        "timestamp": datetime.utcnow().isoformat(),
+        "function": function,
+        "query": query[:80],
+        "duration_ms": round(duration_ms, 1),
+        "success": success,
+    }
+    _invocation_log.append(entry)
+    # Keep log size bounded
+    if len(_invocation_log) > _MAX_LOG_ENTRIES:
+        del _invocation_log[: len(_invocation_log) - _MAX_LOG_ENTRIES]
+
+
+def get_invocation_log() -> list[dict]:
+    """Returns a copy of the invocation log. Called by the /real-estate/log endpoint."""
+    return list(_invocation_log)
 
 
 # ---------------------------------------------------------------------------
@@ -429,10 +467,12 @@ async def get_neighborhood_snapshot(location: str) -> dict:
 
     location = location.strip()
     tool_result_id = f"re_snapshot_{location.lower().replace(' ', '_')}_{int(datetime.utcnow().timestamp())}"
+    _start = time.time()
 
     cache_key = f"snapshot:{location.lower()}"
     cached = _cache_get(cache_key)
     if cached:
+        _log_invocation("get_neighborhood_snapshot", location, (time.time() - _start) * 1000, True)
         return cached
 
     city_key = _normalize_city(location)
@@ -443,12 +483,15 @@ async def get_neighborhood_snapshot(location: str) -> dict:
             "tool_name": "real_estate",
             "success": False,
             "tool_result_id": tool_result_id,
-            "error": "LOCATION_NOT_FOUND",
-            "message": (
-                f"No data found for '{location}'. "
-                f"Supported cities: {', '.join(c.title() for c in _MOCK_SNAPSHOTS)}."
-            ),
+            "error": {
+                "code": "REAL_ESTATE_PROVIDER_UNAVAILABLE",
+                "message": (
+                    f"No data found for '{location}'. "
+                    f"Supported cities: {', '.join(c.title() for c in _MOCK_SNAPSHOTS)}."
+                ),
+            },
         }
+        _log_invocation("get_neighborhood_snapshot", location, (time.time() - _start) * 1000, False)
         return result
 
     monthly_rent_estimate = round(snap["median_price"] * snap["rent_to_price_ratio"] / 100, 0)
@@ -475,27 +518,41 @@ async def get_neighborhood_snapshot(location: str) -> dict:
         },
     }
     _cache_set(cache_key, result)
+    _log_invocation("get_neighborhood_snapshot", location, (time.time() - _start) * 1000, True)
     return result
 
 
-async def search_listings(query: str, max_results: int = 5) -> dict:
+async def search_listings(
+    query: str,
+    max_results: int = 5,
+    min_beds: int | None = None,
+    max_price: int | None = None,
+) -> dict:
     """
-    Searches for listings matching a location query.
-    Returns up to max_results normalized listings with key metrics.
+    Searches for listings matching a location query with optional filters.
+
+    Args:
+        query:       City/neighborhood name (e.g. "Austin", "Seattle").
+        max_results: Cap on number of listings returned (default 5).
+        min_beds:    Minimum bedroom count filter (e.g. 3 → only 3+ bed listings).
+        max_price:   Maximum price filter in USD (e.g. 500000 → ≤$500k only).
     """
     if not is_real_estate_enabled():
         return _FEATURE_DISABLED_RESPONSE
 
     query = query.strip()
     tool_result_id = f"re_search_{query.lower().replace(' ', '_')}_{int(datetime.utcnow().timestamp())}"
+    _start = time.time()
 
-    cache_key = f"search:{query.lower()}:{max_results}"
+    # Cache key incorporates filters so filtered/unfiltered calls are stored separately
+    cache_key = f"search:{query.lower()}:{max_results}:beds={min_beds}:price={max_price}"
     cached = _cache_get(cache_key)
     if cached:
+        _log_invocation("search_listings", query, (time.time() - _start) * 1000, True)
         return cached
 
     city_key = _normalize_city(query)
-    listings = _MOCK_LISTINGS.get(city_key, [])
+    listings = list(_MOCK_LISTINGS.get(city_key, []))
 
     if not listings:
         all_cities = list(_MOCK_LISTINGS.keys())
@@ -503,13 +560,28 @@ async def search_listings(query: str, max_results: int = 5) -> dict:
             "tool_name": "real_estate",
             "success": False,
             "tool_result_id": tool_result_id,
-            "error": "NO_LISTINGS_FOUND",
-            "message": (
-                f"No listings found for '{query}'. "
-                f"Try one of: {', '.join(c.title() for c in all_cities)}."
-            ),
+            "error": {
+                "code": "REAL_ESTATE_PROVIDER_UNAVAILABLE",
+                "message": (
+                    f"No listings found for '{query}'. "
+                    f"Try one of: {', '.join(c.title() for c in all_cities)}."
+                ),
+            },
         }
+        _log_invocation("search_listings", query, (time.time() - _start) * 1000, False)
         return result
+
+    # Apply optional filters before capping
+    if min_beds is not None:
+        listings = [l for l in listings if l["bedrooms"] >= min_beds]
+    if max_price is not None:
+        listings = [l for l in listings if l["price"] <= max_price]
+
+    filters_applied = {}
+    if min_beds is not None:
+        filters_applied["min_beds"] = min_beds
+    if max_price is not None:
+        filters_applied["max_price"] = max_price
 
     capped = listings[:max_results]
     result = {
@@ -519,12 +591,14 @@ async def search_listings(query: str, max_results: int = 5) -> dict:
         "timestamp": datetime.utcnow().isoformat(),
         "result": {
             "query": query,
+            "filters_applied": filters_applied,
             "total_returned": len(capped),
             "listings": capped,
             "data_source": "MockProvider v1 — realistic 2024 US market estimates",
         },
     }
     _cache_set(cache_key, result)
+    _log_invocation("search_listings", query, (time.time() - _start) * 1000, True)
     return result
 
 
@@ -537,10 +611,12 @@ async def get_listing_details(listing_id: str) -> dict:
 
     listing_id = listing_id.strip().lower()
     tool_result_id = f"re_detail_{listing_id}_{int(datetime.utcnow().timestamp())}"
+    _start = time.time()
 
     cache_key = f"detail:{listing_id}"
     cached = _cache_get(cache_key)
     if cached:
+        _log_invocation("get_listing_details", listing_id, (time.time() - _start) * 1000, True)
         return cached
 
     for city_listings in _MOCK_LISTINGS.values():
@@ -562,18 +638,22 @@ async def get_listing_details(listing_id: str) -> dict:
                     "result": enriched,
                 }
                 _cache_set(cache_key, result)
+                _log_invocation("get_listing_details", listing_id, (time.time() - _start) * 1000, True)
                 return result
 
     result = {
         "tool_name": "real_estate",
         "success": False,
         "tool_result_id": tool_result_id,
-        "error": "LISTING_NOT_FOUND",
-        "message": (
-            f"Listing '{listing_id}' not found. "
-            "Use search_listings first to get valid listing IDs."
-        ),
+        "error": {
+            "code": "REAL_ESTATE_PROVIDER_UNAVAILABLE",
+            "message": (
+                f"Listing '{listing_id}' not found. "
+                "Use search_listings first to get valid listing IDs."
+            ),
+        },
     }
+    _log_invocation("get_listing_details", listing_id, (time.time() - _start) * 1000, False)
     return result
 
 
@@ -586,6 +666,7 @@ async def compare_neighborhoods(location_a: str, location_b: str) -> dict:
         return _FEATURE_DISABLED_RESPONSE
 
     tool_result_id = f"re_compare_{int(datetime.utcnow().timestamp())}"
+    _start = time.time()
 
     snap_a = await get_neighborhood_snapshot(location_a)
     snap_b = await get_neighborhood_snapshot(location_b)
@@ -597,12 +678,20 @@ async def compare_neighborhoods(location_a: str, location_b: str) -> dict:
         failed.append(location_b)
 
     if failed:
+        _log_invocation(
+            "compare_neighborhoods",
+            f"{location_a} vs {location_b}",
+            (time.time() - _start) * 1000,
+            False,
+        )
         return {
             "tool_name": "real_estate",
             "success": False,
             "tool_result_id": tool_result_id,
-            "error": "LOCATION_NOT_FOUND",
-            "message": f"Could not find data for: {', '.join(failed)}.",
+            "error": {
+                "code": "REAL_ESTATE_PROVIDER_UNAVAILABLE",
+                "message": f"Could not find data for: {', '.join(failed)}.",
+            },
         }
 
     a = snap_a["result"]
@@ -644,4 +733,10 @@ async def compare_neighborhoods(location_a: str, location_b: str) -> dict:
         "timestamp": datetime.utcnow().isoformat(),
         "result": comparison,
     }
+    _log_invocation(
+        "compare_neighborhoods",
+        f"{location_a} vs {location_b}",
+        (time.time() - _start) * 1000,
+        True,
+    )
     return result
