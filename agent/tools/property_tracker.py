@@ -648,20 +648,15 @@ def analyze_equity_options(
     """Analyzes 3 options for home equity: leave untouched,
     cash-out refi and invest, or use for rental property."""
 
-    db_path = os.path.join(
-        os.path.dirname(__file__), '..', 'data', 'properties.db'
-    )
-
     try:
-        conn = sqlite3.connect(db_path)
-        conn.row_factory = sqlite3.Row
+        conn = _get_conn()
         cur = conn.cursor()
         cur.execute(
             "SELECT * FROM properties WHERE id=? AND is_active=1",
             (property_id,),
         )
         row = cur.fetchone()
-        conn.close()
+        _close_conn(conn)
     except Exception as e:
         return {
             "error": f"Database error: {str(e)}",
