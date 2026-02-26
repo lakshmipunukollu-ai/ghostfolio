@@ -23,8 +23,11 @@ from tools.real_estate import (
 )
 from tools.property_tracker import (
     add_property,
+    get_properties,
     list_properties,
+    update_property as update_tracked_property,
     get_real_estate_equity,
+    get_total_net_worth,
     remove_property as remove_tracked_property,
     is_property_tracking_enabled,
 )
@@ -456,9 +459,23 @@ async def classify_node(state: AgentState) -> AgentState:
             "net worth including", "net worth with real estate",
             "total net worth", "total wealth", "all my assets",
             "real estate net worth", "net worth and real estate",
+            "everything i own",
+        ]
+        property_update_kws = [
+            "update my home", "update my property", "update my house",
+            "home value changed", "my home is worth", "refinanced",
+            "new mortgage balance", "property value update",
+        ]
+        property_remove_kws = [
+            "remove property", "delete property", "sold my house",
+            "sold my home", "sold my property",
         ]
         if any(kw in query for kw in property_add_kws):
             return {**state, "query_type": "property_add"}
+        if any(kw in query for kw in property_remove_kws):
+            return {**state, "query_type": "property_remove"}
+        if any(kw in query for kw in property_update_kws):
+            return {**state, "query_type": "property_update"}
         if any(kw in query for kw in property_list_kws):
             return {**state, "query_type": "property_list"}
         if any(kw in query for kw in property_net_worth_kws):
@@ -1327,15 +1344,41 @@ async def tools_node(state: AgentState) -> AgentState:
         tool_results.append(result)
 
     elif query_type == "property_list":
-        result = await list_properties()
+        result = await get_properties()
+        tool_results.append(result)
+
+    elif query_type == "property_update":
+        # Extract property ID and new values from query
+        import re as _re
+        id_match = _re.search(r'\bprop_[a-f0-9]{8}\b', user_query, _re.I)
+        prop_id = id_match.group(0).lower() if id_match else ""
+        new_value = _extract_price(user_query)
+        result = await update_tracked_property(
+            property_id=prop_id,
+            current_value=new_value,
+        )
+        tool_results.append(result)
+
+    elif query_type == "property_remove":
+        import re as _re
+        id_match = _re.search(r'\bprop_[a-f0-9]{8}\b', user_query, _re.I)
+        prop_id = id_match.group(0).lower() if id_match else ""
+        result = await remove_tracked_property(prop_id)
         tool_results.append(result)
 
     elif query_type == "property_net_worth":
-        equity_result = await get_real_estate_equity()
-        tool_results.append(equity_result)
-        # Also fetch the financial portfolio so the agent can combine both
+        # Fetch portfolio value, then combine with real estate equity
         perf_result = await portfolio_analysis(token=state.get("bearer_token"))
         tool_results.append(perf_result)
+        pv = 0.0
+        if perf_result.get("success"):
+            portfolio_snapshot = perf_result
+            pv = (
+                perf_result.get("result", {}).get("summary", {})
+                .get("total_current_value_usd", 0.0)
+            )
+        net_worth_result = await get_total_net_worth(pv)
+        tool_results.append(net_worth_result)
 
     # --- Wealth Bridge tools ---
     elif query_type == "wealth_down_payment":
