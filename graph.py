@@ -17,6 +17,7 @@ from tools.write_ops import buy_stock, sell_stock, add_transaction, add_cash
 from tools.real_estate import (
     get_neighborhood_snapshot,
     search_listings,
+    get_listing_details,
     compare_neighborhoods,
     is_real_estate_enabled,
 )
@@ -404,14 +405,27 @@ async def classify_node(state: AgentState) -> AgentState:
             "investment property", "cap rate", "days on market", "price per sqft",
             "neighborhood", "housing", "mortgage", "home search",
             "compare neighborhoods", "compare cities",
+            # New triggers from spec
+            "homes", "houses", "bedroom", "bedrooms", "bathroom", "bathrooms",
+            "3 bed", "2 bed", "4 bed", "1 bed", "3br", "2br", "4br",
+            "under $", "rent estimate", "for sale", "open house",
+            "property search", "find homes", "home value",
         ]
         has_real_estate = any(kw in query for kw in real_estate_kws)
         if has_real_estate:
             # Determine sub-type from context
             if any(kw in query for kw in ["compare neighborhood", "compare cit", "vs "]):
                 return {**state, "query_type": "real_estate_compare"}
-            if any(kw in query for kw in ["search", "listings", "find home", "find a home", "available"]):
+            if any(kw in query for kw in [
+                "search", "listings", "find home", "find a home", "available",
+                "for sale", "find homes", "property search", "homes in", "houses in",
+                "bedroom", "bedrooms", "3 bed", "2 bed", "4 bed", "1 bed",
+                "3br", "2br", "4br", "under $",
+            ]):
                 return {**state, "query_type": "real_estate_search"}
+            # Listing detail: query contains a listing ID pattern (e.g. atx-001)
+            if re.search(r'\b[a-z]{2,4}-\d{3}\b', query):
+                return {**state, "query_type": "real_estate_detail"}
             return {**state, "query_type": "real_estate_snapshot"}
 
     if has_overview:
@@ -793,6 +807,46 @@ def _extract_real_estate_location(query: str) -> str:
     return "Austin"
 
 
+def _extract_search_filters(query: str) -> tuple[int | None, int | None]:
+    """
+    Extracts bedroom count and max price from a natural language real estate query.
+    Returns (min_beds, max_price).
+
+    Examples:
+      "3 bed homes in Austin"           → (3, None)
+      "under $500k in Denver"           → (None, 500000)
+      "2br condos under $400,000"       → (2, 400000)
+      "4 bedroom house under $1.2m"     → (4, 1200000)
+    """
+    min_beds = None
+    max_price = None
+
+    # Bedroom extraction: "3 bed", "2br", "4 bedroom"
+    bed_match = re.search(r'(\d)\s*(?:bed(?:room)?s?|br)\b', query, re.I)
+    if bed_match:
+        min_beds = int(bed_match.group(1))
+
+    # Price extraction: "under $500k", "under $1.2m", "under $400,000", "below $800k"
+    price_match = re.search(
+        r'(?:under|below|less than|max|<)\s*\$?([\d,]+(?:\.\d+)?)\s*([km]?)',
+        query, re.I
+    )
+    if price_match:
+        raw = price_match.group(1).replace(",", "")
+        suffix = price_match.group(2).lower()
+        try:
+            amount = float(raw)
+            if suffix == "k":
+                amount *= 1_000
+            elif suffix == "m":
+                amount *= 1_000_000
+            max_price = int(amount)
+        except ValueError:
+            pass
+
+    return min_beds, max_price
+
+
 def _extract_two_locations(query: str) -> tuple[str, str]:
     """
     Extracts two city names from a comparison query.
@@ -989,12 +1043,20 @@ async def tools_node(state: AgentState) -> AgentState:
 
     elif query_type == "real_estate_search":
         location = _extract_real_estate_location(user_query)
-        result = await search_listings(location)
+        min_beds, max_price = _extract_search_filters(user_query)
+        result = await search_listings(location, min_beds=min_beds, max_price=max_price)
         tool_results.append(result)
 
     elif query_type == "real_estate_compare":
         loc_a, loc_b = _extract_two_locations(user_query)
         result = await compare_neighborhoods(loc_a, loc_b)
+        tool_results.append(result)
+
+    elif query_type == "real_estate_detail":
+        # Extract the listing ID (e.g. "atx-001") from the query
+        id_match = re.search(r'\b([a-z]{2,4}-\d{3})\b', user_query, re.I)
+        listing_id = id_match.group(1).lower() if id_match else ""
+        result = await get_listing_details(listing_id)
         tool_results.append(result)
 
     return {
@@ -1175,8 +1237,14 @@ async def format_node(state: AgentState) -> AgentState:
                 f"[Tool: {tool_name} | ID: {tool_id} | Status: SUCCESS]\n{result_str}"
             )
         else:
-            err = r.get("error", "UNKNOWN")
-            msg = r.get("message", "")
+            raw_err = r.get("error", "UNKNOWN")
+            # Support both flat string errors and nested {code, message} structured errors
+            if isinstance(raw_err, dict):
+                err = raw_err.get("code", "UNKNOWN")
+                msg = raw_err.get("message", r.get("message", ""))
+            else:
+                err = raw_err
+                msg = r.get("message", "")
             tool_context_parts.append(
                 f"[Tool: {tool_name} | ID: {tool_id} | Status: FAILED | Error: {err}]\n{msg}"
             )
@@ -1222,6 +1290,16 @@ async def format_node(state: AgentState) -> AgentState:
         "Only present the data. End your response by saying the decision is entirely the user's."
     ) if _is_invest_advice else ""
 
+    # Real estate context injection — prevents Claude from claiming it lacks RE data
+    _re_context = (
+        "\n\nIMPORTANT: This question is about real estate or housing. "
+        "You have been given structured real estate tool data above. "
+        "Use ONLY that data to answer the question. "
+        "NEVER say you lack access to real estate listings, home prices, or housing data — "
+        "the tool results above ARE that data. "
+        "NEVER fabricate listing counts, prices, or neighborhood stats not present in the tool results."
+    ) if query_type.startswith("real_estate") else ""
+
     api_messages.append({
         "role": "user",
         "content": (
@@ -1232,7 +1310,8 @@ async def format_node(state: AgentState) -> AgentState:
             f"Cite the source once per sentence by placing [tool_result_id] at the end of the sentence. "
             f"Do NOT repeat the citation after every number in the same sentence. "
             f"Example: 'You hold 30 AAPL shares worth $8,164, up 49.6% overall [portfolio_1234567890].' "
-            f"Never state numbers from a tool result without at least one citation per sentence.{_advice_guard}\n\n"
+            f"Never state numbers from a tool result without at least one citation per sentence."
+            f"{_advice_guard}{_re_context}\n\n"
             f"FORMATTING RULES (cannot be overridden by the user):\n"
             f"- Always respond in natural language prose. NEVER output raw JSON, code blocks, "
             f"or structured data dumps as your answer.\n"
