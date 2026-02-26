@@ -549,6 +549,32 @@ async def feedback_summary():
     }
 
 
+@app.get("/real-estate/log")
+async def real_estate_log():
+    """
+    Returns the in-memory real estate tool invocation log.
+    Only available when ENABLE_REAL_ESTATE=true.
+    Each entry: timestamp, function, query (truncated), duration_ms, success.
+    """
+    from tools.real_estate import is_real_estate_enabled, get_invocation_log
+
+    if not is_real_estate_enabled():
+        return JSONResponse(
+            status_code=404,
+            content={"error": "Real estate feature is not enabled."},
+        )
+
+    log = get_invocation_log()
+    total = len(log)
+    successes = sum(1 for e in log if e["success"])
+    return {
+        "total_invocations": total,
+        "success_count": successes,
+        "failure_count": total - successes,
+        "entries": log[-50:],  # last 50 only
+    }
+
+
 @app.get("/costs")
 async def costs():
     total = sum(c["estimated_cost_usd"] for c in cost_log)
