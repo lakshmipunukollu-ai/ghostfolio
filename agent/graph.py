@@ -14,6 +14,12 @@ from tools.market_data import market_data, market_overview
 from tools.tax_estimate import tax_estimate
 from tools.categorize import transaction_categorize
 from tools.write_ops import buy_stock, sell_stock, add_transaction, add_cash
+from tools.real_estate import (
+    get_neighborhood_snapshot,
+    search_listings,
+    compare_neighborhoods,
+    is_real_estate_enabled,
+)
 from verification.fact_checker import verify_claims
 
 SYSTEM_PROMPT = """You are a portfolio analysis assistant integrated with Ghostfolio wealth management software.
@@ -388,6 +394,26 @@ async def classify_node(state: AgentState) -> AgentState:
             return {**state, "query_type": "compliance+tax"}
         return {**state, "query_type": "tax"}
 
+    # --- Real Estate (feature-flagged) — checked AFTER tax/compliance so portfolio
+    #     queries like "housing allocation" still route to portfolio tools ---
+    if is_real_estate_enabled():
+        real_estate_kws = [
+            "real estate", "housing market", "home price", "home prices",
+            "neighborhood snapshot", "listing", "listings", "zillow",
+            "buy a house", "buy a home", "rent vs buy", "rental property",
+            "investment property", "cap rate", "days on market", "price per sqft",
+            "neighborhood", "housing", "mortgage", "home search",
+            "compare neighborhoods", "compare cities",
+        ]
+        has_real_estate = any(kw in query for kw in real_estate_kws)
+        if has_real_estate:
+            # Determine sub-type from context
+            if any(kw in query for kw in ["compare neighborhood", "compare cit", "vs "]):
+                return {**state, "query_type": "real_estate_compare"}
+            if any(kw in query for kw in ["search", "listings", "find home", "find a home", "available"]):
+                return {**state, "query_type": "real_estate_search"}
+            return {**state, "query_type": "real_estate_snapshot"}
+
     if has_overview:
         return {**state, "query_type": "market_overview"}
 
@@ -736,6 +762,59 @@ async def write_execute_node(state: AgentState) -> AgentState:
 
 
 # ---------------------------------------------------------------------------
+# Real estate location extraction helpers
+# ---------------------------------------------------------------------------
+
+_KNOWN_CITIES = [
+    "austin", "san francisco", "new york", "new york city", "nyc",
+    "denver", "seattle", "miami", "chicago", "phoenix", "nashville", "dallas",
+    "brooklyn", "manhattan", "sf", "atx", "dfw",
+]
+
+
+def _extract_real_estate_location(query: str) -> str:
+    """
+    Extracts the most likely city/location from a real estate query.
+    Falls back to 'Austin' as a safe default for demo purposes.
+    """
+    q = query.lower()
+    for city in _KNOWN_CITIES:
+        if city in q:
+            return city.title()
+    # Attempt to grab a capitalized word that might be a city
+    words = query.split()
+    for word in words:
+        clean = re.sub(r"[^A-Za-z]", "", word)
+        if len(clean) >= 4 and clean[0].isupper() and clean.lower() not in {
+            "what", "show", "how", "find", "search", "tell", "give", "real",
+            "estate", "housing", "market", "neighborhood", "compare",
+        }:
+            return clean
+    return "Austin"
+
+
+def _extract_two_locations(query: str) -> tuple[str, str]:
+    """
+    Extracts two city names from a comparison query.
+    E.g. "compare Austin vs Denver" → ("Austin", "Denver").
+    Falls back to Austin / Denver if extraction fails.
+    """
+    found = []
+    q = query.lower()
+    for city in _KNOWN_CITIES:
+        if city in q and city not in found:
+            found.append(city.title())
+        if len(found) >= 2:
+            break
+
+    if len(found) >= 2:
+        return found[0], found[1]
+    if len(found) == 1:
+        return found[0], "Denver"
+    return "Austin", "Denver"
+
+
+# ---------------------------------------------------------------------------
 # Tools node (read-path)
 # ---------------------------------------------------------------------------
 
@@ -898,6 +977,25 @@ async def tools_node(state: AgentState) -> AgentState:
         else:
             comp_result = await compliance_check({})
         tool_results.append(comp_result)
+
+    # --- Real Estate (feature-flagged) ---
+    # These branches are ONLY reachable when ENABLE_REAL_ESTATE=true because
+    # classify_node guards the routing with is_real_estate_enabled().
+    elif query_type == "real_estate_snapshot":
+        # Extract location from query — look for known city names
+        location = _extract_real_estate_location(user_query)
+        result = await get_neighborhood_snapshot(location)
+        tool_results.append(result)
+
+    elif query_type == "real_estate_search":
+        location = _extract_real_estate_location(user_query)
+        result = await search_listings(location)
+        tool_results.append(result)
+
+    elif query_type == "real_estate_compare":
+        loc_a, loc_b = _extract_two_locations(user_query)
+        result = await compare_neighborhoods(loc_a, loc_b)
+        tool_results.append(result)
 
     return {
         **state,
@@ -1230,6 +1328,7 @@ def _route_after_classify(state: AgentState) -> str:
         return "write_execute"
     if qt == "write_cancelled":
         return "format"
+    # Real estate types route through the normal tools → verify → format path
     return "tools"
 
 
