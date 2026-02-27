@@ -83,60 +83,58 @@ comparisons (Berlin $333/mo vs Austin $1,500/mo).
 
 ---
 
-## The Data Sources
+## Data Sources
 
-### ACTRIS / Unlock MLS — January 2026 (Austin TX)
+**User's own property data** — stored in SQLite,
+persists across sessions, full CRUD via natural language
 
-- 7 counties: City of Austin, Travis County, Williamson County, Hays County,
-  Bastrop County, Caldwell County, Austin-Round Rock-San Marcos MSA
-- Provided by the developer — a licensed Austin real estate agent (ACTRIS member)
-- Fields: ListPrice, DaysOnMarket, MonthsOfInventory, MedianRentMonthly,
-  CloseToListRatio, PendingSalesYoY, ClosedSalesYoY, AffordabilityScore
-- Schema follows RESO Web API naming — live API swap requires zero refactoring
-- Footer appended to every Texas response:
-  `📊 Source: ACTRIS/Unlock MLS · January 2026 · Verified by licensed Austin real estate agent`
+**Ghostfolio portfolio API** — live investment holdings,
+total value, performance data
 
-**Key January 2026 figures:**
+**Federal Reserve Survey of Consumer Finances 2022** —
+wealth percentile benchmarks by age group (public data)
 
-| Market            | Median Price | DOM | Months Inventory | Rent/mo |
-| ----------------- | ------------ | --- | ---------------- | ------- |
-| City of Austin    | $522,500     | 82  | 3.9              | $2,100  |
-| Travis County     | $445,000     | 87  | 3.9              | $2,100  |
-| Austin MSA        | $400,495     | 89  | 4.0              | $2,000  |
-| Williamson County | $403,500     | 92  | 3.5              | $1,995  |
-| Hays County       | $344,500     | 86  | 4.4              | $1,937  |
-| Bastrop County    | $335,970     | 109 | 5.8              | $1,860  |
-| Caldwell County   | $237,491     | 73  | 8.4              | $1,750  |
+**US Dept of Labor + Care.com 2024** — childcare cost
+estimates for family planning feature (background data)
 
-### Teleport API (global — 200+ cities, free, no auth)
-
-- Endpoint: `api.teleport.org`
-- Covers: cost of living, housing costs, quality of life scores for cities
-  worldwide including US, Europe, Asia, Australia, Canada, Latin America
-- Functions: `search_city_slug()` + `get_city_housing_data()`
-- Returns normalized schema compatible with Austin ACTRIS data structure
-- Fallback: hardcoded data for 23 major cities if API unavailable
-- Used by wealth_bridge for COL-adjusted salary calculations
-
-### Ghostfolio Portfolio API
-
-- Live portfolio holdings, total value, performance metrics
-- Connected via bearer token auth (per-user, passed from Angular frontend)
-- Used to calculate real purchasing power for down payment analysis
+**ACTRIS/Unlock MLS January 2026** — Austin TX market
+data available as background context when asked
+(provided by developer, licensed Austin real estate agent)
 
 ---
 
 ## The Impact
 
-A user asks: "I have a $150k offer in Berlin, I make
-$120k in Austin, I have $94k invested, I want kids in
-2 years — should I go?" The agent reads their live
-portfolio, calculates real purchasing power of the Berlin
-offer, shows the relocation runway, compares German
-childcare ($333/mo) vs Austin ($1,500/mo), checks their
-wealth position vs Fed Reserve peers, and returns a
-complete recommendation with tradeoffs — in one
-conversation using live data from three sources.
+The app solves a real problem: most people have money
+in both investments and real estate but no single place
+to see the complete picture or run scenarios on their
+own numbers.
+
+A user adds their home (bought $400k, worth $480k,
+mortgage $310k) and immediately sees $170k equity
+tracked alongside their $94k investment portfolio —
+total net worth $264k in one view.
+
+They then ask: "What if I buy a home every 2 years
+for the next 10 years and rent the previous one?"
+
+The agent asks what appreciation and rent assumptions
+they want to use — because we do not guess at numbers
+for markets we cannot verify. The user says "moderate
+— 4% appreciation." The agent runs the projection using
+their actual portfolio balance, their income, and their
+assumptions — and returns a year-by-year picture of
+what their net worth could look like at retirement.
+
+This is a conversation people pay financial advisors
+hundreds of dollars per hour to have. This app does it
+in 30 seconds — honestly, with the user's own numbers,
+and with clear disclaimers about what is a projection
+vs a prediction.
+
+No market data promises. No city comparisons we cannot
+stand behind. Just the user's numbers, their assumptions,
+and honest math.
 
 ---
 
@@ -150,23 +148,23 @@ Four rows of suggestion chips, visible before first message:
 - ⚠️ Any concentration risk?
 - 💰 Estimate my taxes
 
-**Row 2 — Real Estate (when `enableRealEstate=true`):**
+**Row 2 — Property Tracking (when `enableRealEstate=true`):**
 
-- 🏠 Austin under $500k
-- 📊 Austin vs Denver
-- 🏘️ SF snapshot
+- 🏠 Add my home to track equity
+- 📊 Show my total net worth
+- 💰 What are my equity options?
 
-**Row 3 — Wealth Bridge (when `enableRealEstate=true`):**
+**Row 3 — Life Decisions (when `enableRealEstate=true`):**
 
 - 💰 Can my portfolio buy a house?
-- ✈️ Is my job offer a real raise?
-- 🌍 Cost of living in Tokyo
+- ✈️ I have a job offer — is it worth it?
+- 🌍 How long until I'm stable if I move?
 
-**Row 4 — Life Decisions (when `enableRealEstate=true`):**
+**Row 4 — Strategy (when `enableRealEstate=true`):**
 
-- ⏱️ How long to feel stable if I move?
 - 📊 Am I ahead or behind financially?
 - 👶 Can I afford to have kids?
+- 🏘️ What if I buy a house every 2 years?
 
 ---
 
@@ -228,21 +226,17 @@ family_planner.py
 
 ## Evals & Verification
 
-- **115 passing tests total**
+- **100 fast-passing tests (deterministic, no network)**
 - Tests by feature:
-  - Down payment power at $94k portfolio
-  - Small portfolio cannot afford safe down payment
-  - Seattle $180k offer is NOT a real raise vs Austin $120k
-  - SF $250k offer IS a real raise vs Austin $80k
-  - Global city (London) comparison returns all required fields
-  - Full property CRUD cycle (CREATE → READ → UPDATE → DELETE)
-  - Net worth combines portfolio + real estate equity correctly
-  - Teleport fallback works when API unavailable
-  - 5 relocation runway tests (runway calculator)
+  - 60 portfolio tests (holdings, performance, tax, compliance)
+  - 13 property tracker tests (full CRUD cycle, equity, net worth)
+  - 7 real estate strategy simulator tests (user assumptions, presets, disclaimer)
+  - 4 property onboarding tests (add, list, net worth, graceful empty)
   - 6 wealth gap visualizer tests (Fed Reserve benchmarks)
-  - 5 life decision advisor tests (tool orchestration)
   - 4 equity unlock advisor tests (3-option analysis)
   - 6 family financial planner tests (global childcare data)
+  - Additional async integration tests (wealth bridge, relocation runway,
+    life decision advisor) that require network access
 - LangSmith tracing active at smith.langchain.com
 - `/real-estate/log` observability endpoint
 - Structured error codes on all tool failures (`REAL_ESTATE_PROVIDER_UNAVAILABLE`,
@@ -254,29 +248,32 @@ family_planner.py
 
 ## New Files Added in This Submission
 
-| File                                        | Purpose                                                |
-| ------------------------------------------- | ------------------------------------------------------ |
-| `agent/tools/teleport_api.py`               | Global city COL + housing data (200+ cities)           |
-| `agent/tools/wealth_bridge.py`              | Down payment power + job offer COL calculator          |
-| `agent/tools/relocation_runway.py`          | Month-by-month stability timeline for any relocation   |
-| `agent/tools/wealth_visualizer.py`          | Fed Reserve wealth benchmarks + retirement projection  |
-| `agent/tools/life_decision_advisor.py`      | Orchestrates tools into complete life decision verdict |
-| `agent/tools/family_planner.py`             | Financial impact of children for 25+ cities worldwide  |
-| `agent/evals/test_wealth_bridge.py`         | 8 tests for wealth bridge features                     |
-| `agent/evals/test_relocation_runway.py`     | 5 tests for relocation runway calculator               |
-| `agent/evals/test_wealth_visualizer.py`     | 6 tests for wealth gap visualizer                      |
-| `agent/evals/test_life_decision_advisor.py` | 5 tests for life decision advisor                      |
-| `agent/evals/test_equity_advisor.py`        | 4 tests for equity unlock advisor                      |
-| `agent/evals/test_family_planner.py`        | 6 tests for family financial planner                   |
-| `agent/data/`                               | SQLite database directory for property persistence     |
-| `BOUNTY.md`                                 | This file                                              |
+| File                                        | Purpose                                                           |
+| ------------------------------------------- | ----------------------------------------------------------------- |
+| `agent/tools/teleport_api.py`               | Global city COL + housing data (200+ cities)                      |
+| `agent/tools/wealth_bridge.py`              | Down payment power + job offer COL calculator                     |
+| `agent/tools/relocation_runway.py`          | Month-by-month stability timeline for any relocation              |
+| `agent/tools/wealth_visualizer.py`          | Fed Reserve wealth benchmarks + retirement projection             |
+| `agent/tools/life_decision_advisor.py`      | Orchestrates tools into complete life decision verdict            |
+| `agent/tools/family_planner.py`             | Financial impact of children for 25+ cities worldwide             |
+| `agent/tools/realestate_strategy.py`        | Multi-property buy-and-rent strategy simulator (user assumptions) |
+| `agent/evals/test_wealth_bridge.py`         | Integration tests for wealth bridge features                      |
+| `agent/evals/test_relocation_runway.py`     | Integration tests for relocation runway calculator                |
+| `agent/evals/test_wealth_visualizer.py`     | 6 tests for wealth gap visualizer                                 |
+| `agent/evals/test_life_decision_advisor.py` | Integration tests for life decision advisor                       |
+| `agent/evals/test_equity_advisor.py`        | 4 tests for equity unlock advisor                                 |
+| `agent/evals/test_family_planner.py`        | 6 tests for family financial planner                              |
+| `agent/evals/test_realestate_strategy.py`   | 7 tests for strategy simulator (user assumptions, presets)        |
+| `agent/evals/test_property_onboarding.py`   | 4 tests for property onboarding flow                              |
+| `agent/data/`                               | SQLite database directory for property persistence                |
+| `BOUNTY.md`                                 | This file                                                         |
 
 ## Modified Files
 
-| File                                     | Change                                                   |
-| ---------------------------------------- | -------------------------------------------------------- |
-| `agent/tools/real_estate.py`             | Expose real ACTRIS data_source in responses + TX footer  |
-| `agent/tools/property_tracker.py`        | Full SQLite CRUD + analyze_equity_options function       |
-| `agent/graph.py`                         | Routes for all 5 new features + wealth bridge + property |
-| `apps/client/.../ai-chat.component.html` | Row 3 wealth bridge chips + Row 4 life decision chips    |
-| `apps/client/.../ai-chat.component.scss` | Amber gold (Row 3) + purple/violet (Row 4) chip styling  |
+| File                                     | Change                                                          |
+| ---------------------------------------- | --------------------------------------------------------------- |
+| `agent/tools/real_estate.py`             | Expose real ACTRIS data_source in responses + TX footer         |
+| `agent/tools/property_tracker.py`        | Full SQLite CRUD + analyze_equity_options function              |
+| `agent/graph.py`                         | Strategy simulator routing + assumption extraction + onboarding |
+| `apps/client/.../ai-chat.component.html` | Personal tracking chips replacing market data chips             |
+| `apps/client/.../ai-chat.component.scss` | Amber gold (Row 3) + purple/violet (Row 4) chip styling         |
