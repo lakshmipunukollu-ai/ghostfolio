@@ -268,7 +268,7 @@ Every `/chat` response includes:
 ## Open Source Contribution
 
 **Contribution Type:** New agent layer + eval dataset as brownfield addition  
-**Repository:** [github.com/lakshmipunukollu-ai/ghostfolio](https://github.com/lakshmipunukollu-ai/ghostfolio)  
+**Repository:** [github.com/lakshmipunukollu-ai/ghostfolio-agent-priya](https://github.com/lakshmipunukollu-ai/ghostfolio-agent-priya)  
 **Branch:** `feature/complete-showcase`
 
 **What was contributed:**
@@ -296,7 +296,7 @@ finance AI agents.
 
 ```bash
 # Clone and setup
-git clone https://github.com/lakshmipunukollu-ai/ghostfolio
+git clone https://github.com/lakshmipunukollu-ai/ghostfolio-agent-priya
 cd ghostfolio
 git checkout feature/complete-showcase
 
