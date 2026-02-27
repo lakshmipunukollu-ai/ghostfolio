@@ -399,7 +399,55 @@ async def classify_node(state: AgentState) -> AgentState:
         "and what about that",
         "how does that compare",
     ]
-    if has_history and any(phrase in query for phrase in followup_trigger_phrases):
+
+    # Broader follow-up detection: pronoun-anchored comparison/elaboration questions
+    # These all refer back to something from prior conversation context.
+    _broad_followup_phrases = [
+        # "this/that/it" + compare/explain/mean
+        "how does this compare", "how does it compare", "how do those compare",
+        "how does this relate", "how does that relate",
+        "what does this mean", "what does that mean", "what does it mean",
+        "what does this tell", "what does that tell",
+        "is that good", "is this good", "is that bad", "is this bad",
+        "is that normal", "is this normal", "is that high", "is that low",
+        "why is that", "why is this", "why did it", "why did that",
+        "can you explain this", "can you explain that",
+        "tell me more about this", "elaborate on this", "elaborate on that",
+        "what about inflation", "compared to inflation", "versus inflation",
+        "relative to inflation", "in terms of inflation", "adjust for inflation",
+        "compared to the market", "versus the market", "vs the market",
+        "what does that number mean", "put that in context",
+        "is that a lot", "is that enough", "what does that look like",
+        "so what does that mean", "and what does that mean",
+        "break that down", "break this down",
+        "what should i make of", "how should i interpret",
+    ]
+
+    # #region agent log
+    import json as _json_log, time as _time_log
+    _log_path = "/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/.cursor/debug-91957c.log"
+    _phrase_matched = any(phrase in query for phrase in followup_trigger_phrases)
+    _broad_matched = has_history and any(phrase in query for phrase in _broad_followup_phrases)
+    try:
+        with open(_log_path, "a") as _lf:
+            _lf.write(_json_log.dumps({
+                "sessionId": "91957c", "hypothesisId": "A",
+                "location": "graph.py:classify_node:followup_check",
+                "message": "classify_node followup detection",
+                "data": {
+                    "query": query[:120],
+                    "has_history": has_history,
+                    "history_len": len(state.get("messages", [])),
+                    "old_phrase_matched": _phrase_matched,
+                    "broad_phrase_matched": _broad_matched,
+                },
+                "timestamp": int(_time_log.time() * 1000),
+            }) + "\n")
+    except Exception:
+        pass
+    # #endregion
+
+    if has_history and (_phrase_matched or _broad_matched):
         return {**state, "query_type": "context_followup"}
 
     # --- Full position analysis — "everything about X" or "full analysis of X position" ---
@@ -688,6 +736,27 @@ async def classify_node(state: AgentState) -> AgentState:
         query_type = "performance"
     else:
         query_type = "performance"
+
+    # #region agent log
+    import json as _json_log2, time as _time_log2
+    _log_path2 = "/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/.cursor/debug-91957c.log"
+    try:
+        with open(_log_path2, "a") as _lf2:
+            _lf2.write(_json_log2.dumps({
+                "sessionId": "91957c", "hypothesisId": "B",
+                "location": "graph.py:classify_node:final_route",
+                "message": "final query_type assigned",
+                "data": {
+                    "query": query[:120],
+                    "query_type": query_type,
+                    "has_history": has_history,
+                    "history_len": len(state.get("messages", [])),
+                },
+                "timestamp": int(_time_log2.time() * 1000),
+            }) + "\n")
+    except Exception:
+        pass
+    # #endregion
 
     return {**state, "query_type": query_type}
 
