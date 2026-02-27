@@ -1,6 +1,15 @@
 import asyncio, yaml, httpx, time, json
 from datetime import datetime
 
+
+def _percentile(values: list, p: int) -> float:
+    if not values:
+        return 0.0
+    sorted_vals = sorted(values)
+    idx = (p / 100) * (len(sorted_vals) - 1)
+    lo, hi = int(idx), min(int(idx) + 1, len(sorted_vals) - 1)
+    return round(sorted_vals[lo] + (idx - lo) * (sorted_vals[hi] - sorted_vals[lo]), 2)
+
 BASE = "http://localhost:8000"
 
 
@@ -153,6 +162,46 @@ async def main():
         print(f"\nSCENARIOS: {scenario_pass}/{len(scenario_results)} passed")
         print(f"OVERALL: {golden_pass + scenario_pass}/{len(golden_results) + len(scenario_results)} passed")
 
+        # Latency stats across all cases
+        all_latencies = [
+            r['latency'] for r in golden_results + scenario_results if r.get('latency', 0) > 0
+        ]
+        golden_latencies = [r['latency'] for r in golden_results if r.get('latency', 0) > 0]
+        scenario_latencies = [r['latency'] for r in scenario_results if r.get('latency', 0) > 0]
+
+        def _lat_summary(vals):
+            if not vals:
+                return "n/a"
+            avg = round(sum(vals) / len(vals), 2)
+            return f"avg={avg}s  p50={_percentile(vals, 50)}s  p95={_percentile(vals, 95)}s  p99={_percentile(vals, 99)}s"
+
+        print(f"\n{'='*60}")
+        print(f"LATENCY STATS:")
+        print(f"  Golden sets   : {_lat_summary(golden_latencies)}")
+        print(f"  Scenarios     : {_lat_summary(scenario_latencies)}")
+        print(f"  Overall       : {_lat_summary(all_latencies)}")
+
+        latency_stats = {
+            'golden': {
+                'avg': round(sum(golden_latencies) / len(golden_latencies), 2) if golden_latencies else 0.0,
+                'p50': _percentile(golden_latencies, 50),
+                'p95': _percentile(golden_latencies, 95),
+                'p99': _percentile(golden_latencies, 99),
+            },
+            'scenarios': {
+                'avg': round(sum(scenario_latencies) / len(scenario_latencies), 2) if scenario_latencies else 0.0,
+                'p50': _percentile(scenario_latencies, 50),
+                'p95': _percentile(scenario_latencies, 95),
+                'p99': _percentile(scenario_latencies, 99),
+            },
+            'overall': {
+                'avg': round(sum(all_latencies) / len(all_latencies), 2) if all_latencies else 0.0,
+                'p50': _percentile(all_latencies, 50),
+                'p95': _percentile(all_latencies, 95),
+                'p99': _percentile(all_latencies, 99),
+            },
+        }
+
         # Save results
         all_results = {
             'timestamp': datetime.utcnow().isoformat(),
@@ -161,6 +210,7 @@ async def main():
             'summary': {
                 'golden_pass_rate': f"{golden_pass}/{len(golden_results)}",
                 'scenario_pass_rate': f"{scenario_pass}/{len(scenario_results)}",
+                'latency_stats': latency_stats,
             }
         }
         with open('evals/golden_results.json', 'w') as f:

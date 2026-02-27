@@ -2,20 +2,70 @@ import json
 import time
 import uuid
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, HTMLResponse, JSONResponse
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import httpx
 from langchain_core.messages import HumanMessage, AIMessage
+from passlib.context import CryptContext
+from jose import JWTError, jwt
 
-load_dotenv()
+load_dotenv(override=True)
 
 from graph import build_graph
 from state import AgentState
+
+# ── Auth configuration ──
+_JWT_ALGORITHM = "HS256"
+_JWT_EXPIRE_HOURS = 24
+_pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+_http_bearer = HTTPBearer(auto_error=False)
+
+
+def _get_jwt_secret() -> str:
+    secret = os.getenv("JWT_SECRET_KEY", "")
+    if not secret:
+        raise RuntimeError("JWT_SECRET_KEY env var is required")
+    return secret
+
+
+def _create_access_token(subject: str) -> str:
+    expire = datetime.utcnow() + timedelta(hours=_JWT_EXPIRE_HOURS)
+    payload = {"sub": subject, "exp": expire}
+    return jwt.encode(payload, _get_jwt_secret(), algorithm=_JWT_ALGORITHM)
+
+
+def _verify_jwt(token: str) -> str:
+    """Validates the JWT and returns the subject claim."""
+    try:
+        payload = jwt.decode(token, _get_jwt_secret(), algorithms=[_JWT_ALGORITHM])
+        sub: str = payload.get("sub", "")
+        if not sub:
+            raise ValueError("missing sub")
+        return sub
+    except JWTError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired token",
+            headers={"WWW-Authenticate": "Bearer"},
+        ) from exc
+
+
+def require_auth(credentials: HTTPAuthorizationCredentials = Depends(_http_bearer)) -> str:
+    """FastAPI dependency — extracts and validates the Bearer JWT."""
+    if credentials is None or not credentials.credentials:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return _verify_jwt(credentials.credentials)
+
 
 app = FastAPI(
     title="Ghostfolio AI Agent",
@@ -126,7 +176,7 @@ class FeedbackRequest(BaseModel):
 
 
 @app.post("/chat")
-async def chat(req: ChatRequest):
+async def chat(req: ChatRequest, _user: str = Depends(require_auth)):
     start = time.time()
 
     # Build conversation history preserving both user AND assistant turns so
@@ -160,6 +210,8 @@ async def chat(req: ChatRequest):
         "final_response": None,
         "citations": [],
         "error": None,
+        "input_tokens": None,
+        "output_tokens": None,
     }
 
     trace_id = str(uuid.uuid4())
@@ -168,9 +220,10 @@ async def chat(req: ChatRequest):
     elapsed = round(time.time() - start, 2)
     latency_ms = int(elapsed * 1000)
 
-    # Token estimation (actual token counts unavailable without API callbacks)
-    input_tokens = INPUT_TOKENS_PER_REQUEST
-    output_tokens = OUTPUT_TOKENS_PER_REQUEST
+    # Use actual token counts from the Anthropic API response when available;
+    # fall back to estimates if the format node did not reach the Claude call.
+    input_tokens = result.get("input_tokens") or INPUT_TOKENS_PER_REQUEST
+    output_tokens = result.get("output_tokens") or OUTPUT_TOKENS_PER_REQUEST
     estimated_cost = estimate_cost(input_tokens, output_tokens)
 
     cost_log.append({
@@ -317,6 +370,7 @@ async def chat(req: ChatRequest):
             "output": output_tokens,
             "total": input_tokens + output_tokens,
             "estimated_cost_usd": round(estimated_cost, 5),
+            "source": "actual" if result.get("input_tokens") else "estimated",
         },
         "trace_id": trace_id,
         "timestamp": datetime.utcnow().isoformat(),
@@ -326,7 +380,7 @@ async def chat(req: ChatRequest):
 
 
 @app.post("/chat/stream")
-async def chat_stream(req: ChatRequest):
+async def chat_stream(req: ChatRequest, _user: str = Depends(require_auth)):
     """
     Streaming variant of /chat — returns SSE (text/event-stream).
     Runs the full graph, then streams the final response word by word so
@@ -359,6 +413,8 @@ async def chat_stream(req: ChatRequest):
         "final_response": None,
         "citations": [],
         "error": None,
+        "input_tokens": None,
+        "output_tokens": None,
     }
 
     async def generate():
@@ -478,42 +534,53 @@ class LoginRequest(BaseModel):
 @app.post("/auth/login")
 async def auth_login(req: LoginRequest):
     """
-    Demo auth endpoint.
-    Validates against DEMO_EMAIL / DEMO_PASSWORD env vars (defaults: test@example.com / password).
-    On success, returns the configured GHOSTFOLIO_BEARER_TOKEN so the client can use it.
+    Secure auth endpoint.
+    Validates against ADMIN_USERNAME / ADMIN_PASSWORD_HASH env vars.
+    ADMIN_PASSWORD_HASH must be a bcrypt hash (generate with: python -c "from passlib.context import CryptContext; print(CryptContext(['bcrypt']).hash('yourpassword'))")
+    On success, returns a signed JWT valid for 24 hours.
     """
-    demo_email    = os.getenv("DEMO_EMAIL", "test@example.com")
-    demo_password = os.getenv("DEMO_PASSWORD", "password")
+    admin_username = os.getenv("ADMIN_USERNAME", "")
+    admin_password_hash = os.getenv("ADMIN_PASSWORD_HASH", "")
 
-    if req.email.strip().lower() != demo_email.lower() or req.password != demo_password:
+    if not admin_username or not admin_password_hash:
         return JSONResponse(
-            status_code=401,
-            content={"success": False, "message": "Invalid email or password."},
+            status_code=503,
+            content={"success": False, "message": "Auth not configured — set ADMIN_USERNAME and ADMIN_PASSWORD_HASH env vars."},
         )
 
-    token = os.getenv("GHOSTFOLIO_BEARER_TOKEN", "")
+    username_matches = req.email.strip().lower() == admin_username.strip().lower()
+    password_matches = _pwd_context.verify(req.password, admin_password_hash)
 
-    # Fetch display name for this token
+    if not username_matches or not password_matches:
+        return JSONResponse(
+            status_code=401,
+            content={"success": False, "message": "Invalid credentials."},
+        )
+
+    session_token = _create_access_token(subject=admin_username)
+
+    # Attempt to resolve a display name from Ghostfolio
     base_url = os.getenv("GHOSTFOLIO_BASE_URL", "http://localhost:3333")
-    display_name = "Investor"
+    gf_token = os.getenv("GHOSTFOLIO_BEARER_TOKEN", "")
+    display_name = admin_username
     try:
         async with httpx.AsyncClient(timeout=4.0) as client:
             r = await client.get(
                 f"{base_url}/api/v1/user",
-                headers={"Authorization": f"Bearer {token}"},
+                headers={"Authorization": f"Bearer {gf_token}"},
             )
             if r.status_code == 200:
                 data = r.json()
                 alias = data.get("settings", {}).get("alias") or ""
-                display_name = alias or demo_email.split("@")[0] or "Investor"
+                display_name = alias or admin_username
     except Exception:
-        display_name = demo_email.split("@")[0] or "Investor"
+        pass
 
     return {
         "success": True,
-        "token": token,
+        "token": session_token,
         "name": display_name,
-        "email": demo_email,
+        "email": req.email.strip().lower(),
     }
 
 
@@ -576,7 +643,7 @@ _OUR_NODES = set(_NODE_LABELS.keys())
 
 
 @app.post("/chat/steps")
-async def chat_steps(req: ChatRequest):
+async def chat_steps(req: ChatRequest, _user: str = Depends(require_auth)):
     """
     SSE endpoint that streams LangGraph node events in real time.
     Clients receive step events as each graph node starts/ends,
@@ -611,6 +678,8 @@ async def chat_steps(req: ChatRequest):
         "final_response": None,
         "citations": [],
         "error": None,
+        "input_tokens": None,
+        "output_tokens": None,
     }
 
     async def generate():
@@ -701,7 +770,7 @@ async def chat_ui():
 
 
 @app.post("/feedback")
-async def feedback(req: FeedbackRequest):
+async def feedback(req: FeedbackRequest, _user: str = Depends(require_auth)):
     entry = {
         "timestamp": datetime.utcnow().isoformat(),
         "query": req.query,
@@ -714,7 +783,7 @@ async def feedback(req: FeedbackRequest):
 
 
 @app.get("/feedback/summary")
-async def feedback_summary():
+async def feedback_summary(_user: str = Depends(require_auth)):
     if not feedback_log:
         return {
             "total": 0,
@@ -763,7 +832,7 @@ async def real_estate_log():
 
 
 @app.get("/costs")
-async def costs():
+async def costs(_user: str = Depends(require_auth)):
     total = sum(c["estimated_cost_usd"] for c in cost_log)
     avg = total / max(len(cost_log), 1)
 
@@ -821,7 +890,7 @@ async def health_check():
     except Exception:
         ghostfolio_ok = False
     return {
-        "status": "OK",
+        "status": "ok",
         "ghostfolio_reachable": ghostfolio_ok,
         "timestamp": datetime.utcnow().isoformat(),
         "version": "2.1.0-complete-showcase",

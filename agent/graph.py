@@ -145,6 +145,13 @@ Available tool categories:
 - Equity unlock advisor (home equity options, refinance): use when tool_name is "equity_advisor"
 - Family financial planner (childcare costs, family budget): use when tool_name is "family_planner"
 
+12. Real estate is an INVESTMENT feature, not a home-search feature. If asked to find or search
+   for a home to live in (e.g. "find me a house", "show listings near me", "I want to buy a home
+   in [city]" as a primary residence search), respond:
+   "I help track real estate as investments in your portfolio. I can look up market data for
+   investment research, but I'm not a home search tool. Would you like to add a property you own
+   or analyze a potential investment property?"
+
 Use the appropriate tool based on what the user asks.
 Only use portfolio analysis for questions about investment holdings and portfolio performance."""
 
@@ -372,7 +379,11 @@ async def classify_node(state: AgentState) -> AgentState:
         r"\b(add|record|log)\s+(a\s+)?(transaction|trade|order)\b", query, re.I
     ))
 
-    if buy_write and not re.search(r"\b(show|history|my|how|past|previous)\b", query, re.I):
+    # Exclude real estate / home-buying language from stock buy intent
+    _is_re_purchase = bool(re.search(
+        r"\b(house|home|property|condo|apartment|townhouse|real estate)\b", query, re.I
+    ))
+    if buy_write and not _is_re_purchase and not re.search(r"\b(show|history|my|how|past|previous)\b", query, re.I):
         return {**state, "query_type": "buy"}
     if sell_write and not re.search(r"\b(show|history|my|how|past|previous)\b", query, re.I):
         return {**state, "query_type": "sell"}
@@ -679,6 +690,36 @@ async def classify_node(state: AgentState) -> AgentState:
             return {**state, "query_type": "property_list"}
         if any(kw in query for kw in property_net_worth_kws):
             return {**state, "query_type": "property_net_worth"}
+
+    # --- Real Estate home-shopping guard (feature-flagged) ---
+    # Must run BEFORE real_estate_kws so buying-intent queries are intercepted
+    # before search_listings is ever called.
+    if is_real_estate_enabled():
+        _home_shopping_kws = [
+            "find me a home", "find me a house", "find a home", "find a house",
+            "search for homes", "search for houses", "looking for a home",
+            "looking for a house", "house hunting", "home search",
+            "homes for sale", "houses for sale", "listings in",
+            "move to", "relocate to", "live in",
+            "find me a place", "apartment for rent",
+            # Active buying intent without investment framing
+            "want to buy a house", "want to buy a home",
+            "looking to buy a house", "looking to buy a home",
+            "i want to buy", "want to purchase a house", "want to purchase a home",
+            # Bedroom/price filter combos that signal active home shopping
+            "bedroom house", "bedroom home", "3br", "4br", "2br",
+            "under $", "for sale under",
+        ]
+        _investment_intent_kws = [
+            "invest", "investment", "rental yield", "cap rate", "roi",
+            "cash flow", "portfolio", "holdings", "equity", "appreciation",
+            "returns", "yield", "rental income", "buy to let",
+            "as an investment", "investment property", "investment research",
+        ]
+        has_home_shopping = any(kw in query for kw in _home_shopping_kws)
+        has_investment_intent = any(kw in query for kw in _investment_intent_kws)
+        if has_home_shopping and not has_investment_intent:
+            return {**state, "query_type": "real_estate_refused"}
 
     # --- Real Estate (feature-flagged) — checked AFTER tax/compliance so portfolio
     #     queries like "housing allocation" still route to portfolio tools ---
@@ -1659,6 +1700,24 @@ async def tools_node(state: AgentState) -> AgentState:
             comp_result = await compliance_check({})
         tool_results.append(comp_result)
 
+    # --- Real Estate home-shopping refusal ---
+    elif query_type == "real_estate_refused":
+        tool_results.append({
+            "tool_name": "real_estate_refused",
+            "success": True,
+            "tool_result_id": "re_refused",
+            "result": (
+                "I help track real estate as investments in your portfolio — "
+                "I'm not a home search tool. Here's what I can do:\n\n"
+                "• **Add a property you own** — track address, value, and mortgage\n"
+                "• **Calculate your equity** — see equity across all your properties\n"
+                "• **Analyze rental yields** — cap rates and cash flow for investment research\n"
+                "• **Look up market data** — median prices, days on market, inventory levels\n"
+                "• **Simulate a buy-and-rent strategy** — model buying properties over time\n\n"
+                "Would you like to do any of these?"
+            ),
+        })
+
     # --- Real Estate (feature-flagged) ---
     # These branches are ONLY reachable when ENABLE_REAL_ESTATE=true because
     # classify_node guards the routing with is_real_estate_enabled().
@@ -2217,8 +2276,8 @@ async def format_node(state: AgentState) -> AgentState:
             "- **Tax estimates**: \"What are my capital gains?\" or \"Do I owe taxes?\"\n"
             "- **Risk & compliance**: \"Am I over-concentrated?\" or \"How diversified am I?\"\n"
             "- **Market data**: \"What is AAPL trading at?\" or \"What's the market doing today?\"\n"
-            "- **Real estate**: \"Show me homes in Austin\" or \"Compare San Francisco vs Austin\"\n"
-            "- **Wealth planning**: \"Can I afford a down payment?\" or \"Am I on track for retirement?\"\n\n"
+            "- **Real estate holdings**: \"What are my properties worth?\" or \"What's my total net worth including real estate?\"\n"
+            "- **Investment strategy**: \"Simulate buying rental properties over 10 years\" or \"Analyze my equity options\"\n\n"
             "Try rephrasing your question around one of these topics."
         )
         updated_messages = _append_messages(state, user_query, response)
@@ -2274,8 +2333,8 @@ async def format_node(state: AgentState) -> AgentState:
                     "- **Tax estimates**: \"What are my capital gains?\" or \"Do I owe taxes?\"\n"
                     "- **Risk & compliance**: \"Am I over-concentrated?\" or \"How diversified am I?\"\n"
                     "- **Market data**: \"What is AAPL trading at?\" or \"What's the market doing today?\"\n"
-                    "- **Real estate**: \"Show me homes in Austin\" or \"Compare San Francisco vs Austin\"\n"
-                    "- **Wealth planning**: \"Can I afford a down payment?\" or \"Am I on track for retirement?\"\n\n"
+                    "- **Real estate holdings**: \"What are my properties worth?\" or \"What's my total net worth including real estate?\"\n"
+                    "- **Investment strategy**: \"Simulate buying rental properties over 10 years\" or \"Analyze my equity options\"\n\n"
                     "Try rephrasing your question around one of these topics."
                 )
                 updated_messages = _append_messages(state, user_query, response)
@@ -2393,12 +2452,17 @@ async def format_node(state: AgentState) -> AgentState:
         "Only present the data. End your response by saying the decision is entirely the user's."
     ) if _is_invest_advice else ""
 
-    # Real estate context injection — prevents Claude from claiming it lacks RE data
+    # Real estate context injection — frames RE data as investment analysis, not home shopping
     _re_context = (
-        "\n\nIMPORTANT: This question is about real estate or housing. "
+        "\n\nIMPORTANT: You are helping the user analyze real estate as part of their investment portfolio. "
+        "You can look up market data for investment research, track properties they own, calculate equity "
+        "and net worth, and simulate long-term buy-and-rent strategies. "
+        "You are NOT a real estate agent. Do not help users shop for homes. "
+        "Frame all real estate data in terms of investment analysis — returns, equity, cash flow, "
+        "appreciation, allocation within their overall portfolio. "
         "You have been given structured real estate tool data above. "
         "Use ONLY that data to answer the question. "
-        "NEVER say you lack access to real estate listings, home prices, or housing data — "
+        "NEVER say you lack access to market data, home prices, or housing statistics — "
         "the tool results above ARE that data. "
         "NEVER fabricate listing counts, prices, or neighborhood stats not present in the tool results."
     ) if query_type.startswith("real_estate") else ""
@@ -2424,6 +2488,8 @@ async def format_node(state: AgentState) -> AgentState:
         ),
     })
 
+    actual_input_tokens: int | None = None
+    actual_output_tokens: int | None = None
     try:
         response_obj = client.messages.create(
             model="claude-sonnet-4-20250514",
@@ -2433,6 +2499,9 @@ async def format_node(state: AgentState) -> AgentState:
             timeout=25.0,
         )
         answer = response_obj.content[0].text
+        if hasattr(response_obj, "usage") and response_obj.usage:
+            actual_input_tokens = response_obj.usage.input_tokens
+            actual_output_tokens = response_obj.usage.output_tokens
     except Exception as e:
         answer = (
             f"I encountered an error generating your response: {str(e)}. "
@@ -2483,6 +2552,8 @@ async def format_node(state: AgentState) -> AgentState:
         "final_response": final,
         "messages": updated_messages,
         "citations": citations,
+        "input_tokens": actual_input_tokens,
+        "output_tokens": actual_output_tokens,
     }
 
 

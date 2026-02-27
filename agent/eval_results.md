@@ -5,6 +5,18 @@
 
 ---
 
+## Baseline vs. Final Score
+
+| Metric | Baseline (before fixes) | Final (after fixes) | Improvement |
+|---|---|---|---|
+| Agent Eval Suite pass rate | **91.7%** (55 / 60) | **100%** (60 / 60) | +8.3 pp · +5 cases |
+| Adversarial pass rate | 100% (10 / 10) | 100% (10 / 10) | — |
+| Golden Sets pass rate | 100% (10 / 10) | 100% (10 / 10) | — |
+
+5 cases failed at baseline; all were fixed via targeted changes to the classifier in `graph.py` (see Fixes Applied section below).
+
+---
+
 ## Summary
 
 | Suite | Passed | Total | Pass Rate |
