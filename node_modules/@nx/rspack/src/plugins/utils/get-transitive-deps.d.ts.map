@@ -1,0 +1,1 @@
+{"version":3,"file":"get-transitive-deps.d.ts","sourceRoot":"","sources":["../../../../../../packages/rspack/src/plugins/utils/get-transitive-deps.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,YAAY,EAAE,MAAM,YAAY,CAAC;AAG/C;;;;;;;GAOG;AACH,wBAAgB,oBAAoB,CAClC,KAAK,EAAE,YAAY,EACnB,UAAU,EAAE,MAAM,EAClB,OAAO,cAAoB,GAC1B,MAAM,EAAE,CAwCV"}

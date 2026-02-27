@@ -1,0 +1,1 @@
+{"version":3,"file":"add-angular-eslint-dependencies.d.ts","sourceRoot":"","sources":["../../../../../../../packages/angular/src/generators/add-linting/lib/add-angular-eslint-dependencies.ts"],"names":[],"mappings":"AAAA,OAAO,EAEL,KAAK,iBAAiB,EACtB,KAAK,IAAI,EACV,MAAM,YAAY,CAAC;AAMpB,wBAAgB,4BAA4B,CAC1C,IAAI,EAAE,IAAI,EACV,WAAW,EAAE,MAAM,GAClB,iBAAiB,CA2BnB"}

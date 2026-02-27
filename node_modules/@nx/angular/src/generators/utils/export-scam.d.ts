@@ -1,0 +1,12 @@
+import type { Tree } from '@nx/devkit';
+export type GenerationOptions = {
+    directory: string;
+    filePath: string;
+    name: string;
+    projectName: string;
+    modulePath: string;
+    export?: boolean;
+    inlineScam?: boolean;
+};
+export declare function exportScam(tree: Tree, options: GenerationOptions): void;
+//# sourceMappingURL=export-scam.d.ts.map

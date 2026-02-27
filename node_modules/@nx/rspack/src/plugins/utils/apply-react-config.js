@@ -1,0 +1,51 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.applyReactConfig = applyReactConfig;
+const devkit_1 = require("@nx/devkit");
+// TODO(v23): Remove SVGR support
+function applyReactConfig(options, config = {}) {
+    if (global.NX_GRAPH_CREATION)
+        return;
+    addHotReload(config);
+    if (options.svgr !== false || typeof options.svgr === 'object') {
+        // Log deprecation warning when SVGR is used
+        if (options.svgr === true || typeof options.svgr === 'object') {
+            devkit_1.logger.warn('SVGR support is deprecated and will be removed in Nx 23. Please consider using alternative SVG handling methods.');
+        }
+        removeSvgLoaderIfPresent(config);
+        const defaultSvgrOptions = {
+            svgo: false,
+            titleProp: true,
+            ref: true,
+        };
+        const svgrOptions = typeof options.svgr === 'object' ? options.svgr : defaultSvgrOptions;
+        config.module.rules.push({
+            test: /\.svg$/i,
+            type: 'asset',
+            resourceQuery: /url/, // *.svg?url
+        }, {
+            test: /\.svg$/i,
+            issuer: /\.[jt]sx?$/,
+            resourceQuery: { not: [/url/] }, // exclude react component if not *.svg?url
+            use: [{ loader: '@svgr/webpack', options: svgrOptions }],
+        });
+    }
+    // enable rspack node api
+    config.node = {
+        __dirname: true,
+        __filename: true,
+    };
+}
+function removeSvgLoaderIfPresent(config) {
+    const svgLoaderIdx = config.module.rules.findIndex((rule) => typeof rule === 'object' && rule.test?.toString().includes('svg'));
+    if (svgLoaderIdx === -1)
+        return;
+    config.module.rules.splice(svgLoaderIdx, 1);
+}
+function addHotReload(config) {
+    const ReactRefreshPlugin = require('@rspack/plugin-react-refresh');
+    const isDev = process.env.NODE_ENV === 'development' || config.mode === 'development';
+    if (isDev) {
+        config.plugins.push(new ReactRefreshPlugin({ overlay: false }));
+    }
+}

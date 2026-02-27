@@ -1,0 +1,1 @@
+{"version":3,"file":"ensure-angular-dependencies.d.ts","sourceRoot":"","sources":["../../../../../../packages/angular/src/generators/utils/ensure-angular-dependencies.ts"],"names":[],"mappings":"AAAA,OAAO,EAIL,KAAK,iBAAiB,EACtB,KAAK,IAAI,EACV,MAAM,YAAY,CAAC;AAQpB,wBAAgB,yBAAyB,CACvC,IAAI,EAAE,IAAI,EACV,QAAQ,EAAE,OAAO,GAChB,iBAAiB,CA0EnB"}

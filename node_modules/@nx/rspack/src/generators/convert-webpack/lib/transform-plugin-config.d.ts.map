@@ -1,0 +1,1 @@
+{"version":3,"file":"transform-plugin-config.d.ts","sourceRoot":"","sources":["../../../../../../../packages/rspack/src/generators/convert-webpack/lib/transform-plugin-config.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,IAAI,EAAE,MAAM,YAAY,CAAC;AAIvC,wBAAgB,qBAAqB,CAAC,IAAI,EAAE,IAAI,EAAE,iBAAiB,EAAE,MAAM,QAkB1E"}

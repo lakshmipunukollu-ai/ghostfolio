@@ -1,0 +1,3 @@
+import type { Tree } from '@nx/devkit';
+export declare function transformEsmConfigFile(tree: Tree, configPath: string): void;
+//# sourceMappingURL=transform-esm.d.ts.map

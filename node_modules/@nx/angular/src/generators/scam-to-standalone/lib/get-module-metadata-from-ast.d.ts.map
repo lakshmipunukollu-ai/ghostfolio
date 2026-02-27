@@ -1,0 +1,1 @@
+{"version":3,"file":"get-module-metadata-from-ast.d.ts","sourceRoot":"","sources":["../../../../../../../packages/angular/src/generators/scam-to-standalone/lib/get-module-metadata-from-ast.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,YAAY,CAAC;AAE7C,wBAAgB,wBAAwB,CACtC,YAAY,EAAE,UAAU,EACxB,qBAAqB,EAAE,MAAM;;;;;;;EA6D9B"}

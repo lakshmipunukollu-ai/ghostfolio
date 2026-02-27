@@ -1,0 +1,1 @@
+{"version":3,"file":"replace-module-usages-with-component.d.ts","sourceRoot":"","sources":["../../../../../../../packages/angular/src/generators/scam-to-standalone/lib/replace-module-usages-with-component.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,IAAI,EAAE,MAAM,wBAAwB,CAAC;AAI9C,wBAAgB,gCAAgC,CAC9C,IAAI,EAAE,IAAI,EACV,UAAU,EAAE,MAAM,EAClB,aAAa,EAAE,MAAM,QAkBtB"}

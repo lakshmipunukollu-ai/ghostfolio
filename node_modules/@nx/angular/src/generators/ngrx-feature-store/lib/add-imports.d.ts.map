@@ -1,0 +1,1 @@
+{"version":3,"file":"add-imports.d.ts","sourceRoot":"","sources":["../../../../../../../packages/angular/src/generators/ngrx-feature-store/lib/add-imports.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,IAAI,EAAE,MAAM,YAAY,CAAC;AAUvC,OAAO,KAAK,EAAE,0CAA0C,EAAE,MAAM,qBAAqB,CAAC;AAwEtF,wBAAgB,kBAAkB,CAChC,IAAI,EAAE,IAAI,EACV,OAAO,EAAE,0CAA0C,GAClD,IAAI,CAsGN"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"with-nx.d.ts","sourceRoot":"","sources":["../../../../../packages/rspack/src/utils/with-nx.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,wBAAwB,EAAE,MAAM,yBAAyB,CAAC;AAEnE,OAAO,EAA4B,wBAAwB,EAAE,MAAM,UAAU,CAAC;AAI9E,MAAM,MAAM,aAAa,GAAG,OAAO,CAAC,wBAAwB,CAAC,CAAC;AAE9D;;;GAGG;AACH,wBAAgB,MAAM,CACpB,aAAa,GAAE,aAAkB,GAChC,wBAAwB,CAkC1B"}

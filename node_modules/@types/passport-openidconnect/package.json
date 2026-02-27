@@ -1,0 +1,35 @@
+{
+    "name": "@types/passport-openidconnect",
+    "version": "0.1.3",
+    "description": "TypeScript definitions for passport-openidconnect",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/passport-openidconnect",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Lior Mualem",
+            "githubUsername": "liorm",
+            "url": "https://github.com/liorm"
+        },
+        {
+            "name": "Seng-Siong Lim",
+            "githubUsername": "seng-siong",
+            "url": "https://github.com/seng-siong"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/passport-openidconnect"
+    },
+    "scripts": {},
+    "dependencies": {
+        "@types/express": "*",
+        "@types/oauth": "*",
+        "@types/passport": "*",
+        "@types/passport-strategy": "*"
+    },
+    "typesPublisherContentHash": "2dca05f75627b75642d7e911256fe84c54a0e506e2a81a819f598876dcc1ddd5",
+    "typeScriptVersion": "4.5"
+}

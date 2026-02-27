@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.reactRefreshVersion = exports.sassEmbeddedVersion = exports.sassLoaderVersion = exports.lessLoaderVersion = exports.rspackPluginReactRefreshVersion = exports.rspackDevServerVersion = exports.rspackCoreVersion = exports.nxVersion = void 0;
+exports.nxVersion = require('../../package.json').version;
+exports.rspackCoreVersion = '1.6.8';
+exports.rspackDevServerVersion = '^1.1.4';
+exports.rspackPluginReactRefreshVersion = '^1.0.0';
+exports.lessLoaderVersion = '~11.1.3';
+exports.sassLoaderVersion = '^16.0.4';
+exports.sassEmbeddedVersion = '^1.83.4';
+exports.reactRefreshVersion = '~0.14.0';

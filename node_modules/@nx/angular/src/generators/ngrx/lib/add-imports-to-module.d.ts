@@ -1,0 +1,4 @@
+import type { Tree } from '@nx/devkit';
+import type { NormalizedNgRxGeneratorOptions } from './normalize-options';
+export declare function addImportsToModule(tree: Tree, options: NormalizedNgRxGeneratorOptions): void;
+//# sourceMappingURL=add-imports-to-module.d.ts.map

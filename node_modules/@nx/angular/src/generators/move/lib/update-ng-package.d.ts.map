@@ -1,0 +1,1 @@
+{"version":3,"file":"update-ng-package.d.ts","sourceRoot":"","sources":["../../../../../../../packages/angular/src/generators/move/lib/update-ng-package.ts"],"names":[],"mappings":"AAAA,OAAO,EAIL,IAAI,EAGL,MAAM,YAAY,CAAC;AAEpB,OAAO,KAAK,EAAE,eAAe,EAAE,MAAM,SAAS,CAAC;AAE/C,wBAAgB,eAAe,CAAC,IAAI,EAAE,IAAI,EAAE,MAAM,EAAE,eAAe,GAAG,IAAI,CAqCzE"}

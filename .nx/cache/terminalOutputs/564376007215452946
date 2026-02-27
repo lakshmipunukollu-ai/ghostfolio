@@ -1,0 +1,126 @@
+
+Linting "common"...
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/jest.config.ts
+  1:1  warning  Unused eslint-disable directive (no problems were reported)
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/calculation-helper.spec.ts
+  7:47  warning  Async arrow function has no 'await' expression  @typescript-eslint/require-await
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/class-transformer.ts
+  12:3  warning  The body of a for-in should be wrapped in an if statement to filter unwanted properties from the prototype  guard-for-in
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/dtos/create-account.dto.ts
+  20:5  warning  Unsafe return of a value of type `any`  @typescript-eslint/no-unsafe-return
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/dtos/create-order.dto.ts
+  35:5  warning  Unsafe return of a value of type `any`  @typescript-eslint/no-unsafe-return
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/dtos/update-account.dto.ts
+  20:5  warning  Unsafe return of a value of type `any`  @typescript-eslint/no-unsafe-return
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/dtos/update-order.dto.ts
+  34:5  warning  Unsafe return of a value of type `any`  @typescript-eslint/no-unsafe-return
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/helper.spec.ts
+  50:54  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/helper.ts
+  142:3   warning  'locale' is already declared in the upper scope on line 34 column 3  @typescript-eslint/no-shadow
+  262:9   warning  Unsafe assignment of an `any` value                                  @typescript-eslint/no-unsafe-assignment
+  268:3   warning  Unsafe return of a value of type `any`                               @typescript-eslint/no-unsafe-return
+  354:5   warning  Forbidden non-null assertion                                         @typescript-eslint/no-non-null-assertion
+  359:56  warning  Unexpected any. Specify a different type                             @typescript-eslint/no-explicit-any
+  361:11  warning  Unsafe assignment of an `any` value                                  @typescript-eslint/no-unsafe-assignment
+  361:24  warning  Unsafe call of a(n) `any` typed value                                @typescript-eslint/no-unsafe-call
+  361:35  warning  Unsafe member access .split on an `any` value                        @typescript-eslint/no-unsafe-member-access
+  362:5   warning  Unsafe return of a value of type `any`                               @typescript-eslint/no-unsafe-return
+  362:12  warning  Unsafe call of a(n) `any` typed value                                @typescript-eslint/no-unsafe-call
+  362:23  warning  Unsafe member access .reduce on an `any` value                       @typescript-eslint/no-unsafe-member-access
+  363:30  warning  Unsafe return of a value of type `any`                               @typescript-eslint/no-unsafe-return
+  363:41  warning  Unsafe member access [current] on an `any` value                     @typescript-eslint/no-unsafe-member-access
+  363:41  warning  Computed name [current] resolves to an `any` value                   @typescript-eslint/no-unsafe-member-access
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/interfaces/admin-jobs.interface.ts
+  5:9  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/interfaces/responses/account-response.interface.ts
+  3:18  warning  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+  3:18  warning  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-interface
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/interfaces/responses/activity-response.interface.ts
+  3:18  warning  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+  3:18  warning  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-interface
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/interfaces/responses/admin-user-response.interface.ts
+  3:18  warning  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+  3:18  warning  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-interface
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/interfaces/responses/asset-response.interface.ts
+  3:18  warning  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+  3:18  warning  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-interface
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/interfaces/responses/data-provider-ghostfolio-asset-profile-response.interface.ts
+  3:18  warning  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+  3:18  warning  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-interface
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/interfaces/responses/info-response.interface.ts
+  3:18  warning  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+  3:18  warning  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-interface
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/models/portfolio-snapshot.ts
+  16:3  warning  Member currentValueInBaseCurrency should be declared before all public instance field definitions          @typescript-eslint/member-ordering
+  26:3  warning  Member positions should be declared before all public instance field definitions                           @typescript-eslint/member-ordering
+  29:3  warning  Member totalFeesWithCurrencyEffect should be declared before all public instance field definitions         @typescript-eslint/member-ordering
+  33:3  warning  Member totalInterestWithCurrencyEffect should be declared before all public instance field definitions     @typescript-eslint/member-ordering
+  37:3  warning  Member totalInvestment should be declared before all public instance field definitions                     @typescript-eslint/member-ordering
+  41:3  warning  Member totalInvestmentWithCurrencyEffect should be declared before all public instance field definitions   @typescript-eslint/member-ordering
+  45:3  warning  Member totalLiabilitiesWithCurrencyEffect should be declared before all public instance field definitions  @typescript-eslint/member-ordering
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/models/timeline-position.ts
+  14:3  warning  Member averagePrice should be declared before all public instance field definitions                                   @typescript-eslint/member-ordering
+  22:3  warning  Member dividend should be declared before all public instance field definitions                                       @typescript-eslint/member-ordering
+  26:3  warning  Member dividendInBaseCurrency should be declared before all public instance field definitions                         @typescript-eslint/member-ordering
+  30:3  warning  Member fee should be declared before all public instance field definitions                                            @typescript-eslint/member-ordering
+  34:3  warning  Member feeInBaseCurrency should be declared before all public instance field definitions                              @typescript-eslint/member-ordering
+  38:3  warning  Member grossPerformance should be declared before all public instance field definitions                               @typescript-eslint/member-ordering
+  42:3  warning  Member grossPerformancePercentage should be declared before all public instance field definitions                     @typescript-eslint/member-ordering
+  46:3  warning  Member grossPerformancePercentageWithCurrencyEffect should be declared before all public instance field definitions   @typescript-eslint/member-ordering
+  50:3  warning  Member grossPerformanceWithCurrencyEffect should be declared before all public instance field definitions             @typescript-eslint/member-ordering
+  56:3  warning  Member investment should be declared before all public instance field definitions                                     @typescript-eslint/member-ordering
+  60:3  warning  Member investmentWithCurrencyEffect should be declared before all public instance field definitions                   @typescript-eslint/member-ordering
+  67:3  warning  Member netPerformance should be declared before all public instance field definitions                                 @typescript-eslint/member-ordering
+  71:3  warning  Member netPerformancePercentage should be declared before all public instance field definitions                       @typescript-eslint/member-ordering
+  75:3  warning  Member netPerformancePercentageWithCurrencyEffectMap should be declared before all public instance field definitions  @typescript-eslint/member-ordering
+  78:3  warning  Member netPerformanceWithCurrencyEffectMap should be declared before all public instance field definitions            @typescript-eslint/member-ordering
+  81:3  warning  Member quantity should be declared before all public instance field definitions                                       @typescript-eslint/member-ordering
+  88:3  warning  Member timeWeightedInvestment should be declared before all public instance field definitions                         @typescript-eslint/member-ordering
+  92:3  warning  Member timeWeightedInvestmentWithCurrencyEffect should be declared before all public instance field definitions       @typescript-eslint/member-ordering
+  96:3  warning  Member valueInBaseCurrency should be declared before all public instance field definitions                            @typescript-eslint/member-ordering
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/routes/routes.ts
+   8:3   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  10:14  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  10:19  warning  Unsafe member access .$localize on an `any` value                                                                                                                   @typescript-eslint/no-unsafe-member-access
+  12:21  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  14:46  warning  Unsafe spread of an `any[]` array type                                                                                                                              @typescript-eslint/no-unsafe-argument
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/types/date-range.type.ts
+  2:5  warning  "1d" is overridden by string in this union type   @typescript-eslint/no-redundant-type-constituents
+  3:5  warning  "1y" is overridden by string in this union type   @typescript-eslint/no-redundant-type-constituents
+  4:5  warning  "5y" is overridden by string in this union type   @typescript-eslint/no-redundant-type-constituents
+  5:5  warning  "max" is overridden by string in this union type  @typescript-eslint/no-redundant-type-constituents
+  6:5  warning  "mtd" is overridden by string in this union type  @typescript-eslint/no-redundant-type-constituents
+  7:5  warning  "wtd" is overridden by string in this union type  @typescript-eslint/no-redundant-type-constituents
+  8:5  warning  "ytd" is overridden by string in this union type  @typescript-eslint/no-redundant-type-constituents
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/common/src/lib/utils/form.util.ts
+  45:10  warning  Expected the Promise rejection reason to be an Error  @typescript-eslint/prefer-promise-reject-errors
+
+✖ 74 problems (0 errors, 74 warnings)
+  0 errors and 7 warnings potentially fixable with the `--fix` option.
+
+✖ 74 problems (0 errors, 74 warnings)
+
+  0 errors and 7 warnings are potentially fixable with the `--fix` option.
+

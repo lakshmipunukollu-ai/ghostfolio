@@ -1,0 +1,1 @@
+{"version":3,"file":"remove-dead-code-from-remote.d.ts","sourceRoot":"","sources":["../../../../../../../packages/angular/src/generators/setup-mf/lib/remove-dead-code-from-remote.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,IAAI,EAAE,MAAM,YAAY,CAAC;AAGvC,OAAO,KAAK,EAAE,iBAAiB,EAAE,MAAM,WAAW,CAAC;AAEnD,wBAAgB,wBAAwB,CACtC,IAAI,EAAE,IAAI,EACV,OAAO,EAAE,iBAAiB,QAiG3B"}

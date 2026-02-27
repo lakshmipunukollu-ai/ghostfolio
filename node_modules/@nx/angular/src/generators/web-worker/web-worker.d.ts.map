@@ -1,0 +1,1 @@
+{"version":3,"file":"web-worker.d.ts","sourceRoot":"","sources":["../../../../../../packages/angular/src/generators/web-worker/web-worker.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,IAAI,EAAE,MAAM,YAAY,CAAC;AAWvC,OAAO,KAAK,EAAE,yBAAyB,EAAE,MAAM,UAAU,CAAC;AAG1D,wBAAsB,kBAAkB,CACtC,IAAI,EAAE,IAAI,EACV,UAAU,EAAE,yBAAyB,GACpC,OAAO,CAAC,IAAI,CAAC,CAwCf;AAED,eAAe,kBAAkB,CAAC"}

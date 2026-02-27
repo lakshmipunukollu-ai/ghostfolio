@@ -1,0 +1,420 @@
+The 'vendorChunk' option is not used by this builder and will be ignored.
+❯ Building...
+✔ Building...
+Initial chunk files                  | Names                    |  Raw size
+chunk-TS2WZLBJ.js                    | -                        |   2.14 MB | 
+chunk-2Y4AJ55V.js                    | -                        | 951.59 kB | 
+chunk-RUXSAKYQ.js                    | -                        | 745.14 kB | 
+chunk-DOAJVW7H.js                    | -                        | 601.71 kB | 
+main.js                              | main                     | 508.44 kB | 
+chunk-CQPMJET4.js                    | -                        | 426.05 kB | 
+styles.css                           | styles                   | 308.68 kB | 
+chunk-FDNS4POG.js                    | -                        | 274.30 kB | 
+chunk-JN4GSNXH.js                    | -                        | 262.26 kB | 
+chunk-Z6NTTORL.js                    | -                        | 258.30 kB | 
+chunk-JADSYDPZ.js                    | -                        | 257.74 kB | 
+chunk-W3OPEYHU.js                    | -                        | 232.43 kB | 
+chunk-BJZOS4XT.js                    | -                        | 188.76 kB | 
+polyfills.js                         | polyfills                | 167.61 kB | 
+chunk-RGEBGM2J.js                    | -                        | 163.40 kB | 
+chunk-KQIXFGZ6.js                    | -                        | 162.99 kB | 
+chunk-KTLWMVQF.js                    | -                        | 145.40 kB | 
+chunk-BVKCV2LM.js                    | -                        | 133.16 kB | 
+chunk-LY74YLLC.js                    | -                        | 131.65 kB | 
+chunk-CNEVJWOK.js                    | -                        | 104.73 kB | 
+chunk-NQBHWCDO.js                    | -                        |  99.65 kB | 
+chunk-5L4E75QN.js                    | -                        |  92.20 kB | 
+chunk-LKPRPPAU.js                    | -                        |  64.84 kB | 
+chunk-EY3NZL6S.js                    | -                        |  60.28 kB | 
+chunk-OTCBLCVZ.js                    | -                        |  57.30 kB | 
+chunk-ZXQBQDXZ.js                    | -                        |  55.88 kB | 
+chunk-N754RDNF.js                    | -                        |  49.11 kB | 
+chunk-Q5KI5T6T.js                    | -                        |  45.70 kB | 
+chunk-NLKWO6YI.js                    | -                        |  39.79 kB | 
+chunk-4GVI4JW4.js                    | -                        |  39.31 kB | 
+chunk-MCSNV3UP.js                    | -                        |  36.59 kB | 
+chunk-P4CBE5VU.js                    | -                        |  36.34 kB | 
+chunk-HKFFU3D2.js                    | -                        |  34.95 kB | 
+chunk-H6NODL5C.js                    | -                        |  33.65 kB | 
+chunk-O2CS6AB7.js                    | -                        |  32.90 kB | 
+chunk-VAJGK6JN.js                    | -                        |  29.05 kB | 
+chunk-FI3WTBPY.js                    | -                        |  26.14 kB | 
+chunk-UAZMN4WJ.js                    | -                        |  24.40 kB | 
+chunk-BHBR4VL4.js                    | -                        |  22.96 kB | 
+chunk-SV2MEPSA.js                    | -                        |  21.73 kB | 
+chunk-GNSNED3S.js                    | -                        |  19.40 kB | 
+chunk-GRZOGAKV.js                    | -                        |  18.32 kB | 
+chunk-H4CG6577.js                    | -                        |  18.27 kB | 
+chunk-ARMZBI7X.js                    | -                        |  14.87 kB | 
+chunk-EYSFXJAZ.js                    | -                        |  14.46 kB | 
+chunk-USJWZR37.js                    | -                        |  14.36 kB | 
+chunk-QDXR5DI6.js                    | -                        |  11.99 kB | 
+chunk-RRNJ6GJP.js                    | -                        |  10.05 kB | 
+chunk-RBJ6BGSO.js                    | -                        |   9.52 kB | 
+chunk-LZEEQRDE.js                    | -                        |   9.03 kB | 
+chunk-6BSBP2CZ.js                    | -                        |   8.88 kB | 
+chunk-J3POFGNN.js                    | -                        |   8.08 kB | 
+chunk-IMUBZR67.js                    | -                        |   7.68 kB | 
+chunk-JUXTE5DL.js                    | -                        |   5.46 kB | 
+chunk-FQDJDYHS.js                    | -                        |   4.86 kB | 
+chunk-XNQGPGBJ.js                    | -                        |   4.17 kB | 
+chunk-QRXHTVR6.js                    | -                        |   4.06 kB | 
+chunk-3FQ3MD3C.js                    | -                        |   3.92 kB | 
+chunk-O2Y42PM3.js                    | -                        |   3.88 kB | 
+chunk-E7KMFL7X.js                    | -                        |   3.58 kB | 
+chunk-QW5YUFOS.js                    | -                        |   3.54 kB | 
+chunk-L5OIXPHL.js                    | -                        |   3.46 kB | 
+chunk-FQBRPIFF.js                    | -                        |   3.36 kB | 
+chunk-ES6YNRV3.js                    | -                        |   3.22 kB | 
+chunk-5WKUGEAF.js                    | -                        |   2.68 kB | 
+chunk-56SJMYNG.js                    | -                        |   2.57 kB | 
+chunk-RHPWZDJR.js                    | -                        |   2.46 kB | 
+chunk-DJACY6VF.js                    | -                        |   2.13 kB | 
+chunk-ILFSCQ3R.js                    | -                        |   2.03 kB | 
+chunk-ECYP6LCR.js                    | -                        |   1.94 kB | 
+chunk-W3L5ZBVH.js                    | -                        |   1.67 kB | 
+chunk-IWZ3OEVP.js                    | -                        |   1.37 kB | 
+chunk-X7NQEWHH.js                    | -                        | 913 bytes | 
+chunk-M764YU2G.js                    | -                        | 770 bytes | 
+chunk-SWOVUCNL.js                    | -                        | 735 bytes | 
+chunk-7XRVZB4W.js                    | -                        | 618 bytes | 
+chunk-OAW5QZLR.js                    | -                        | 514 bytes | 
+chunk-PU7BVTI3.js                    | -                        | 454 bytes | 
+chunk-QCE7W2LT.js                    | -                        | 424 bytes | 
+chunk-EFQL6RM5.js                    | -                        | 388 bytes | 
+
+                                     | Initial total            |   9.30 MB
+
+Lazy chunk files                     | Names                    |  Raw size
+admin-page.routes-R3EYAOMQ.js        | admin-page-routes        | 537.45 kB | 
+activities-page.routes-EARNJOEI.js   | activities-page-routes   | 230.09 kB | 
+chunk-6BJEVZFJ.js                    | -                        | 207.79 kB | 
+user-account-page.routes-XWFXLF5L.js | user-account-page-routes | 186.79 kB | 
+chunk-2JWRZZS2.js                    | -                        | 162.97 kB | 
+x-ray-page.routes-BTC6NRWI.js        | x-ray-page-routes        | 151.61 kB | 
+chunk-ZPJ6AACG.js                    | -                        | 123.65 kB | 
+landing-page.routes-UDX4OIXK.js      | landing-page-routes      | 111.14 kB | 
+allocations-page.routes-K2Q3URB3.js  | allocations-page-routes  | 110.89 kB | 
+home-page.routes-GZFJKKD6.js         | home-page-routes         | 108.72 kB | 
+chunk-6GY3DNDU.js                    | -                        |  98.46 kB | 
+analysis-page.routes-G2L7FADF.js     | analysis-page-routes     |  95.34 kB | 
+product-page.component-WQJTK7D3.js   | product-page-component   |  92.81 kB | 
+pricing-page.routes-LXXXVT2P.js      | pricing-page-routes      |  87.70 kB | 
+i18n-page.component-IIVSURK6.js      | i18n-page-component      |  86.90 kB | 
+...and 84 more lazy chunks files. Use "--verbose" to show all the files.
+
+Application bundle generation complete. [13.475 seconds] - 2026-02-26T04:16:24.617Z
+
+▲ [WARNING] Direct import of '@angular/localize/init' detected. This may lead to undefined behavior. [plugin angular-localize-init-warning]
+
+    libs/ui/src/lib/i18n.ts:1:7:
+      1 │ import '@angular/localize/init';
+        ╵        ~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Include '@angular/localize/init' as a polyfill instead.
+
+
+▲ [WARNING] The glob pattern import("./**/*.entry.js*") did not match any files [empty-glob]
+
+    node_modules/@stencil/core/internal/client/index.js:173:4:
+      173 │     `./${bundleId}.entry.js${BUILD5.hotModuleReplacement && hmrVe...
+          ╵     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] Deprecation [plugin angular-sass]
+
+    apps/client/src/styles.scss:1:8:
+      1 │ @import './styles/bootstrap';
+        ╵         ^
+
+
+  Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+  
+  More info and automated migrator: https://sass-lang.com/d/import
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:3:8:
+      3 │ @import 'apps/client/src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] Deprecation [plugin angular-sass]
+
+    apps/client/src/styles.scss:2:8:
+      2 │ @import './styles/table';
+        ╵         ^
+
+
+  Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+  
+  More info and automated migrator: https://sass-lang.com/d/import
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:3:8:
+      3 │ @import 'apps/client/src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] Deprecation [plugin angular-sass]
+
+    apps/client/src/styles.scss:3:8:
+      3 │ @import './styles/variables';
+        ╵         ^
+
+
+  Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+  
+  More info and automated migrator: https://sass-lang.com/d/import
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:3:8:
+      3 │ @import 'apps/client/src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] Deprecation [plugin angular-sass]
+
+    apps/client/src/styles.scss:5:8:
+      5 │ @import 'svgmap/dist/svgMap';
+        ╵         ^
+
+
+  Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+  
+  More info and automated migrator: https://sass-lang.com/d/import
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:3:8:
+      3 │ @import 'apps/client/src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] Deprecation [plugin angular-sass]
+
+    apps/client/src/styles.scss:13:6:
+      13 │     #{red($dark-primary-text)}, #{green($dark-primary-text)},
+         ╵       ^
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.red instead.
+  
+  More info and automated migrator: https://sass-lang.com/d/import
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:3:8:
+      3 │ @import 'apps/client/src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] Deprecation [plugin angular-sass]
+
+    apps/client/src/styles.scss:13:6:
+      13 │     #{red($dark-primary-text)}, #{green($dark-primary-text)},
+         ╵       ^
+
+
+  red() is deprecated. Suggestion:
+  
+  color.channel($color, "red", $space: rgb)
+  
+  More info: https://sass-lang.com/d/color-functions
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:3:8:
+      3 │ @import 'apps/client/src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] Deprecation [plugin angular-sass]
+
+    apps/client/src/styles.scss:13:34:
+      13 │     #{red($dark-primary-text)}, #{green($dark-primary-text)},
+         ╵                                   ^
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.green instead.
+  
+  More info and automated migrator: https://sass-lang.com/d/import
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:3:8:
+      3 │ @import 'apps/client/src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] Deprecation [plugin angular-sass]
+
+    apps/client/src/styles.scss:13:34:
+      13 │     #{red($dark-primary-text)}, #{green($dark-primary-text)},
+         ╵                                   ^
+
+
+  green() is deprecated. Suggestion:
+  
+  color.channel($color, "green", $space: rgb)
+  
+  More info: https://sass-lang.com/d/color-functions
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:3:8:
+      3 │ @import 'apps/client/src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] Deprecation [plugin angular-sass]
+
+    apps/client/src/styles.scss:14:6:
+      14 │     #{blue($dark-primary-text)}, #{alpha($dark-primary-text)};
+         ╵       ^
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.blue instead.
+  
+  More info and automated migrator: https://sass-lang.com/d/import
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:3:8:
+      3 │ @import 'apps/client/src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] Deprecation [plugin angular-sass]
+
+    apps/client/src/styles.scss:14:6:
+      14 │     #{blue($dark-primary-text)}, #{alpha($dark-primary-text)};
+         ╵       ^
+
+
+  blue() is deprecated. Suggestion:
+  
+  color.channel($color, "blue", $space: rgb)
+  
+  More info: https://sass-lang.com/d/color-functions
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:3:8:
+      3 │ @import 'apps/client/src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] Deprecation [plugin angular-sass]
+
+    apps/client/src/styles.scss:14:35:
+      14 │     #{blue($dark-primary-text)}, #{alpha($dark-primary-text)};
+         ╵                                    ^
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.alpha instead.
+  
+  More info and automated migrator: https://sass-lang.com/d/import
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:3:8:
+      3 │ @import 'apps/client/src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] Deprecation [plugin angular-sass]
+
+    apps/client/src/styles.scss:22:6:
+      22 │     #{red($light-primary-text)}, #{green($light-primary-text)},
+         ╵       ^
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.red instead.
+  
+  More info and automated migrator: https://sass-lang.com/d/import
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:3:8:
+      3 │ @import 'apps/client/src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] Deprecation [plugin angular-sass]
+
+    apps/client/src/styles.scss:22:6:
+      22 │     #{red($light-primary-text)}, #{green($light-primary-text)},
+         ╵       ^
+
+
+  red() is deprecated. Suggestion:
+  
+  color.channel($color, "red", $space: rgb)
+  
+  More info: https://sass-lang.com/d/color-functions
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:3:8:
+      3 │ @import 'apps/client/src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] Deprecation [plugin angular-sass]
+
+    apps/client/src/styles.scss:22:35:
+      22 │     #{red($light-primary-text)}, #{green($light-primary-text)},
+         ╵                                    ^
+
+
+  green() is deprecated. Suggestion:
+  
+  color.channel($color, "green", $space: rgb)
+  
+  More info: https://sass-lang.com/d/color-functions
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:3:8:
+      3 │ @import 'apps/client/src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] Deprecation [plugin angular-sass]
+
+    apps/client/src/styles/bootstrap.scss:8:8:
+      8 │ @import 'bootstrap/scss/functions';
+        ╵         ^
+
+
+  Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+  
+  More info and automated migrator: https://sass-lang.com/d/import
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:3:8:
+      3 │ @import 'apps/client/src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] 14 repetitive deprecation warnings omitted.
+Run in verbose mode to see all warnings. [plugin angular-sass]
+
+    angular:styles/global:styles:3:8:
+      3 │ @import 'apps/client/src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  null
+
+
+Output location: /Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/dist/apps/client
+

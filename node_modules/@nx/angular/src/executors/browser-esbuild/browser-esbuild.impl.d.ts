@@ -1,0 +1,5 @@
+import type { buildEsbuildBrowser as buildEsbuildBrowserFn } from '@angular-devkit/build-angular/src/builders/browser-esbuild';
+import type { ExecutorContext } from '@nx/devkit';
+import type { EsBuildSchema } from './schema';
+export default function esbuildExecutor(options: EsBuildSchema, context: ExecutorContext): ReturnType<typeof buildEsbuildBrowserFn>;
+//# sourceMappingURL=browser-esbuild.impl.d.ts.map

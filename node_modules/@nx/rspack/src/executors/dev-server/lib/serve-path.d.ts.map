@@ -1,0 +1,1 @@
+{"version":3,"file":"serve-path.d.ts","sourceRoot":"","sources":["../../../../../../../packages/rspack/src/executors/dev-server/lib/serve-path.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,oBAAoB,EAAE,MAAM,qBAAqB,CAAC;AAEhE,wBAAgB,cAAc,CAAC,cAAc,EAAE,oBAAoB,UAYlE;AAED,wBAAgB,qBAAqB,CACnC,QAAQ,CAAC,EAAE,MAAM,EACjB,SAAS,CAAC,EAAE,MAAM,GACjB,MAAM,GAAG,IAAI,CAoCf"}

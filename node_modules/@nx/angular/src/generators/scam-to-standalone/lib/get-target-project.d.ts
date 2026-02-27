@@ -1,0 +1,3 @@
+import { ProjectConfiguration } from 'nx/src/config/workspace-json-project-json';
+export declare function getTargetProject(projectName: string, projects: Map<string, ProjectConfiguration>): ProjectConfiguration;
+//# sourceMappingURL=get-target-project.d.ts.map

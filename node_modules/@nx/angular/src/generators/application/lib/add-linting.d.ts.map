@@ -1,0 +1,1 @@
+{"version":3,"file":"add-linting.d.ts","sourceRoot":"","sources":["../../../../../../../packages/angular/src/generators/application/lib/add-linting.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,IAAI,EAAE,MAAM,YAAY,CAAC;AACvC,OAAO,KAAK,EAAE,gBAAgB,EAAE,MAAM,qBAAqB,CAAC;AAG5D,wBAAsB,UAAU,CAAC,IAAI,EAAE,IAAI,EAAE,OAAO,EAAE,gBAAgB,iBAcrE"}

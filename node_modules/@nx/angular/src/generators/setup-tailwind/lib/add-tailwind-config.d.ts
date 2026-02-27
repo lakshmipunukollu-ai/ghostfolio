@@ -1,0 +1,4 @@
+import { ProjectConfiguration, Tree } from '@nx/devkit';
+import { GeneratorOptions } from '../schema';
+export declare function addTailwindConfig(tree: Tree, options: GeneratorOptions, project: ProjectConfiguration, tailwindVersion: '2' | '3'): void;
+//# sourceMappingURL=add-tailwind-config.d.ts.map

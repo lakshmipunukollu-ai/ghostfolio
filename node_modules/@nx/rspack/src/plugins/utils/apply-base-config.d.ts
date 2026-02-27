@@ -1,0 +1,6 @@
+import { Configuration, RspackOptionsNormalized } from '@rspack/core';
+import { NormalizedNxAppRspackPluginOptions } from './models';
+export declare function applyBaseConfig(options: NormalizedNxAppRspackPluginOptions, config?: Partial<RspackOptionsNormalized | Configuration>, { useNormalizedEntry, }?: {
+    useNormalizedEntry?: boolean;
+}): void;
+//# sourceMappingURL=apply-base-config.d.ts.map

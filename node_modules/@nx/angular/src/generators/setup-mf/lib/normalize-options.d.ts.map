@@ -1,0 +1,1 @@
+{"version":3,"file":"normalize-options.d.ts","sourceRoot":"","sources":["../../../../../../../packages/angular/src/generators/setup-mf/lib/normalize-options.ts"],"names":[],"mappings":"AAAA,OAAO,EAAmC,KAAK,IAAI,EAAE,MAAM,YAAY,CAAC;AAUxE,OAAO,KAAK,EAAE,iBAAiB,EAAE,MAAM,EAAE,MAAM,WAAW,CAAC;AAE3D,wBAAgB,gBAAgB,CAC9B,IAAI,EAAE,IAAI,EACV,OAAO,EAAE,MAAM,GACd,iBAAiB,CAwBnB"}

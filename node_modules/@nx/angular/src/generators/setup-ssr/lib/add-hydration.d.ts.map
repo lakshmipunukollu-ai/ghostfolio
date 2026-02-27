@@ -1,0 +1,1 @@
+{"version":3,"file":"add-hydration.d.ts","sourceRoot":"","sources":["../../../../../../../packages/angular/src/generators/setup-ssr/lib/add-hydration.ts"],"names":[],"mappings":"AAAA,OAAO,EAGL,KAAK,IAAI,EACV,MAAM,YAAY,CAAC;AASpB,OAAO,KAAK,EAAE,0BAA0B,EAAE,MAAM,WAAW,CAAC;AAK5D,wBAAgB,YAAY,CAAC,IAAI,EAAE,IAAI,EAAE,OAAO,EAAE,0BAA0B,QA0E3E"}

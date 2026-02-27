@@ -1,0 +1,454 @@
+
+Linting "ui"...
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/account-balances/account-balances.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/account-balances/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/accounts-table/accounts-table.component.ts
+    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+  154:7  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/accounts-table/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/activities-filter/activities-filter.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/activities-filter/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/activities-table/activities-table.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/activities-table/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/activity-type/activity-type.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/activity-type/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/assistant/assistant-list-item/assistant-list-item.component.ts
+   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  40:3  warning  Member item should be declared before all public decorated get definitions                       @typescript-eslint/member-ordering
+  42:3  warning  Member clicked should be declared before all public decorated get definitions                    @typescript-eslint/member-ordering
+  44:3  warning  Member linkElement should be declared before all public decorated get definitions                @typescript-eslint/member-ordering
+  46:3  warning  Member hasFocus should be declared before all public decorated get definitions                   @typescript-eslint/member-ordering
+  47:3  warning  Member queryParams should be declared before all public decorated get definitions                @typescript-eslint/member-ordering
+  48:3  warning  Member routerLink should be declared before all public decorated get definitions                 @typescript-eslint/member-ordering
+  50:3  warning  Member constructor should be declared before all public decorated get definitions                @typescript-eslint/member-ordering
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/assistant/assistant.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly             @typescript-eslint/prefer-nullish-coalescing
+  106:9   warning  Unsafe call of a(n) `any` typed value                                                                       @typescript-eslint/no-unsafe-call
+  106:61  warning  Unsafe member access .scrollIntoView on an `any` value                                                      @typescript-eslint/no-unsafe-member-access
+  115:9   warning  Unsafe call of a(n) `any` typed value                                                                       @typescript-eslint/no-unsafe-call
+  115:61  warning  Unsafe member access .click on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+  121:3   warning  Member deviceType should be declared before all public decorated method definitions                         @typescript-eslint/member-ordering
+  122:3   warning  Member hasPermissionToAccessAdminControl should be declared before all public decorated method definitions  @typescript-eslint/member-ordering
+  123:3   warning  Member hasPermissionToChangeDateRange should be declared before all public decorated method definitions     @typescript-eslint/member-ordering
+  124:3   warning  Member hasPermissionToChangeFilters should be declared before all public decorated method definitions       @typescript-eslint/member-ordering
+  125:3   warning  Member user should be declared before all public decorated method definitions                               @typescript-eslint/member-ordering
+  127:3   warning  Member closed should be declared before all public decorated method definitions                             @typescript-eslint/member-ordering
+  128:3   warning  Member dateRangeChanged should be declared before all public decorated method definitions                   @typescript-eslint/member-ordering
+  129:3   warning  Member filtersChanged should be declared before all public decorated method definitions                     @typescript-eslint/member-ordering
+  131:3   warning  Member menuTriggerElement should be declared before all public decorated method definitions                 @typescript-eslint/member-ordering
+  132:3   warning  Member searchElement should be declared before all public decorated method definitions                      @typescript-eslint/member-ordering
+  134:3   warning  Member assistantListItems should be declared before all public decorated method definitions                 @typescript-eslint/member-ordering
+  137:3   warning  Member SEARCH_RESULTS_DEFAULT_LIMIT should be declared before all public decorated method definitions       @typescript-eslint/member-ordering
+  139:3   warning  Member accounts should be declared before all public decorated method definitions                           @typescript-eslint/member-ordering
+  140:3   warning  Member assetClasses should be declared before all public decorated method definitions                       @typescript-eslint/member-ordering
+  141:3   warning  Member dateRangeFormControl should be declared before all public decorated method definitions               @typescript-eslint/member-ordering
+  142:3   warning  Member dateRangeOptions should be declared before all public decorated method definitions                   @typescript-eslint/member-ordering
+  143:3   warning  Member holdings should be declared before all public decorated method definitions                           @typescript-eslint/member-ordering
+  144:3   warning  Member isLoading should be declared before all public decorated method definitions                          @typescript-eslint/member-ordering
+  150:3   warning  Member isOpen should be declared before all public decorated method definitions                             @typescript-eslint/member-ordering
+  151:3   warning  Member placeholder should be declared before all public decorated method definitions                        @typescript-eslint/member-ordering
+  152:3   warning  Member portfolioFilterFormControl should be declared before all public decorated method definitions         @typescript-eslint/member-ordering
+  160:3   warning  Member searchFormControl should be declared before all public decorated method definitions                  @typescript-eslint/member-ordering
+  161:3   warning  Member searchResults should be declared before all public decorated method definitions                      @typescript-eslint/member-ordering
+  167:3   warning  Member tags should be declared before all public decorated method definitions                               @typescript-eslint/member-ordering
+  169:3   warning  Member PRESELECTION_DELAY should be declared before all public decorated method definitions                 @typescript-eslint/member-ordering
+  171:3   warning  Member filterTypes should be declared before all public decorated method definitions                        @typescript-eslint/member-ordering
+  179:3   warning  Member keyManager should be declared before all public decorated method definitions                         @typescript-eslint/member-ordering
+  180:3   warning  Member preselectionTimeout should be declared before all public decorated method definitions                @typescript-eslint/member-ordering
+  181:3   warning  Member unsubscribeSubject should be declared before all public decorated method definitions                 @typescript-eslint/member-ordering
+  183:3   warning  Member constructor should be declared before all public decorated method definitions                        @typescript-eslint/member-ordering
+  468:7   warning  Unsafe call of a(n) `any` typed value                                                                       @typescript-eslint/no-unsafe-call
+  468:42  warning  Unsafe member access .focus on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/assistant/enums/search-mode.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/assistant/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/assistant/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/benchmark/benchmark-detail-dialog/benchmark-detail-dialog.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/benchmark/benchmark-detail-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/benchmark/benchmark.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+  106:13  warning  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  107:13  warning  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  149:5   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  182:9   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/benchmark/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/carousel/carousel-item.directive.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/carousel/carousel.component.ts
+   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  71:11  warning  Unsafe assignment of an `any` value                                                              @typescript-eslint/no-unsafe-assignment
+  96:5   warning  Unsafe assignment of an `any` value                                                              @typescript-eslint/no-unsafe-assignment
+  96:65  warning  Unsafe member access .offsetLeft on an `any` value                                               @typescript-eslint/no-unsafe-member-access
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/carousel/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/chart/chart.registry.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/chart/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/currency-selector/currency-selector.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+   69:3   warning  Member currencyAutocomplete should be declared before all private decorated field definitions    @typescript-eslint/member-ordering
+  119:38  warning  Unsafe argument of type `any` assigned to a parameter of type `string`                           @typescript-eslint/no-unsafe-argument
+  127:3   warning  Member empty should be declared before all public instance method definitions                    @typescript-eslint/member-ordering
+  144:5   warning  Unsafe assignment of an `any` value                                                              @typescript-eslint/no-unsafe-assignment
+  147:3   warning  Member value should be declared before all public instance method definitions                    @typescript-eslint/member-ordering
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/currency-selector/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/data-provider-credits/data-provider-credits.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/data-provider-credits/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/dialog-footer/dialog-footer.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/dialog-footer/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/dialog-header/dialog-header.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/dialog-header/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/entity-logo/entity-logo-image-source.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/entity-logo/entity-logo.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/entity-logo/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/environment/environment.interface.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/environment/environment.token.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/environment/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/fire-calculator/fire-calculator.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/fire-calculator/fire-calculator.service.spec.ts
+   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  19:95  warning  Async arrow function has no 'await' expression                                                   @typescript-eslint/require-await
+  35:63  warning  Async arrow function has no 'await' expression                                                   @typescript-eslint/require-await
+  51:92  warning  Async arrow function has no 'await' expression                                                   @typescript-eslint/require-await
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/fire-calculator/fire-calculator.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/fire-calculator/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/historical-market-data-editor/historical-market-data-editor-dialog/historical-market-data-editor-dialog.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/historical-market-data-editor/historical-market-data-editor-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/historical-market-data-editor/historical-market-data-editor.component.spec.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/historical-market-data-editor/historical-market-data-editor.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/historical-market-data-editor/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/holdings-table/holdings-table.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/holdings-table/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/i18n.ts
+    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  114:3  warning  Unsafe return of a value of type error                                                           @typescript-eslint/no-unsafe-return
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/line-chart/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/line-chart/line-chart.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/logo-carousel/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/logo-carousel/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/logo-carousel/logo-carousel.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/logo/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/logo/logo.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/membership-card/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/membership-card/membership-card.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/mocks/entity-logo-image-source.service.mock.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/mocks/holdings.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/mocks/httpClient.mock.ts
+  0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  4:57  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+  6:48  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+  9:25  warning  Unsafe argument of type `any` assigned to a parameter of type `TResponse`                        @typescript-eslint/no-unsafe-argument
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/no-transactions-info/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/no-transactions-info/no-transactions-info.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/notifications/alert-dialog/alert-dialog.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/notifications/alert-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/notifications/confirmation-dialog/confirmation-dialog.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/notifications/confirmation-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/notifications/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/notifications/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/notifications/notification.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/notifications/notification.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/notifications/prompt-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/notifications/prompt-dialog/prompt-dialog.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/portfolio-filter-form/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/portfolio-filter-form/interfaces/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/portfolio-filter-form/interfaces/portfolio-filter-form-value.interface.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/portfolio-filter-form/portfolio-filter-form.component.ts
+   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                 @typescript-eslint/prefer-nullish-coalescing
+  90:11  warning  Unsafe assignment of an `any` value                                                                             @typescript-eslint/no-unsafe-assignment
+  92:26  warning  Unsafe argument of type `any` assigned to a parameter of type `ArrayLike<unknown> | { [s: string]: unknown; }`  @typescript-eslint/no-unsafe-argument
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/portfolio-proportion-chart/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/portfolio-proportion-chart/portfolio-proportion-chart.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly    @typescript-eslint/prefer-nullish-coalescing
+  134:13  warning  Unsafe call of a(n) `error` type typed value                                                       @typescript-eslint/no-unsafe-call
+  134:46  warning  Unsafe member access .toUpperCase on an `error` typed value                                        @typescript-eslint/no-unsafe-member-access
+  135:25  warning  Computed name [this.data[symbol][this.keys[0]].toUpperCase()] resolves to an `error` typed value   @typescript-eslint/no-unsafe-member-access
+  135:25  warning  Unsafe call of a(n) `error` type typed value                                                       @typescript-eslint/no-unsafe-call
+  135:57  warning  Unsafe member access .toUpperCase on an `error` typed value                                        @typescript-eslint/no-unsafe-member-access
+  136:23  warning  Computed name [this.data[symbol][this.keys[0]].toUpperCase()] resolves to an `error` typed value   @typescript-eslint/no-unsafe-member-access
+  136:23  warning  Unsafe call of a(n) `error` type typed value                                                       @typescript-eslint/no-unsafe-call
+  136:55  warning  Unsafe member access .toUpperCase on an `error` typed value                                        @typescript-eslint/no-unsafe-member-access
+  138:17  warning  Computed name [this.data[symbol][this.keys[0]].toUpperCase()] resolves to an `error` typed value   @typescript-eslint/no-unsafe-member-access
+  138:17  warning  Unsafe call of a(n) `error` type typed value                                                       @typescript-eslint/no-unsafe-call
+  138:49  warning  Unsafe member access .toUpperCase on an `error` typed value                                        @typescript-eslint/no-unsafe-member-access
+  142:25  warning  Computed name [this.data[symbol][this.keys[0]].toUpperCase()] resolves to an `error` typed value   @typescript-eslint/no-unsafe-member-access
+  142:25  warning  Unsafe call of a(n) `error` type typed value                                                       @typescript-eslint/no-unsafe-call
+  142:57  warning  Unsafe member access .toUpperCase on an `error` typed value                                        @typescript-eslint/no-unsafe-member-access
+  143:30  warning  Computed name [this.data[symbol][this.keys[1]]] resolves to an `error` typed value                 @typescript-eslint/no-unsafe-member-access
+  146:17  warning  Computed name [this.data[symbol][this.keys[0]].toUpperCase()] resolves to an `error` typed value   @typescript-eslint/no-unsafe-member-access
+  146:17  warning  Unsafe call of a(n) `error` type typed value                                                       @typescript-eslint/no-unsafe-call
+  146:49  warning  Unsafe member access .toUpperCase on an `error` typed value                                        @typescript-eslint/no-unsafe-member-access
+  147:29  warning  Computed name [this.data[symbol][this.keys[1]]] resolves to an `error` typed value                 @typescript-eslint/no-unsafe-member-access
+  148:17  warning  Computed name [this.data[symbol][this.keys[0]].toUpperCase()] resolves to an `error` typed value   @typescript-eslint/no-unsafe-member-access
+  148:17  warning  Unsafe call of a(n) `error` type typed value                                                       @typescript-eslint/no-unsafe-call
+  148:49  warning  Unsafe member access .toUpperCase on an `error` typed value                                        @typescript-eslint/no-unsafe-member-access
+  149:29  warning  Computed name [this.data[symbol][this.keys[1]]] resolves to an `error` typed value                 @typescript-eslint/no-unsafe-member-access
+  154:17  warning  Computed name [this.data[symbol][this.keys[0]].toUpperCase()] resolves to an `error` typed value   @typescript-eslint/no-unsafe-member-access
+  154:17  warning  Unsafe call of a(n) `error` type typed value                                                       @typescript-eslint/no-unsafe-call
+  154:49  warning  Unsafe member access .toUpperCase on an `error` typed value                                        @typescript-eslint/no-unsafe-member-access
+  155:29  warning  Computed name [this.data[symbol][this.keys[1]] ?? UNKNOWN_KEY] resolves to an `error` typed value  @typescript-eslint/no-unsafe-member-access
+  160:23  warning  Computed name [this.data[symbol][this.keys[0]].toUpperCase()] resolves to an `error` typed value   @typescript-eslint/no-unsafe-member-access
+  160:23  warning  Unsafe call of a(n) `error` type typed value                                                       @typescript-eslint/no-unsafe-call
+  160:55  warning  Unsafe member access .toUpperCase on an `error` typed value                                        @typescript-eslint/no-unsafe-member-access
+  161:15  warning  Unsafe assignment of an error typed value                                                          @typescript-eslint/no-unsafe-assignment
+  168:17  warning  Computed name [this.data[symbol][this.keys[0]].toUpperCase()] resolves to an `error` typed value   @typescript-eslint/no-unsafe-member-access
+  168:17  warning  Unsafe call of a(n) `error` type typed value                                                       @typescript-eslint/no-unsafe-call
+  168:49  warning  Unsafe member access .toUpperCase on an `error` typed value                                        @typescript-eslint/no-unsafe-member-access
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/premium-indicator/index.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/premium-indicator/premium-indicator.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/services/admin.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/libs/ui/src/lib/services/data.service.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                                                   @typescript-eslint/prefer-nullish-coalescing
+  244:26  warning  Unexpected any. Specify a different type                                                                                                                                                          @typescript-eslint/no-explicit-any
+  247:11  warning  Unsafe assignment of an `any` value                                                                                                                                                               @typescript-eslint/no-unsafe-assignment
+  247:20  warning  Unsafe member access .createdAt on an `any` value                                                                                                                                                 @typescript-eslint/no-unsafe-member-access
+  247:41  warning  Unsafe argument of type `any` assigned to a parameter of type `string`                                                                                                                            @typescript-eslint/no-unsafe-argument
+  247:50  warning  Unsafe member access .createdAt on an `any` value                                                                                                                                                 @typescript-eslint/no-unsafe-member-access
+  248:11  warning  Unsafe assignment of an `any` value                                                                                                                                                               @typescript-eslint/no-unsafe-assignment
+  248:20  warning  Unsafe member access .date on an `any` value                                                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  248:36  warning  Unsafe argument of type `any` assigned to a parameter of type `string`                                                                                                                            @typescript-eslint/no-unsafe-argument
+  248:45  warning  Unsafe member access .date on an `any` value                                                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  250:18  warning  Unsafe assignment of an `any` value                                                                                                                                                               @typescript-eslint/no-unsafe-assignment
+  250:30  warning  Unsafe assignment of an `any` value                                                                                                                                                               @typescript-eslint/no-unsafe-assignment
+  268:5   warning  'groupBy' is already declared in the upper scope on line 79 column 21                                                                                                                             @typescript-eslint/no-shadow
+  306:29  warning  Unexpected any. Specify a different type                                                                                                                                                          @typescript-eslint/no-explicit-any
+  310:29  warning  Unexpected any. Specify a different type                                                                                                                                                          @typescript-eslint/no-explicit-any
+  314:29  warning  Unexpected any. Specify a different type                                                                                                                                                          @typescript-eslint/no-explicit-any
+  318:53  warning  Unsafe assignment of an `any` value                                                                                                                                                               @typescript-eslint/no-unsafe-assignment
+  320:29  warning  Unexpected any. Specify a different type                                                                                                                                                          @typescript-eslint/no-explicit-any
+  324:29  warning  Unexpected any. Specify a different type                                                                                                                                                          @typescript-eslint/no-explicit-any
+  328:29  warning  Unexpected any. Specify a different type                                                                                                                                                          @typescript-eslint/no-explicit-any
+  332:29  warning  Unexpected any. Specify a different type                                                                                                                                                          @typescript-eslint/no-explicit-any
+  340:29  warning  Unexpected any. Specify a different type                                                                                                                                                          @typescript-eslint/no-explicit-any
+  344:29  warning  Unexpected any. Specify a different type                                                                                                                                                          @typescript-eslint/no-explicit-any
+  355:5   warning  Unsafe return of type `Observable<any>` from function with return type `Observable<AssetResponse>`                                                                                                @typescript-eslint/no-unsafe-return
+  355:26  warning  Unexpected any. Specify a different type                                                                                                                                                          @typescript-eslint/no-explicit-any
+  357:33  warning  Unsafe member access .marketData on an `any` value                                                                                                                                                @typescript-eslint/no-unsafe-member-access
+  358:11  warning  Unsafe assignment of an `any` value                                                                                                                                                               @typescript-eslint/no-unsafe-assignment
+  358:16  warning  Unsafe member access .date on an `any` value                                                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  358:32  warning  Unsafe argument of type `any` assigned to a parameter of type `string`                                                                                                                            @typescript-eslint/no-unsafe-argument
+  358:37  warning  Unsafe member access .date on an `any` value                                                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  360:9   warning  Unsafe return of a value of type `any`                                                                                                                                                            @typescript-eslint/no-unsafe-return
+  433:11  warning  Unsafe assignment of an `any` value                                                                                                                                                               @typescript-eslint/no-unsafe-assignment
+  433:39  warning  Unexpected any. Specify a different type                                                                                                                                                          @typescript-eslint/no-explicit-any
+  433:44  warning  Unsafe member access .info on an `any` value                                                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  438:10  warning  Unsafe member access .globalPermissions on an `any` value                                                                                                                                         @typescript-eslint/no-unsafe-member-access
+  439:7   warning  Unsafe argument of type `any` assigned to a parameter of type `string[]`                                                                                                                          @typescript-eslint/no-unsafe-argument
+  439:12  warning  Unsafe member access .globalPermissions on an `any` value                                                                                                                                         @typescript-eslint/no-unsafe-member-access
+  443:5   warning  Unsafe return of a value of type `any`                                                                                                                                                            @typescript-eslint/no-unsafe-return
+  448:5   warning  'groupBy' is already declared in the upper scope on line 79 column 21                                                                                                                             @typescript-eslint/no-shadow
+  472:5   warning  Unsafe return of type `Observable<any>` from function with return type `Observable<MarketDataDetailsResponse>`                                                                                    @typescript-eslint/no-unsafe-return
+  473:12  warning  Unexpected any. Specify a different type                                                                                                                                                          @typescript-eslint/no-explicit-any
+  476:35  warning  Unsafe member access .marketData on an `any` value                                                                                                                                                @typescript-eslint/no-unsafe-member-access
+  477:13  warning  Unsafe assignment of an `any` value                                                                                                                                                               @typescript-eslint/no-unsafe-assignment
+  477:18  warning  Unsafe member access .date on an `any` value                                                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  477:34  warning  Unsafe argument of type `any` assigned to a parameter of type `string`                                                                                                                            @typescript-eslint/no-unsafe-argument
+  477:39  warning  Unsafe member access .date on an `any` value                                                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  479:11  warning  Unsafe return of a value of type `any`                                                                                                                                                            @typescript-eslint/no-unsafe-return
+  495:5   warning  Unsafe return of type `Observable<any>` from function with return type `Observable<MarketDataOfMarketsResponse>`                                                                                  @typescript-eslint/no-unsafe-return
+  495:26  warning  Unexpected any. Specify a different type                                                                                                                                                          @typescript-eslint/no-explicit-any
+  497:33  warning  Unsafe member access .fearAndGreedIndex on an `any` value                                                                                                                                         @typescript-eslint/no-unsafe-member-access
+  499:11  warning  Unsafe assignment of an `any` value                                                                                                                                                               @typescript-eslint/no-unsafe-assignment
+  499:16  warning  Unsafe member access .date on an `any` value                                                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  499:32  warning  Unsafe argument of type `any` assigned to a parameter of type `string`                                                                                                                            @typescript-eslint/no-unsafe-argument
+  499:37  warning  Unsafe member access .date on an `any` value                                                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  502:33  warning  Unsafe member access .fearAndGreedIndex on an `any` value                                                                                                                                         @typescript-eslint/no-unsafe-member-access
+  504:11  warning  Unsafe assignment of an `any` value                                                                                                                                                               @typescript-eslint/no-unsafe-assignment
+  504:16  warning  Unsafe member access .date on an `any` value                                                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  504:32  warning  Unsafe argument of type `any` assigned to a parameter of type `string`                                                                                                                            @typescript-eslint/no-unsafe-argument
+  504:37  warning  Unsafe member access .date on an `any` value                                                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  507:9   warning  Unsafe return of a value of type `any`                                                                                                                                                            @typescript-eslint/no-unsafe-return
+  529:5   warning  Unsafe return of type `Observable<any>` from function with return type `Observable<PortfolioDetails>`                                                                                             @typescript-eslint/no-unsafe-return
+  530:12  warning  Unexpected any. Specify a different type                                                                                                                                                          @typescript-eslint/no-explicit-any
+  535:24  warning  Unsafe member access .holdings on an `any` value                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  536:46  warning  Unsafe argument of type `any` assigned to a parameter of type `{}`                                                                                                                                @typescript-eslint/no-unsafe-argument
+  536:55  warning  Unsafe member access .holdings on an `any` value                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  537:24  warning  Unsafe member access .holdings on an `any` value                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  538:17  warning  Unsafe argument of type `any` assigned to a parameter of type `string`                                                                                                                            @typescript-eslint/no-unsafe-argument
+  538:26  warning  Unsafe member access .holdings on an `any` value                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  541:24  warning  Unsafe member access .holdings on an `any` value                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  542:17  warning  Unsafe argument of type `any` assigned to a parameter of type `string`                                                                                                                            @typescript-eslint/no-unsafe-argument
+  542:26  warning  Unsafe member access .holdings on an `any` value                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  545:15  warning  Unsafe assignment of an `any` value                                                                                                                                                               @typescript-eslint/no-unsafe-assignment
+  545:24  warning  Unsafe member access .holdings on an `any` value                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  545:72  warning  Unsafe member access .holdings on an `any` value                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  548:28  warning  Unsafe argument of type `any` assigned to a parameter of type `string`                                                                                                                            @typescript-eslint/no-unsafe-argument
+  548:37  warning  Unsafe member access .holdings on an `any` value                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  551:15  warning  Unsafe assignment of an `any` value                                                                                                                                                               @typescript-eslint/no-unsafe-assignment
+  551:24  warning  Unsafe member access .holdings on an `any` value                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  552:26  warning  Unsafe member access .holdings on an `any` value                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  554:28  warning  Unsafe member access .holdings on an `any` value                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  555:28  warning  Unsafe member access .holdings on an `any` value                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  559:24  warning  Unsafe member access .summary on an `any` value                                                                                                                                                   @typescript-eslint/no-unsafe-member-access
+  560:13  warning  Unsafe assignment of an `any` value                                                                                                                                                               @typescript-eslint/no-unsafe-assignment
+  560:22  warning  Unsafe member access .summary on an `any` value                                                                                                                                                   @typescript-eslint/no-unsafe-member-access
+  561:15  warning  Unsafe argument of type `any` assigned to a parameter of type `string`                                                                                                                            @typescript-eslint/no-unsafe-argument
+  561:24  warning  Unsafe member access .summary on an `any` value                                                                                                                                                   @typescript-eslint/no-unsafe-member-access
+  565:11  warning  Unsafe return of a value of type `any`                                                                                                                                                            @typescript-eslint/no-unsafe-return
+  591:41  warning  Unsafe member access .assetClassLabel on an `error` typed value                                                                                                                                   @typescript-eslint/no-unsafe-member-access
+  592:17  warning  Unsafe argument of type error typed assigned to a parameter of type `string`                                                                                                                      @typescript-eslint/no-unsafe-argument
+  592:43  warning  Unsafe member access .assetClass on an `error` typed value                                                                                                                                        @typescript-eslint/no-unsafe-member-access
+  595:41  warning  Unsafe member access .assetSubClassLabel on an `error` typed value                                                                                                                                @typescript-eslint/no-unsafe-member-access
+  596:17  warning  Unsafe argument of type error typed assigned to a parameter of type `string`                                                                                                                      @typescript-eslint/no-unsafe-argument
+  596:43  warning  Unsafe member access .assetSubClass on an `error` typed value                                                                                                                                     @typescript-eslint/no-unsafe-member-access
+  599:15  warning  Unsafe assignment of an error typed value                                                                                                                                                         @typescript-eslint/no-unsafe-assignment
+  599:41  warning  Unsafe member access .dateOfFirstActivity on an `error` typed value                                                                                                                               @typescript-eslint/no-unsafe-member-access
+  601:17  warning  Unsafe member access .dateOfFirstActivity on an `error` typed value                                                                                                                               @typescript-eslint/no-unsafe-member-access
+  602:28  warning  Unsafe argument of type error typed assigned to a parameter of type `string`                                                                                                                      @typescript-eslint/no-unsafe-argument
+  602:54  warning  Unsafe member access .dateOfFirstActivity on an `error` typed value                                                                                                                               @typescript-eslint/no-unsafe-member-access
+  605:15  warning  Unsafe assignment of an error typed value                                                                                                                                                         @typescript-eslint/no-unsafe-assignment
+  605:41  warning  Unsafe member access .value on an `error` typed value                                                                                                                                             @typescript-eslint/no-unsafe-member-access
+  606:43  warning  Unsafe member access .value on an `error` typed value                                                                                                                                             @typescript-eslint/no-unsafe-member-access
+  608:45  warning  Unsafe member access .value on an `error` typed value          

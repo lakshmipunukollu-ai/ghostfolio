@@ -1,0 +1,10 @@
+import type { Tree } from '@nx/devkit';
+import type { Schema } from '../schema';
+export type NormalizedNgRxFeatureStoreGeneratorOptions = Schema & {
+    parentDirectory: string;
+    subdirectory: string;
+    rxjsVersion: string;
+    rxjsMajorVersion: number;
+};
+export declare function normalizeOptions(tree: Tree, options: Schema): NormalizedNgRxFeatureStoreGeneratorOptions;
+//# sourceMappingURL=normalize-options.d.ts.map

@@ -1,0 +1,7 @@
+import { ExecutorContext } from '@nx/devkit';
+import { DevServerExecutorSchema } from './schema';
+export default function runExecutor(options: DevServerExecutorSchema, context: ExecutorContext): AsyncIterableIterator<{
+    success: boolean;
+    baseUrl?: string;
+}>;
+//# sourceMappingURL=dev-server.impl.d.ts.map

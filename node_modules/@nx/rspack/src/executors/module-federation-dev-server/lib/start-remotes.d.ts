@@ -1,0 +1,6 @@
+import { ModuleFederationDevServerOptions } from '../schema';
+import { ProjectConfiguration, ExecutorContext } from '@nx/devkit';
+export declare function startRemotes(remotes: string[], workspaceProjects: Record<string, ProjectConfiguration>, options: Partial<Pick<ModuleFederationDevServerOptions, 'devRemotes' | 'host' | 'ssl' | 'sslCert' | 'sslKey' | 'verbose'>>, context: ExecutorContext, target?: 'serve' | 'serve-static'): Promise<AsyncIterable<{
+    success: boolean;
+}>[]>;
+//# sourceMappingURL=start-remotes.d.ts.map

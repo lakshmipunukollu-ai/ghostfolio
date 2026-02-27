@@ -1,0 +1,11 @@
+import { Compiler, type Configuration, type RspackOptionsNormalized } from '@rspack/core';
+import { NormalizedNxAppRspackPluginOptions } from '../models';
+export declare class NxTsconfigPathsRspackPlugin {
+    private options;
+    private tmpTsConfigPath;
+    constructor(options: NormalizedNxAppRspackPluginOptions);
+    apply(compiler: Compiler): void;
+    cleanupTmpTsConfigFile(): void;
+    handleBuildLibsFromSource(config: Partial<RspackOptionsNormalized | Configuration>, options: any): void;
+}
+//# sourceMappingURL=nx-tsconfig-paths-rspack-plugin.d.ts.map

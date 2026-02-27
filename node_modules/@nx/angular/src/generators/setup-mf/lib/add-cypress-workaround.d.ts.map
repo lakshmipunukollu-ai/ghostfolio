@@ -1,0 +1,1 @@
+{"version":3,"file":"add-cypress-workaround.d.ts","sourceRoot":"","sources":["../../../../../../../packages/angular/src/generators/setup-mf/lib/add-cypress-workaround.ts"],"names":[],"mappings":"AAIA,OAAO,KAAK,EAAwB,IAAI,EAAE,MAAM,YAAY,CAAC;AAS7D,OAAO,KAAK,EAAE,MAAM,EAAE,MAAM,WAAW,CAAC;AAExC,wBAAgB,2BAA2B,CAAC,IAAI,EAAE,IAAI,EAAE,MAAM,EAAE,MAAM,QAsDrE"}

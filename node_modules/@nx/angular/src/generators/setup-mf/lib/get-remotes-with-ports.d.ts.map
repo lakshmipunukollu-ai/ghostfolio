@@ -1,0 +1,1 @@
+{"version":3,"file":"get-remotes-with-ports.d.ts","sourceRoot":"","sources":["../../../../../../../packages/angular/src/generators/setup-mf/lib/get-remotes-with-ports.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,IAAI,EAAE,MAAM,YAAY,CAAC;AAEvC,OAAO,KAAK,EAAE,MAAM,EAAE,MAAM,WAAW,CAAC;AAExC,wBAAgB,mBAAmB,CAAC,IAAI,EAAE,IAAI,EAAE,OAAO,EAAE,MAAM;gBAExB,MAAM;UAAQ,MAAM;IAe1D"}

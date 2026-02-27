@@ -1,0 +1,1 @@
+{"version":3,"file":"validate-build-target.d.ts","sourceRoot":"","sources":["../../../../../../../packages/angular/src/generators/setup-tailwind/lib/validate-build-target.ts"],"names":[],"mappings":"AAAA,OAAO,EAAgB,KAAK,oBAAoB,EAAE,MAAM,YAAY,CAAC;AACrE,OAAO,KAAK,EAAE,0BAA0B,EAAE,MAAM,WAAW,CAAC;AAE5D,wBAAgB,mBAAmB,CACjC,OAAO,EAAE,0BAA0B,EACnC,OAAO,EAAE,oBAAoB,GAC5B,IAAI,CA+BN"}

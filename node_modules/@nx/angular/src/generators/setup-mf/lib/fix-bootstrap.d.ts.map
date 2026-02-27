@@ -1,0 +1,1 @@
+{"version":3,"file":"fix-bootstrap.d.ts","sourceRoot":"","sources":["../../../../../../../packages/angular/src/generators/setup-mf/lib/fix-bootstrap.ts"],"names":[],"mappings":"AAAA,OAAO,EAAqB,KAAK,IAAI,EAAE,MAAM,YAAY,CAAC;AAC1D,OAAO,KAAK,EAAE,iBAAiB,EAAE,MAAM,WAAW,CAAC;AAEnD,wBAAgB,YAAY,CAC1B,IAAI,EAAE,IAAI,EACV,OAAO,EAAE,MAAM,EACf,OAAO,EAAE,iBAAiB,QAuC3B"}

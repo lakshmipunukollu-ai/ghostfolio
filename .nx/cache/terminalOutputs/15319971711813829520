@@ -1,0 +1,541 @@
+
+Linting "api"...
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/jest.config.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  1:1  warning  Unused eslint-disable directive (no problems were reported)
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/access/access.controller.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+   48:34  warning  'permissions' is already declared in the upper scope on line 6 column 10                         @typescript-eslint/no-shadow
+   78:7   warning  The two values in this comparison do not have a shared enum type                                 @typescript-eslint/no-unsafe-enum-comparison
+  133:7   warning  The two values in this comparison do not have a shared enum type                                 @typescript-eslint/no-unsafe-enum-comparison
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/access/access.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/access/access.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/account-balance/account-balance.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/account-balance/account-balance.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/account-balance/account-balance.service.ts
+    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  133:3  warning  Member getAccountBalances should be declared before all public instance method definitions       @typescript-eslint/member-ordering
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/account/account.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/account/account.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/account/account.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/account/interfaces/cash-details.interface.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/admin/admin.controller.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+   87:3   warning  Async method 'gather7Days' has no 'await' expression                                                                                                                @typescript-eslint/require-await
+   88:5   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  115:5   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  167:3   warning  Async method 'gatherSymbol' has no 'await' expression                                                                                                               @typescript-eslint/require-await
+  179:5   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  265:31  warning  Unsafe argument of type `any` assigned to a parameter of type `string | Record<string, any>`                                                                        @typescript-eslint/no-unsafe-argument
+  265:37  warning  Unsafe member access .message on an `any` value                                                                                                                     @typescript-eslint/no-unsafe-member-access
+  276:30  warning  'never' is overridden by other types in this union type                                                                                                             @typescript-eslint/no-redundant-type-constituents
+  302:5   warning  Unsafe return of a value of type `Promise<any>`                                                                                                                     @typescript-eslint/no-unsafe-return
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/admin/admin.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/admin/admin.service.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+   74:21  warning  'never' is overridden by other types in this union type                                                                                                             @typescript-eslint/no-redundant-type-constituents
+  251:7   warning  Unsafe assignment of an error typed value                                                                                                                           @typescript-eslint/no-unsafe-assignment
+  255:7   warning  Unsafe assignment of an error typed value                                                                                                                           @typescript-eslint/no-unsafe-assignment
+  572:11  warning  Unsafe assignment of an error typed value                                                                                                                           @typescript-eslint/no-unsafe-assignment
+  572:34  warning  'newDataSource' may use Object's default stringification format ('[object Object]') when stringified                                                                @typescript-eslint/no-base-to-string
+  585:9   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  592:15  warning  Unsafe assignment of an error typed value                                                                                                                           @typescript-eslint/no-unsafe-assignment
+  592:38  warning  'newDataSource' may use Object's default stringification format ('[object Object]') when stringified                                                                @typescript-eslint/no-base-to-string
+  602:15  warning  Unsafe assignment of an error typed value                                                                                                                           @typescript-eslint/no-unsafe-assignment
+  602:38  warning  'newDataSource' may use Object's default stringification format ('[object Object]') when stringified                                                                @typescript-eslint/no-base-to-string
+  608:9   warning  Unsafe return of a value of type error                                                                                                                              @typescript-eslint/no-unsafe-return
+  610:13  warning  Unsafe assignment of an error typed value                                                                                                                           @typescript-eslint/no-unsafe-assignment
+  610:36  warning  'newDataSource' may use Object's default stringification format ('[object Object]') when stringified                                                                @typescript-eslint/no-base-to-string
+  659:7   warning  Unsafe return of a value of type error                                                                                                                              @typescript-eslint/no-unsafe-return
+  661:23  warning  This assertion is unnecessary since it does not change the type of the expression                                                                                   @typescript-eslint/no-unnecessary-type-assertion
+  662:19  warning  This assertion is unnecessary since it does not change the type of the expression                                                                                   @typescript-eslint/no-unnecessary-type-assertion
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/admin/queue/queue.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/admin/queue/queue.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/admin/queue/queue.service.ts
+   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  75:13  warning  Unsafe assignment of an `any` value                                                              @typescript-eslint/no-unsafe-assignment
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/app.controller.ts
+   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+  10:5  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/app.module.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  112:19  warning  Unsafe member access .req on an `any` value                                                      @typescript-eslint/no-unsafe-member-access
+  116:21  warning  Unsafe assignment of an `any` value                                                              @typescript-eslint/no-unsafe-assignment
+  116:28  warning  Unsafe call of a(n) `any` typed value                                                            @typescript-eslint/no-unsafe-call
+  116:28  warning  Unsafe call of a(n) `any` typed value                                                            @typescript-eslint/no-unsafe-call
+  116:32  warning  Unsafe member access .req on an `any` value                                                      @typescript-eslint/no-unsafe-member-access
+  117:29  warning  Unsafe member access [0] on an `any` value                                                       @typescript-eslint/no-unsafe-member-access
+  118:29  warning  Unsafe member access [0] on an `any` value                                                       @typescript-eslint/no-unsafe-member-access
+  120:53  warning  Unsafe argument of type `any` assigned to a parameter of type `string`                           @typescript-eslint/no-unsafe-argument
+  121:17  warning  Unsafe assignment of an `any` value                                                              @typescript-eslint/no-unsafe-assignment
+  125:13  warning  Unsafe call of a(n) `any` typed value                                                            @typescript-eslint/no-unsafe-call
+  125:17  warning  Unsafe member access .set on an `any` value                                                      @typescript-eslint/no-unsafe-member-access
+  126:17  warning  Unsafe member access .statusCode on an `any` value                                               @typescript-eslint/no-unsafe-member-access
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/asset/asset.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/asset/asset.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/auth-device/auth-device.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/auth-device/auth-device.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/auth-device/auth-device.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/auth/api-key.strategy.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/auth/auth.controller.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+   87:11  warning  Unsafe assignment of an `any` value                                                              @typescript-eslint/no-unsafe-assignment
+   87:42  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+   87:47  warning  Unsafe member access .jwt on an `any` value                                                      @typescript-eslint/no-unsafe-member-access
+  120:11  warning  Unsafe assignment of an `any` value                                                              @typescript-eslint/no-unsafe-assignment
+  120:42  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+  120:47  warning  Unsafe member access .jwt on an `any` value                                                      @typescript-eslint/no-unsafe-member-access
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/auth/auth.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/auth/auth.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/auth/google.strategy.ts
+   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  29:15  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/auth/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/auth/jwt.strategy.ts
+   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                                                                                                                                            @typescript-eslint/prefer-nullish-coalescing
+  24:5   warning  Unsafe call of a(n) `error` type typed value                                                                                                                                                                                                                                               @typescript-eslint/no-unsafe-call
+  25:7   warning  Unsafe assignment of an error typed value                                                                                                                                                                                                                                                  @typescript-eslint/no-unsafe-assignment
+  25:23  warning  Unsafe call of a(n) `error` type typed value                                                                                                                                                                                                                                               @typescript-eslint/no-unsafe-call
+  25:34  warning  Unsafe member access .fromAuthHeaderAsBearerToken on an `error` typed value                                                                                                                                                                                                                @typescript-eslint/no-unsafe-member-access
+  33:13  warning  Unsafe assignment of an error typed value                                                                                                                                                                                                                                                  @typescript-eslint/no-unsafe-assignment
+  46:57  warning  Unsafe argument of type error typed assigned to a parameter of type `"Africa/Abidjan" | "Africa/Accra" | "Africa/Addis_Ababa" | "Africa/Algiers" | "Africa/Asmara" | "Africa/Asmera" | "Africa/Bamako" | "Africa/Bangui" | "Africa/Banjul" | "Africa/Bissau" | ... 587 more ... | "Zulu"`  @typescript-eslint/no-unsafe-argument
+  75:11  warning  Unsafe call of a(n) `any` typed value                                                                                                                                                                                                                                                      @typescript-eslint/no-unsafe-call
+  75:18  warning  Unsafe member access .getStatus on an `any` value                                                                                                                                                                                                                                          @typescript-eslint/no-unsafe-member-access
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/auth/oidc-state.store.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/auth/oidc.strategy.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/auth/web-auth.service.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  107:52  warning  Unsafe member access .message on an `any` value                                                  @typescript-eslint/no-unsafe-member-access
+  214:48  warning  Unsafe assignment of an `any` value                                                              @typescript-eslint/no-unsafe-assignment
+  214:61  warning  Unsafe member access .message on an `any` value                                                  @typescript-eslint/no-unsafe-member-access
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/cache/cache.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/cache/cache.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/ai/ai.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/ai/ai.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/ai/ai.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/api-keys/api-keys.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/api-keys/api-keys.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/assets/assets.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/assets/assets.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/benchmarks/benchmarks.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/benchmarks/benchmarks.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/benchmarks/benchmarks.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/data-providers/ghostfolio/get-dividends.dto.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/data-providers/ghostfolio/get-historical.dto.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/data-providers/ghostfolio/get-quotes.dto.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  7:5  warning  Unsafe return of a value of type `any`                                                           @typescript-eslint/no-unsafe-return
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/data-providers/ghostfolio/ghostfolio.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/data-providers/ghostfolio/ghostfolio.module.ts
+   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  70:12  warning  Unsafe return of a value of type `any[]`                                                         @typescript-eslint/no-unsafe-return
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/data-providers/ghostfolio/ghostfolio.service.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  203:31  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+  225:41  warning  Async arrow function has no 'await' expression                                                   @typescript-eslint/require-await
+  372:57  warning  Unsafe argument of type error typed assigned to a parameter of type `DataSource`                 @typescript-eslint/no-unsafe-argument
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/market-data/market-data.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/market-data/market-data.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/platforms/platforms.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/platforms/platforms.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/public/public.controller.ts
+   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  61:20  warning  The two values in this comparison do not have a shared enum type                                 @typescript-eslint/no-unsafe-enum-comparison
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/public/public.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/sitemap/sitemap.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/sitemap/sitemap.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/sitemap/sitemap.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/tags/tags.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/tags/tags.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/watchlist/watchlist.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/watchlist/watchlist.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/endpoints/watchlist/watchlist.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/exchange-rate/exchange-rate.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/exchange-rate/exchange-rate.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/exchange-rate/exchange-rate.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/export/export.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/export/export.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/export/export.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/health/health.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/health/health.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/health/health.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/import/import-data.dto.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/import/import.controller.ts
+   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  65:7   warning  The two values in this comparison do not have a shared enum type                                 @typescript-eslint/no-unsafe-enum-comparison
+  88:27  warning  Unsafe member access .message on an `any` value                                                  @typescript-eslint/no-unsafe-member-access
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/import/import.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/import/import.service.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+  485:49  warning  'id' is already declared in the upper scope on line 474 column 9                                                                                                    @typescript-eslint/no-shadow
+  577:38  warning  'id' is already declared in the upper scope on line 474 column 9                                                                                                    @typescript-eslint/no-shadow
+  605:9   warning  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free                                                 @typescript-eslint/ban-ts-comment
+  623:7   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/info/info.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/info/info.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/info/info.service.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  261:7   warning  Unsafe assignment of an `any` value                                                              @typescript-eslint/no-unsafe-assignment
+  306:15  warning  Unsafe assignment of an `any` value                                                              @typescript-eslint/no-unsafe-assignment
+  323:21  warning  Unsafe member access .attributes on an `any` value                                               @typescript-eslint/no-unsafe-member-access
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/logo/logo.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/logo/logo.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/logo/logo.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/order/order.controller.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+  176:39  warning  'activity' is already declared in the upper scope on line 176 column 11                                                                                             @typescript-eslint/no-shadow
+  212:27  warning  Unsafe member access .message on an `any` value                                                                                                                     @typescript-eslint/no-unsafe-member-access
+  258:7   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  327:31  warning  'id' is already declared in the upper scope on line 277 column 36                                                                                                   @typescript-eslint/no-shadow
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/order/order.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/order/order.service.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+  168:7   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  546:28  warning  Unsafe assignment of an error typed value                                                                                                                           @typescript-eslint/no-unsafe-assignment
+  560:26  warning  Unsafe assignment of an error typed value                                                                                                                           @typescript-eslint/no-unsafe-assignment
+  658:11  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/naming-convention')
+  748:3   warning  Member getOrdersForPortfolioCalculator should be declared before all public instance method definitions                                                             @typescript-eslint/member-ordering
+  860:9   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/platform/platform.controller.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/platform/platform.module.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/platform/platform.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/mwr/portfolio-calculator.ts
+   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  18:30  warning  Unexpected empty object pattern                                                                  no-empty-pattern
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/portfolio-calculator-test-utils.ts
+   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  43:3  warning  Unsafe return of a value of type `any`                                                           @typescript-eslint/no-unsafe-return
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/portfolio-calculator.factory.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/portfolio-calculator.ts
+     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+   178:3   warning  Member computeSnapshot should be declared before all protected abstract method definitions                                                                          @typescript-eslint/member-ordering
+   647:3   warning  Member getDataProviderInfos should be declared before all protected abstract method definitions                                                                     @typescript-eslint/member-ordering
+   651:3   warning  Member getDividendInBaseCurrency should be declared before all protected abstract method definitions                                                                @typescript-eslint/member-ordering
+   661:3   warning  Member getFeesInBaseCurrency should be declared before all protected abstract method definitions                                                                    @typescript-eslint/member-ordering
+   667:3   warning  Member getInterestInBaseCurrency should be declared before all protected abstract method definitions                                                                @typescript-eslint/member-ordering
+   673:3   warning  Member getInvestments should be declared before all protected abstract method definitions                                                                           @typescript-eslint/member-ordering
+   690:3   warning  Member getInvestmentsByGroup should be declared before all protected abstract method definitions                                                                    @typescript-eslint/member-ordering
+   713:3   warning  Member getLiabilitiesInBaseCurrency should be declared before all protected abstract method definitions                                                             @typescript-eslint/member-ordering
+   719:3   warning  Member getPerformance should be declared before all protected abstract method definitions                                                                           @typescript-eslint/member-ordering
+   733:27  warning  Unsafe argument of type `any` assigned to a parameter of type `string | number | Date`                                                                              @typescript-eslint/no-unsafe-argument
+   733:52  warning  Unsafe argument of type `any` assigned to a parameter of type `string | number | Date`                                                                              @typescript-eslint/no-unsafe-argument
+   787:3   warning  Member getSnapshot should be declared before all protected abstract method definitions                                                                              @typescript-eslint/member-ordering
+   793:3   warning  Member getStartDate should be declared before all protected abstract method definitions                                                                             @typescript-eslint/member-ordering
+   836:3   warning  Member getTransactionPoints should be declared before all protected abstract method definitions                                                                     @typescript-eslint/member-ordering
+   840:3   warning  Member getChartDateMap should be declared before all protected abstract method definitions                                                                          @typescript-eslint/member-ordering
+   926:3   warning  Member computeTransactionPoints should be declared before all protected abstract method definitions                                                                 @typescript-eslint/member-ordering
+  1039:40  warning  'symbol' is already declared in the upper scope on line 951 column 13                                                                                               @typescript-eslint/no-shadow
+  1090:3   warning  Member initialize should be declared before all protected abstract method definitions                                                                               @typescript-eslint/member-ordering
+  1106:13  warning  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  1132:9   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-baln-buy-and-buy.spec.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-baln-buy-and-sell-in-two-activities.spec.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  208:40  warning  This number literal will lose precision at runtime                                               no-loss-of-precision
+  208:40  warning  This number literal will lose precision at runtime                                               @typescript-eslint/no-loss-of-precision
+  209:58  warning  This number literal will lose precision at runtime                                               no-loss-of-precision
+  209:58  warning  This number literal will lose precision at runtime                                               @typescript-eslint/no-loss-of-precision
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-baln-buy-and-sell.spec.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  192:40  warning  This number literal will lose precision at runtime                                               no-loss-of-precision
+  192:40  warning  This number literal will lose precision at runtime                                               @typescript-eslint/no-loss-of-precision
+  193:58  warning  This number literal will lose precision at runtime                                               no-loss-of-precision
+  193:58  warning  This number literal will lose precision at runtime                                               @typescript-eslint/no-loss-of-precision
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-baln-buy.spec.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-btceur-in-base-currency-eur.spec.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-btceur.spec.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-btcusd-buy-and-sell-partially.spec.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  210:39  warning  This number literal will lose precision at runtime                                               no-loss-of-precision
+  210:39  warning  This number literal will lose precision at runtime                                               @typescript-eslint/no-loss-of-precision
+  211:57  warning  This number literal will lose precision at runtime                                               no-loss-of-precision
+  211:57  warning  This number literal will lose precision at runtime                                               @typescript-eslint/no-loss-of-precision
+  212:45  warning  This number literal will lose precision at runtime                                               no-loss-of-precision
+  212:45  warning  This number literal will lose precision at runtime                                               @typescript-eslint/no-loss-of-precision
+  213:28  warning  This number literal will lose precision at runtime                                               no-loss-of-precision
+  213:28  warning  This number literal will lose precision at runtime                                               @typescript-eslint/no-loss-of-precision
+  214:51  warning  This number literal will lose precision at runtime                                               no-loss-of-precision
+  214:51  warning  This number literal will lose precision at runtime                                               @typescript-eslint/no-loss-of-precision
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-btcusd-short.spec.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-btcusd.spec.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-cash.spec.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-fee.spec.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-googl-buy.spec.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  188:39  warning  This number literal will lose precision at runtime                                               no-loss-of-precision
+  188:39  warning  This number literal will lose precision at runtime                                               @typescript-eslint/no-loss-of-precision
+  189:57  warning  This number literal will lose precision at runtime                                               no-loss-of-precision
+  189:57  warning  This number literal will lose precision at runtime                                               @typescript-eslint/no-loss-of-precision
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-jnug-buy-and-sell-and-buy-and-sell.spec.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-liability.spec.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-msft-buy-and-sell.spec.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-msft-buy-with-dividend.spec.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-no-orders.spec.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-novn-buy-and-sell-partially.spec.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  190:39  warning  This number literal will lose precision at runtime                                               no-loss-of-precision
+  190:39  warning  This number literal will lose precision at runtime                                               @typescript-eslint/no-loss-of-precision
+  191:57  warning  This number literal will lose precision at runtime                                               no-loss-of-precision
+  191:57  warning  This number literal will lose precision at runtime                                               @typescript-eslint/no-loss-of-precision
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-novn-buy-and-sell.spec.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  241:39  warning  This number literal will lose precision at runtime                                               no-loss-of-precision
+  241:39  warning  This number literal will lose precision at runtime                                               @typescript-eslint/no-loss-of-precision
+  242:57  warning  This number literal will lose precision at runtime                                               no-loss-of-precision
+  242:57  warning  This number literal will lose precision at runtime                                               @typescript-eslint/no-loss-of-precision
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator-valuable.spec.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator.spec.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roai/portfolio-calculator.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/roi/portfolio-calculator.ts
+   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  18:30  warning  Unexpected empty object pattern                                                                  no-empty-pattern
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/calculator/twr/portfolio-calculator.ts
+   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  18:30  warning  Unexpected empty object pattern                                                                  no-empty-pattern
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/current-rate.service.mock.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/current-rate.service.spec.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+   57:25  warning  Unexpected empty object pattern                                                                  no-empty-pattern
+  102:22  warning  Async arrow function has no 'await' expression                                                   @typescript-eslint/require-await
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/current-rate.service.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  118:19  warning  Invalid type "Date" of template literal expression                                               @typescript-eslint/restrict-template-expressions
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/interfaces/date-query.interface.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/interfaces/get-value-object.interface.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/interfaces/get-values-object.interface.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/interfaces/get-values-params.interface.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/interfaces/portfolio-order-item.interface.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/interfaces/portfolio-order.interface.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/interfaces/snapshot-value.interface.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/interfaces/transaction-point-symbol.interface.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/api/src/app/portfolio/interfaces/transaction-point.interface.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyanka

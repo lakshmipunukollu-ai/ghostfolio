@@ -1,0 +1,8 @@
+import { ExecutorContext } from '@nx/devkit';
+import { Compiler, MultiCompiler } from '@rspack/core';
+import { NormalizedRspackExecutorSchema } from '../executors/rspack/schema';
+export declare function createCompiler(options: NormalizedRspackExecutorSchema & {
+    devServer?: any;
+}, context: ExecutorContext): Promise<Compiler | MultiCompiler>;
+export declare function isMultiCompiler(compiler: Compiler | MultiCompiler): compiler is MultiCompiler;
+//# sourceMappingURL=create-compiler.d.ts.map

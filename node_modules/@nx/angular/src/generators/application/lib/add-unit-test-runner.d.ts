@@ -1,0 +1,4 @@
+import type { Tree } from '@nx/devkit';
+import type { NormalizedSchema } from './normalized-schema';
+export declare function addUnitTestRunner(host: Tree, options: NormalizedSchema): Promise<void>;
+//# sourceMappingURL=add-unit-test-runner.d.ts.map

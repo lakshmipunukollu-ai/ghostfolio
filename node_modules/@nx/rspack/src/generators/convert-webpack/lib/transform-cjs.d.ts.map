@@ -1,0 +1,1 @@
+{"version":3,"file":"transform-cjs.d.ts","sourceRoot":"","sources":["../../../../../../../packages/rspack/src/generators/convert-webpack/lib/transform-cjs.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,IAAI,EAAE,MAAM,YAAY,CAAC;AAGvC,wBAAgB,sBAAsB,CAAC,IAAI,EAAE,IAAI,EAAE,UAAU,EAAE,MAAM,QAgBpE"}

@@ -1,0 +1,7 @@
+import type { ExecutorContext } from '@nx/devkit';
+import type { BuildAngularLibraryExecutorOptions } from '../package/schema';
+export declare const ngPackagrLiteExecutor: (options: BuildAngularLibraryExecutorOptions, context: ExecutorContext) => AsyncGenerator<{
+    success: boolean;
+}, any, any>;
+export default ngPackagrLiteExecutor;
+//# sourceMappingURL=ng-packagr-lite.impl.d.ts.map

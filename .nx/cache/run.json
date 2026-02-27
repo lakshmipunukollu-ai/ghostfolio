@@ -1,0 +1,32 @@
+{
+  "run": {
+    "command": "nx affected:lint",
+    "startTime": "2026-02-27T03:50:41.481Z",
+    "endTime": "2026-02-27T03:50:41.530Z",
+    "inner": false
+  },
+  "tasks": [
+    {
+      "taskId": "ui:lint",
+      "target": "lint",
+      "projectName": "ui",
+      "hash": "156742137496962122",
+      "startTime": "2026-02-27T03:50:41.528Z",
+      "endTime": "2026-02-27T03:50:41.529Z",
+      "params": "",
+      "cacheStatus": "local-cache-hit",
+      "status": 0
+    },
+    {
+      "taskId": "client:lint",
+      "target": "lint",
+      "projectName": "client",
+      "hash": "13810819325408856498",
+      "startTime": "2026-02-27T03:50:41.529Z",
+      "endTime": "2026-02-27T03:50:41.529Z",
+      "params": "",
+      "cacheStatus": "local-cache-hit",
+      "status": 0
+    }
+  ]
+}

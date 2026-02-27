@@ -1,0 +1,404 @@
+
+Linting "client"...
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/jest.config.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  1:1  warning  Unused eslint-disable directive (no problems were reported)
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/adapter/custom-date-adapter.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/adapter/date-formats.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/app.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+   57:3   warning  Member canCreateAccount should be declared before all public decorated get definitions                                                                              @typescript-eslint/member-ordering
+   58:3   warning  Member currentRoute should be declared before all public decorated get definitions                                                                                  @typescript-eslint/member-ordering
+   59:3   warning  Member currentSubRoute should be declared before all public decorated get definitions                                                                               @typescript-eslint/member-ordering
+   60:3   warning  Member deviceType should be declared before all public decorated get definitions                                                                                    @typescript-eslint/member-ordering
+   61:3   warning  Member hasImpersonationId should be declared before all public decorated get definitions                                                                            @typescript-eslint/member-ordering
+   62:3   warning  Member hasInfoMessage should be declared before all public decorated get definitions                                                                                @typescript-eslint/member-ordering
+   63:3   warning  Member hasPermissionToChangeDateRange should be declared before all public decorated get definitions                                                                @typescript-eslint/member-ordering
+   64:3   warning  Member hasPermissionToChangeFilters should be declared before all public decorated get definitions                                                                  @typescript-eslint/member-ordering
+   65:3   warning  Member hasPromotion should be declared before all public decorated get definitions                                                                                  @typescript-eslint/member-ordering
+   66:3   warning  Member hasTabs should be declared before all public decorated get definitions                                                                                       @typescript-eslint/member-ordering
+   67:3   warning  Member info should be declared before all public decorated get definitions                                                                                          @typescript-eslint/member-ordering
+   68:3   warning  Member pageTitle should be declared before all public decorated get definitions                                                                                     @typescript-eslint/member-ordering
+   69:3   warning  Member routerLinkRegister should be declared before all public decorated get definitions                                                                            @typescript-eslint/member-ordering
+   70:3   warning  Member showFooter should be declared before all public decorated get definitions                                                                                    @typescript-eslint/member-ordering
+   71:3   warning  Member user should be declared before all public decorated get definitions                                                                                          @typescript-eslint/member-ordering
+   73:3   warning  Member unsubscribeSubject should be declared before all public decorated get definitions                                                                            @typescript-eslint/member-ordering
+   75:3   warning  Member constructor should be declared before all public decorated get definitions                                                                                   @typescript-eslint/member-ordering
+  101:13  warning  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  102:13  warning  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  231:7   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  320:13  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/app.routes.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/access-table/access-table.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/account-detail-dialog/account-detail-dialog.component.ts
+    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+  140:5  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  202:5  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  378:3  warning  Member ngOnDestroy should be declared before all private instance method definitions                                                                                @typescript-eslint/member-ordering
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/account-detail-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/admin-jobs/admin-jobs.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  144:15  warning  Unsafe assignment of an `any` value                                                              @typescript-eslint/no-unsafe-assignment
+  145:24  warning  Unsafe argument of type `any[]` assigned to a parameter of type `JobStatus[]`                    @typescript-eslint/no-unsafe-argument
+  161:11  warning  Unsafe assignment of an `any` value                                                              @typescript-eslint/no-unsafe-assignment
+  164:21  warning  Unsafe assignment of type `any[]` to a variable of type `JobStatus[]`                            @typescript-eslint/no-unsafe-assignment
+  167:24  warning  Unsafe argument of type `any[]` assigned to a parameter of type `JobStatus[]`                    @typescript-eslint/no-unsafe-argument
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/admin-market-data/admin-market-data.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+  220:13  warning  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  221:13  warning  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  352:5   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  461:17  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  492:15  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  497:19  warning  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  501:36  warning  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  501:48  warning  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  510:45  warning  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  510:57  warning  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/admin-market-data/admin-market-data.service.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/admin-market-data/asset-profile-dialog/asset-profile-dialog.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                                                                 @typescript-eslint/prefer-nullish-coalescing
+  154:16  warning  Avoid referencing unbound methods which may cause unintentional scoping of `this`.
+If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead  @typescript-eslint/unbound-method
+  172:10  warning  Avoid referencing unbound methods which may cause unintentional scoping of `this`.
+If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead  @typescript-eslint/unbound-method
+  475:7   warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+  484:9   warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+  523:7   warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+  527:7   warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+  631:15  warning  The two values in this comparison do not have a shared enum type                                                                                                                                                @typescript-eslint/no-unsafe-enum-comparison
+  671:11  warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+  696:13  warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+  696:29  warning  Unsafe member access .message on an `any` value                                                                                                                                                                 @typescript-eslint/no-unsafe-member-access
+  749:7   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator                                              @typescript-eslint/no-floating-promises
+  754:11  warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/admin-market-data/asset-profile-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/admin-market-data/create-asset-profile-dialog/create-asset-profile-dialog.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                                                                 @typescript-eslint/prefer-nullish-coalescing
+   80:43  warning  Avoid referencing unbound methods which may cause unintentional scoping of `this`.
+If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead  @typescript-eslint/unbound-method
+   81:46  warning  Avoid referencing unbound methods which may cause unintentional scoping of `this`.
+If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead  @typescript-eslint/unbound-method
+   84:21  warning  Avoid referencing unbound methods which may cause unintentional scoping of `this`.
+If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead  @typescript-eslint/unbound-method
+  105:9   warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+  106:65  warning  Unsafe member access .dataSource on an `any` value                                                                                                                                                              @typescript-eslint/no-unsafe-member-access
+  107:9   warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+  107:71  warning  Unsafe member access .symbol on an `any` value                                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  146:3   warning  Member showCurrencyErrorMessage should be declared before all public instance method definitions                                                                                                                @typescript-eslint/member-ordering
+  209:27  warning  Unsafe call of a(n) `any` typed value                                                                                                                                                                           @typescript-eslint/no-unsafe-call
+  209:42  warning  Unsafe member access .toUpperCase on an `any` value                                                                                                                                                             @typescript-eslint/no-unsafe-member-access
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/admin-market-data/create-asset-profile-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/admin-overview/admin-overview.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  263:9   warning  Unsafe assignment of an `any` value                                                              @typescript-eslint/no-unsafe-assignment
+  318:65  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/admin-platform/admin-platform.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+   86:13  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  111:5   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  190:9   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  238:9   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/admin-platform/create-or-update-platform-dialog/create-or-update-platform-dialog.component.ts
+   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                                                                 @typescript-eslint/prefer-nullish-coalescing
+  57:39  warning  Avoid referencing unbound methods which may cause unintentional scoping of `this`.
+If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead  @typescript-eslint/unbound-method
+  58:51  warning  Avoid referencing unbound methods which may cause unintentional scoping of `this`.
+If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead  @typescript-eslint/unbound-method
+  69:9   warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+  70:9   warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/admin-platform/create-or-update-platform-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/admin-settings/admin-settings.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/admin-tag/admin-tag.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+   83:13  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  108:5   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  186:9   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  225:9   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/admin-tag/create-or-update-tag-dialog/create-or-update-tag-dialog.component.ts
+   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  65:9  warning  Unsafe assignment of an `any` value                                                              @typescript-eslint/no-unsafe-assignment
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/admin-tag/create-or-update-tag-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/admin-users/admin-users.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+  211:13  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  216:9   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  259:5   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  313:19  warning  Unsafe member access .action on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  313:48  warning  Unsafe member access .userId on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  314:29  warning  Unsafe argument of type `any` assigned to a parameter of type `string`                                                                                              @typescript-eslint/no-unsafe-argument
+  314:34  warning  Unsafe member access .userId on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  316:11  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/ai-chat/ai-chat.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+   65:3   warning  Member awaitingConfirmation should be declared before all private instance field definitions               @typescript-eslint/member-ordering
+   90:9   warning  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  119:3   warning  Member welcomeMessage should be declared before all public instance method definitions                     @typescript-eslint/member-ordering
+  143:3   warning  Member clearHistory should be declared before all private instance method definitions                      @typescript-eslint/member-ordering
+  157:3   warning  Member showSuggestions should be declared before all public instance method definitions                    @typescript-eslint/member-ordering
+  161:3   warning  Member clickChip should be declared before all private instance method definitions                         @typescript-eslint/member-ordering
+  179:3   warning  Member togglePanel should be declared before all private instance method definitions                       @typescript-eslint/member-ordering
+  190:3   warning  Member closePanel should be declared before all private instance method definitions                        @typescript-eslint/member-ordering
+  199:3   warning  Member onKeydown should be declared before all private instance method definitions                         @typescript-eslint/member-ordering
+  206:3   warning  Member sendMessage should be declared before all private instance method definitions                       @typescript-eslint/member-ordering
+  215:3   warning  Member confirmWrite should be declared before all private instance method definitions                      @typescript-eslint/member-ordering
+  219:3   warning  Member cancelWrite should be declared before all private instance method definitions                       @typescript-eslint/member-ordering
+  303:48  warning  Unsafe member access .message on an `any` value                                                            @typescript-eslint/no-unsafe-member-access
+  303:56  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  319:3   warning  Member seedPortfolio should be declared before all private instance method definitions                     @typescript-eslint/member-ordering
+  367:3   warning  Member giveFeedback should be declared before all private instance method definitions                      @typescript-eslint/member-ordering
+  392:3   warning  Member confidenceLabel should be declared before all private instance method definitions                   @typescript-eslint/member-ordering
+  402:3   warning  Member confidenceClass should be declared before all private instance method definitions                   @typescript-eslint/member-ordering
+  419:15  warning  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  420:9   warning  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  420:12  warning  Unsafe member access .scrollTop on an `any` value                                                          @typescript-eslint/no-unsafe-member-access
+  420:27  warning  Unsafe member access .scrollHeight on an `any` value                                                       @typescript-eslint/no-unsafe-member-access
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/ai-chat/ai-markdown.pipe.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/benchmark-comparator/benchmark-comparator.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/data-provider-status/data-provider-status.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/data-provider-status/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/fear-and-greed-index/fear-and-greed-index.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/footer/footer.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/header/header.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+   94:3   warning  Member currentRoute should be declared before all public decorated method definitions                                                                               @typescript-eslint/member-ordering
+   95:3   warning  Member deviceType should be declared before all public decorated method definitions                                                                                 @typescript-eslint/member-ordering
+   96:3   warning  Member hasPermissionToChangeDateRange should be declared before all public decorated method definitions                                                             @typescript-eslint/member-ordering
+   97:3   warning  Member hasPermissionToChangeFilters should be declared before all public decorated method definitions                                                               @typescript-eslint/member-ordering
+   98:3   warning  Member hasPromotion should be declared before all public decorated method definitions                                                                               @typescript-eslint/member-ordering
+   99:3   warning  Member hasTabs should be declared before all public decorated method definitions                                                                                    @typescript-eslint/member-ordering
+  100:3   warning  Member info should be declared before all public decorated method definitions                                                                                       @typescript-eslint/member-ordering
+  101:3   warning  Member pageTitle should be declared before all public decorated method definitions                                                                                  @typescript-eslint/member-ordering
+  102:3   warning  Member user should be declared before all public decorated method definitions                                                                                       @typescript-eslint/member-ordering
+  104:3   warning  Member signOut should be declared before all public decorated method definitions                                                                                    @typescript-eslint/member-ordering
+  106:3   warning  Member assistantElement should be declared before all public decorated method definitions                                                                           @typescript-eslint/member-ordering
+  107:3   warning  Member assistentMenuTriggerElement should be declared before all public decorated method definitions                                                                @typescript-eslint/member-ordering
+  109:3   warning  Member enableRealEstate should be declared before all public decorated method definitions                                                                           @typescript-eslint/member-ordering
+  110:3   warning  Member hasFilters should be declared before all public decorated method definitions                                                                                 @typescript-eslint/member-ordering
+  111:3   warning  Member hasImpersonationId should be declared before all public decorated method definitions                                                                         @typescript-eslint/member-ordering
+  112:3   warning  Member hasPermissionForAuthGoogle should be declared before all public decorated method definitions                                                                 @typescript-eslint/member-ordering
+  113:3   warning  Member hasPermissionForAuthOidc should be declared before all public decorated method definitions                                                                   @typescript-eslint/member-ordering
+  114:3   warning  Member hasPermissionForAuthToken should be declared before all public decorated method definitions                                                                  @typescript-eslint/member-ordering
+  115:3   warning  Member hasPermissionForSubscription should be declared before all public decorated method definitions                                                               @typescript-eslint/member-ordering
+  116:3   warning  Member hasPermissionToAccessAdminControl should be declared before all public decorated method definitions                                                          @typescript-eslint/member-ordering
+  117:3   warning  Member hasPermissionToAccessAssistant should be declared before all public decorated method definitions                                                             @typescript-eslint/member-ordering
+  118:3   warning  Member hasPermissionToAccessFearAndGreedIndex should be declared before all public decorated method definitions                                                     @typescript-eslint/member-ordering
+  119:3   warning  Member hasPermissionToCreateUser should be declared before all public decorated method definitions                                                                  @typescript-eslint/member-ordering
+  120:3   warning  Member impersonationId should be declared before all public decorated method definitions                                                                            @typescript-eslint/member-ordering
+  121:3   warning  Member internalRoutes should be declared before all public decorated method definitions                                                                             @typescript-eslint/member-ordering
+  122:3   warning  Member isMenuOpen should be declared before all public decorated method definitions                                                                                 @typescript-eslint/member-ordering
+  123:3   warning  Member routeAbout should be declared before all public decorated method definitions                                                                                 @typescript-eslint/member-ordering
+  124:3   warning  Member routeFeatures should be declared before all public decorated method definitions                                                                              @typescript-eslint/member-ordering
+  125:3   warning  Member routeMarkets should be declared before all public decorated method definitions                                                                               @typescript-eslint/member-ordering
+  126:3   warning  Member routePricing should be declared before all public decorated method definitions                                                                               @typescript-eslint/member-ordering
+  127:3   warning  Member routeResources should be declared before all public decorated method definitions                                                                             @typescript-eslint/member-ordering
+  128:3   warning  Member routerLinkAbout should be declared before all public decorated method definitions                                                                            @typescript-eslint/member-ordering
+  129:3   warning  Member routerLinkAccount should be declared before all public decorated method definitions                                                                          @typescript-eslint/member-ordering
+  130:3   warning  Member routerLinkAccounts should be declared before all public decorated method definitions                                                                         @typescript-eslint/member-ordering
+  131:3   warning  Member routerLinkAdminControl should be declared before all public decorated method definitions                                                                     @typescript-eslint/member-ordering
+  132:3   warning  Member routerLinkFeatures should be declared before all public decorated method definitions                                                                         @typescript-eslint/member-ordering
+  133:3   warning  Member routerLinkMarkets should be declared before all public decorated method definitions                                                                          @typescript-eslint/member-ordering
+  134:3   warning  Member routerLinkPortfolio should be declared before all public decorated method definitions                                                                        @typescript-eslint/member-ordering
+  135:3   warning  Member routerLinkPricing should be declared before all public decorated method definitions                                                                          @typescript-eslint/member-ordering
+  136:3   warning  Member routerLinkRegister should be declared before all public decorated method definitions                                                                         @typescript-eslint/member-ordering
+  137:3   warning  Member routerLinkResources should be declared before all public decorated method definitions                                                                        @typescript-eslint/member-ordering
+  139:3   warning  Member unsubscribeSubject should be declared before all public decorated method definitions                                                                         @typescript-eslint/member-ordering
+  141:3   warning  Member constructor should be declared before all public decorated method definitions                                                                                @typescript-eslint/member-ordering
+  320:19  warning  Unsafe member access .accessToken on an `any` value                                                                                                                 @typescript-eslint/no-unsafe-member-access
+  322:29  warning  Unsafe argument of type `any` assigned to a parameter of type `string`                                                                                              @typescript-eslint/no-unsafe-argument
+  322:35  warning  Unsafe member access .accessToken on an `any` value                                                                                                                 @typescript-eslint/no-unsafe-member-access
+  355:11  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/holding-detail-dialog/holding-detail-dialog.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+  326:16  warning  'averagePrice' is already declared in the upper scope on line 268 column 11                                                                                         @typescript-eslint/no-shadow
+  326:36  warning  'marketPrice' is already declared in the upper scope on line 276 column 11                                                                                          @typescript-eslint/no-shadow
+  510:22  warning  'value' is already declared in the upper scope on line 286 column 11                                                                                                @typescript-eslint/no-shadow
+  550:5   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  587:9   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  622:5   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/holding-detail-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/home-holdings/home-holdings.component.ts
+    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+  146:7  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/home-market/home-market.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/home-overview/home-overview.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/home-summary/home-summary.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/home-watchlist/create-watchlist-item-dialog/create-watchlist-item-dialog.component.ts
+   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                                                                 @typescript-eslint/prefer-nullish-coalescing
+  52:46  warning  Avoid referencing unbound methods which may cause unintentional scoping of `this`.
+If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead  @typescript-eslint/unbound-method
+  55:21  warning  Avoid referencing unbound methods which may cause unintentional scoping of `this`.
+If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead  @typescript-eslint/unbound-method
+  66:7   warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+  67:64  warning  Unsafe member access .dataSource on an `any` value                                                                                                                                                              @typescript-eslint/no-unsafe-member-access
+  68:7   warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+  68:70  warning  Unsafe member access .symbol on an `any` value                                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  82:33  warning  Unsafe member access .dataSource on an `any` value                                                                                                                                                              @typescript-eslint/no-unsafe-member-access
+  83:33  warning  Unsafe member access .symbol on an `any` value                                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/home-watchlist/create-watchlist-item-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/home-watchlist/home-watchlist.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+  170:38  warning  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  170:50  warning  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  177:13  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/investment-chart/investment-chart.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/login-with-access-token-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/login-with-access-token-dialog/login-with-access-token-dialog.component.ts
+   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                                                                 @typescript-eslint/prefer-nullish-coalescing
+  46:5  warning  Avoid referencing unbound methods which may cause unintentional scoping of `this`.
+If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead  @typescript-eslint/unbound-method
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/markets/markets.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/portfolio-performance/portfolio-performance.component.ts
+   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  59:34  warning  Unsafe member access .innerHTML on an `any` value                                                @typescript-eslint/no-unsafe-member-access
+  81:34  warning  Unsafe member access .innerHTML on an `any` value                                                @typescript-eslint/no-unsafe-member-access
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/portfolio-summary/portfolio-summary.component.ts
+   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  73:3  warning  Member constructor should be declared before all public instance get definitions                 @typescript-eslint/member-ordering
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/rule/rule-settings-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/rule/rule-settings-dialog/rule-settings-dialog.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/rule/rule.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/rules/rules.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/subscription-interstitial-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/subscription-interstitial-dialog/subscription-interstitial-dialog.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/user-account-access/create-or-update-access-dialog/create-or-update-access-dialog.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                                                                 @typescript-eslint/prefer-nullish-coalescing
+   77:27  warning  Avoid referencing unbound methods which may cause unintentional scoping of `this`.
+If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead  @typescript-eslint/unbound-method
+   79:54  warning  Avoid referencing unbound methods which may cause unintentional scoping of `this`.
+If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead  @typescript-eslint/unbound-method
+   82:9   warning  Avoid referencing unbound methods which may cause unintentional scoping of `this`.
+If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead  @typescript-eslint/unbound-method
+   91:44  warning  Avoid referencing unbound methods which may cause unintentional scoping of `this`.
+If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead  @typescript-eslint/unbound-method
+  123:7   warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+  124:7   warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+  125:7   warning  Unsafe assignment of type `any[]` to a variable of type `AccessPermission[]`                                                                                                                                    @typescript-eslint/no-unsafe-assignment
+  139:23  warning  Unsafe member access .status on an `any` value                                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  159:7   warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+  160:7   warning  Unsafe assignment of an `any` value                                                                                                                                                                             @typescript-eslint/no-unsafe-assignment
+  162:7   warning  Unsafe assignment of type `any[]` to a variable of type `AccessPermission[]`                                                                                                                                    @typescript-eslint/no-unsafe-assignment
+  176:24  warning  Unsafe member access .status on an `any` value                                                                                                                                                                  @typescript-eslint/no-unsafe-member-access
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/user-account-access/create-or-update-access-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/user-account-access/user-account-access.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                                                                 @typescript-eslint/prefer-nullish-coalescing
+   64:23  warning  Avoid referencing unbound methods which may cause unintentional scoping of `this`.
+If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead  @typescript-eslint/unbound-method
+  120:39  warning  Unsafe argument of type `any` assigned to a parameter of type `string`                                                                                                                                          @typescript-eslint/no-unsafe-argument
+  180:5   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator                                              @typescript-eslint/no-floating-promises
+  213:7   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator                                              @typescript-eslint/no-floating-promises
+  250:7   warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator                                              @typescript-eslint/no-floating-promises
+  255:59  warning  'permissions' is already declared in the upper scope on line 7 column 25                                                                                                                                        @typescript-eslint/no-shadow
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/user-account-membership/user-account-membership.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/user-account-settings/user-account-settings.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                                                                 @typescript-eslint/prefer-nullish-coalescing
+   74:23  warning  Avoid referencing unbound methods which may cause unintentional scoping of `this`.
+If your function does not access `this`, you can annotate it with `this: void`, or consider using an arrow function instead  @typescript-eslint/unbound-method
+  358:13  warning  Expected the Promise rejection reason to be an Error                                                                                                                                                            @typescript-eslint/prefer-promise-reject-errors
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/user-detail-dialog/interfaces/interfaces.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/user-detail-dialog/user-detail-dialog.component.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/core/auth.guard.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+   25:11  warning  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+   28:60  warning  Unsafe argument of type `any` assigned to a parameter of type `string`                                                                                              @typescript-eslint/no-unsafe-argument
+   37:15  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+   40:15  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+   55:15  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+   84:13  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+   89:15  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-es

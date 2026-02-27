@@ -1,0 +1,1 @@
+{"version":3,"file":"ngrx.d.ts","sourceRoot":"","sources":["../../../../../../packages/angular/src/generators/ngrx/ngrx.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,iBAAiB,EAAE,IAAI,EAAE,MAAM,YAAY,CAAC;AAU1D,OAAO,KAAK,EAAE,oBAAoB,EAAE,MAAM,UAAU,CAAC;AAErD;;GAEG;AACH,wBAAsB,aAAa,CACjC,IAAI,EAAE,IAAI,EACV,MAAM,EAAE,oBAAoB,GAC3B,OAAO,CAAC,iBAAiB,CAAC,CAuB5B;AAED,eAAe,aAAa,CAAC"}

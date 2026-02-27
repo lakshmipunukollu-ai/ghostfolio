@@ -1,0 +1,5 @@
+import type { Tree } from '@nx/devkit';
+import type { Schema } from './schema';
+export declare function scamGenerator(tree: Tree, rawOptions: Schema): Promise<void>;
+export default scamGenerator;
+//# sourceMappingURL=scam.d.ts.map

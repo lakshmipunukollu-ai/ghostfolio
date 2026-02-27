@@ -1,0 +1,5 @@
+import { GeneratorCallback, Tree } from '@nx/devkit';
+import { GeneratorOptions } from './schema';
+export declare function setupTailwindGenerator(tree: Tree, rawOptions: GeneratorOptions): Promise<GeneratorCallback>;
+export default setupTailwindGenerator;
+//# sourceMappingURL=setup-tailwind.d.ts.map

@@ -1,0 +1,4 @@
+export declare const DEFAULT_BROWSER_DIR = "browser";
+export declare const DEFAULT_MEDIA_DIR = "media";
+export declare const DEFAULT_SERVER_DIR = "server";
+//# sourceMappingURL=constants.d.ts.map

@@ -1,0 +1,1 @@
+{"version":3,"file":"version-utils.d.ts","sourceRoot":"","sources":["../../../../../packages/angular/src/utils/version-utils.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EACV,qBAAqB,EACrB,mBAAmB,EACpB,MAAM,gCAAgC,CAAC;AAKxC,wBAAgB,mCAAmC,CACjD,cAAc,EAAE,mBAAmB,EACnC,mBAAmB,EAAE,MAAM,GAC1B,MAAM,CAKR;AAED,wBAAgB,oCAAoC,CAClD,mBAAmB,EAAE,MAAM,GAC1B,qBAAqB,CAIvB"}

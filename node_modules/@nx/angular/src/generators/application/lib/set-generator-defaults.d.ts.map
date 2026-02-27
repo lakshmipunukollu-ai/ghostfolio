@@ -1,0 +1,1 @@
+{"version":3,"file":"set-generator-defaults.d.ts","sourceRoot":"","sources":["../../../../../../../packages/angular/src/generators/application/lib/set-generator-defaults.ts"],"names":[],"mappings":"AAAA,OAAO,EAA4B,KAAK,IAAI,EAAE,MAAM,YAAY,CAAC;AACjE,OAAO,KAAK,EAAE,gBAAgB,EAAE,MAAM,qBAAqB,CAAC;AAE5D,wBAAgB,oBAAoB,CAClC,IAAI,EAAE,IAAI,EACV,OAAO,EAAE,gBAAgB,GACxB,IAAI,CAcN"}

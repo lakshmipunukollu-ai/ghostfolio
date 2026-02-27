@@ -1,0 +1,7 @@
+import type { Tree } from '@nx/devkit';
+import type { NormalizedNgRxGeneratorOptions } from './normalize-options';
+/**
+ * Add ngrx feature exports to the public barrel in the feature library
+ */
+export declare function addExportsToBarrel(tree: Tree, options: NormalizedNgRxGeneratorOptions): void;
+//# sourceMappingURL=add-exports-barrel.d.ts.map

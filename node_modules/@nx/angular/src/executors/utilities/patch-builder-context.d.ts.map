@@ -1,0 +1,1 @@
+{"version":3,"file":"patch-builder-context.d.ts","sourceRoot":"","sources":["../../../../../../packages/angular/src/executors/utilities/patch-builder-context.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,cAAc,EAAE,MAAM,2BAA2B,CAAC;AAIhE,OAAO,KAAK,EAAE,MAAM,EAAE,MAAM,YAAY,CAAC;AAUzC,wBAAgB,mBAAmB,CACjC,OAAO,EAAE,cAAc,EACvB,qBAAqB,EAAE,OAAO,EAC9B,WAAW,EAAE,MAAM,GAClB,IAAI,CA4BN"}

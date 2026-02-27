@@ -1,0 +1,18 @@
+import { <% if(changeDetection !== 'Default') { %>ChangeDetectionStrategy, <% }%>Component<% if(!!viewEncapsulation) { %>, ViewEncapsulation<% }%> } from '@angular/core';
+
+@Component({<% if(!skipSelector) {%>
+  selector: '<%= selector %>',<%}%><% if (!standalone) { %>
+  standalone: <%= standalone %>,<% } %>
+  imports: [],<% if(inlineTemplate) { %>
+  template: `<p><%= name %> works!</p>`<% } else { %>
+  templateUrl: './<%= fileName %><%= ngext %>.html'<% } if(inlineStyle) { %>,
+  styles: `<% if(displayBlock){ %>
+    :host {
+      display: block;
+    }
+  <% } %>`<% } else if (style !== 'none') { %>,
+  styleUrl: './<%= fileName %>.<%= style %>'<% } %><% if(!!viewEncapsulation) { %>,
+  encapsulation: ViewEncapsulation.<%= viewEncapsulation %><% } if (changeDetection !== 'Default') { %>,
+  changeDetection: ChangeDetectionStrategy.<%= changeDetection %><% } %>
+})
+export <% if (exportDefault) {%>default <%}%>class <%= symbolName %> {}

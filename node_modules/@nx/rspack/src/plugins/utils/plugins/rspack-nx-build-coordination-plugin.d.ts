@@ -1,0 +1,12 @@
+import type { Compiler } from '@rspack/core';
+export declare class RspackNxBuildCoordinationPlugin {
+    private readonly buildCmd;
+    private currentlyRunning;
+    private buildCmdProcess;
+    constructor(buildCmd: string, skipInitialBuild?: boolean);
+    apply(compiler: Compiler): void;
+    startWatchingBuildableLibs(): Promise<void>;
+    buildChangedProjects(): Promise<void>;
+    private createFileWatcher;
+}
+//# sourceMappingURL=rspack-nx-build-coordination-plugin.d.ts.map

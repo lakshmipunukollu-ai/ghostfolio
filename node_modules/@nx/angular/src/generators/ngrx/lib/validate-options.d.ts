@@ -1,0 +1,4 @@
+import type { Tree } from '@nx/devkit';
+import type { NgRxGeneratorOptions } from '../schema';
+export declare function validateOptions(tree: Tree, options: NgRxGeneratorOptions): void;
+//# sourceMappingURL=validate-options.d.ts.map

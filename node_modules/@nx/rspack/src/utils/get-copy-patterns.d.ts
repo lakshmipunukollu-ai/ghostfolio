@@ -1,0 +1,10 @@
+export declare function getCopyPatterns(assets: any[]): {
+    context: any;
+    to: any;
+    from: any;
+    globOptions: {
+        ignore: any[];
+        dot: boolean;
+    };
+}[];
+//# sourceMappingURL=get-copy-patterns.d.ts.map

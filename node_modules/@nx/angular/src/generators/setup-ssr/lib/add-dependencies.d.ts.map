@@ -1,0 +1,1 @@
+{"version":3,"file":"add-dependencies.d.ts","sourceRoot":"","sources":["../../../../../../../packages/angular/src/generators/setup-ssr/lib/add-dependencies.ts"],"names":[],"mappings":"AAAA,OAAO,EAGL,KAAK,IAAI,EACV,MAAM,YAAY,CAAC;AAOpB,wBAAgB,eAAe,CAC7B,IAAI,EAAE,IAAI,EACV,yBAAyB,EAAE,OAAO,GACjC,IAAI,CAkCN"}

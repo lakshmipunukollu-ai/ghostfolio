@@ -1,0 +1,49 @@
+
+Linting "client"...
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/ai-chat/ai-chat.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+  108:3   warning  Member awaitingConfirmation should be declared before all private instance field definitions               @typescript-eslint/member-ordering
+  138:9   warning  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  174:3   warning  Member welcomeMessage should be declared before all public instance method definitions                     @typescript-eslint/member-ordering
+  198:3   warning  Member clearHistory should be declared before all private instance method definitions                      @typescript-eslint/member-ordering
+  212:3   warning  Member showSuggestions should be declared before all public instance method definitions                    @typescript-eslint/member-ordering
+  216:3   warning  Member clickChip should be declared before all private instance method definitions                         @typescript-eslint/member-ordering
+  234:3   warning  Member togglePanel should be declared before all private instance method definitions                       @typescript-eslint/member-ordering
+  245:3   warning  Member closePanel should be declared before all private instance method definitions                        @typescript-eslint/member-ordering
+  254:3   warning  Member onKeydown should be declared before all private instance method definitions                         @typescript-eslint/member-ordering
+  261:3   warning  Member sendMessage should be declared before all private instance method definitions                       @typescript-eslint/member-ordering
+  270:3   warning  Member confirmWrite should be declared before all private instance method definitions                      @typescript-eslint/member-ordering
+  274:3   warning  Member cancelWrite should be declared before all private instance method definitions                       @typescript-eslint/member-ordering
+  366:48  warning  Unsafe member access .message on an `any` value                                                            @typescript-eslint/no-unsafe-member-access
+  366:56  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  382:3   warning  Member seedPortfolio should be declared before all private instance method definitions                     @typescript-eslint/member-ordering
+  439:3   warning  Member giveFeedback should be declared before all private instance method definitions                      @typescript-eslint/member-ordering
+  463:3   warning  Member confidenceLabel should be declared before all private instance method definitions                   @typescript-eslint/member-ordering
+  473:3   warning  Member confidenceClass should be declared before all private instance method definitions                   @typescript-eslint/member-ordering
+  487:3   warning  Member toolIcon should be declared before all private instance method definitions                          @typescript-eslint/member-ordering
+  502:3   warning  Member toolLabel should be declared before all private instance method definitions                         @typescript-eslint/member-ordering
+  527:3   warning  Member switchTab should be declared before all private instance method definitions                         @typescript-eslint/member-ordering
+  564:3   warning  Member logEntryTime should be declared before all private instance method definitions                      @typescript-eslint/member-ordering
+  576:3   warning  Member avgLatency should be declared before all private instance method definitions                        @typescript-eslint/member-ordering
+  586:3   warning  Member successRate should be declared before all private instance method definitions                       @typescript-eslint/member-ordering
+  604:15  warning  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  605:9   warning  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  605:12  warning  Unsafe member access .scrollTop on an `any` value                                                          @typescript-eslint/no-unsafe-member-access
+  605:27  warning  Unsafe member access .scrollHeight on an `any` value                                                       @typescript-eslint/no-unsafe-member-access
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/ai-chat/ai-markdown.pipe.ts
+  0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/ai-chat/portfolio-chart/portfolio-chart.component.ts
+    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+  121:23  warning  'ctx' is already declared in the upper scope on line 75 column 11                                @typescript-eslint/no-shadow
+
+/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/ghostfolio/apps/client/src/app/components/ai-chat/real-estate-card/real-estate-card.component.ts
+   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+  78:5  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+✖ 34 problems (0 errors, 34 warnings)
+
+✖ 34 problems (0 errors, 34 warnings)
+

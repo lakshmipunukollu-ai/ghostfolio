@@ -1,0 +1,8 @@
+import { type ProjectGraphProjectNode } from '@nx/devkit';
+/**
+ * Check if the library is buildable.
+ * @param node from the project graph
+ * @returns boolean
+ */
+export declare function isBuildableLibrary(node: ProjectGraphProjectNode): boolean;
+//# sourceMappingURL=is-lib-buildable.d.ts.map
