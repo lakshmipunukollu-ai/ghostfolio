@@ -1640,6 +1640,78 @@ async def tools_node(state: AgentState) -> AgentState:
         net_worth_result = await get_total_net_worth(pv)
         tool_results.append(net_worth_result)
 
+        # Build a pre-formatted financial picture for the LLM to present
+        nw_data = (
+            net_worth_result.get("result", {})
+            if net_worth_result.get("success")
+            else {}
+        )
+        if nw_data:
+            inv = nw_data.get("investment_portfolio", pv)
+            re_equity = nw_data.get("real_estate_equity", 0.0)
+            total_nw = nw_data.get("total_net_worth", inv + re_equity)
+            props = nw_data.get("properties", [])
+
+            lines = ["📊 YOUR COMPLETE FINANCIAL PICTURE", ""]
+            lines.append("💼 Investment Portfolio")
+            lines.append(f"   Total value: ${inv:,.0f}")
+
+            # Top holdings if available
+            holdings = []
+            if perf_result.get("success"):
+                holdings = (
+                    perf_result.get("result", {})
+                    .get("holdings", [])[:3]
+                )
+            for h in holdings:
+                sym = h.get("symbol", h.get("name", ""))
+                val = h.get("current_value_usd", 0)
+                if sym and val:
+                    lines.append(f"   • {sym}: ${val:,.0f}")
+
+            lines.append("")
+            lines.append("🏠 Real Estate")
+
+            if props:
+                for p in props:
+                    addr = p.get("address", "Property")
+                    curr_val = p.get("current_value", 0)
+                    mtg = p.get("mortgage_balance", 0)
+                    eq = p.get("equity", curr_val - mtg)
+                    monthly_rent = p.get("monthly_rent", 0)
+                    lines.append(f"   {addr}: ${eq:,.0f} equity")
+                    lines.append(f"   (${curr_val:,.0f} value — ${mtg:,.0f} mortgage)")
+                    if monthly_rent and monthly_rent > 0:
+                        lines.append(f"   Monthly rental income: ${monthly_rent:,.0f}/mo")
+            else:
+                lines.append(
+                    "   You haven't added any properties yet. "
+                    "Say 'add my home' to track your real estate equity "
+                    "alongside your investments."
+                )
+
+            lines.append("")
+            lines.append("━" * 36)
+            lines.append(f"💰 TOTAL NET WORTH: ${total_nw:,.0f}")
+            lines.append("━" * 36)
+
+            if total_nw > 0 and (inv > 0 or re_equity > 0):
+                inv_pct = (inv / total_nw * 100) if total_nw > 0 else 0
+                re_pct = (re_equity / total_nw * 100) if total_nw > 0 else 0
+                lines.append("")
+                lines.append(
+                    f"Your investments make up {inv_pct:.0f}% of your net worth"
+                    f" and your real estate equity makes up {re_pct:.0f}%."
+                )
+
+            formatted_picture = "\n".join(lines)
+            tool_results.append({
+                "tool_name": "net_worth_formatted",
+                "success": True,
+                "tool_result_id": "net_worth_formatted_result",
+                "result": {"formatted_picture": formatted_picture},
+            })
+
     # --- Wealth Bridge tools ---
     elif query_type == "wealth_down_payment":
         perf_result = await portfolio_analysis(token=tok)
