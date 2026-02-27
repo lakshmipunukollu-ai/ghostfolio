@@ -291,33 +291,41 @@
             💰 Estimate my taxes
           </button>
         </div>
-        <!-- Row 2: Real Estate chips — only when feature flag is on -->
+        <!-- Row 2: Property Tracking chips — only when feature flag is on -->
         @if (enableRealEstate) {
           <div class="ai-suggestions__row ai-suggestions__row--realestate">
             <button
               class="ai-suggestion-chip ai-suggestion-chip--re"
-              (click)="clickChip('Show me Austin homes under $500k')"
+              (click)="
+                clickChip(
+                  'I want to add my home to track my equity. Walk me through it.'
+                )
+              "
             >
-              🏠 Austin under $500k
+              🏠 Add my home to track equity
             </button>
             <button
               class="ai-suggestion-chip ai-suggestion-chip--re"
               (click)="
-                clickChip('Compare Austin vs Denver for housing affordability')
+                clickChip(
+                  'Show me my total net worth including my investments and any real estate I\'ve added.'
+                )
               "
             >
-              📊 Austin vs Denver
+              📊 Show my total net worth
             </button>
             <button
               class="ai-suggestion-chip ai-suggestion-chip--re"
               (click)="
-                clickChip('Give me a neighborhood snapshot for San Francisco')
+                clickChip(
+                  'I want to understand my options for my home equity. What can I do with it?'
+                )
               "
             >
-              🏘️ SF snapshot
+              💰 What are my equity options?
             </button>
           </div>
-          <!-- Row 3: Wealth Bridge chips -->
+          <!-- Row 3: Life Decisions chips -->
           <div class="ai-suggestions__row ai-suggestions__row--wealth">
             <button
               class="ai-suggestion-chip ai-suggestion-chip--wealth"
@@ -331,31 +339,25 @@
               class="ai-suggestion-chip ai-suggestion-chip--wealth"
               (click)="
                 clickChip(
-                  'I have a job offer for $180k in Seattle. I currently make $120k in Austin. Is it a real raise?'
+                  'I have a job offer for $180k in Seattle. I currently make $120k in Austin. Is it worth it?'
                 )
               "
             >
-              ✈️ Is my job offer a real raise?
+              ✈️ I have a job offer — is it worth it?
             </button>
             <button
               class="ai-suggestion-chip ai-suggestion-chip--wealth"
-              (click)="clickChip('What is the cost of living in Tokyo?')"
-            >
-              🌍 Cost of living in Tokyo
-            </button>
-          </div>
-          <!-- Row 4: Life Decisions chips -->
-          <div class="ai-suggestions__row ai-suggestions__row--life">
-            <button
-              class="ai-suggestion-chip ai-suggestion-chip--life"
               (click)="
                 clickChip(
                   'How long until I feel financially stable if I move to Denver?'
                 )
               "
             >
-              ⏱️ How long to feel stable if I move?
+              🌍 How long until I'm stable if I move?
             </button>
+          </div>
+          <!-- Row 4: Strategy chips -->
+          <div class="ai-suggestions__row ai-suggestions__row--life">
             <button
               class="ai-suggestion-chip ai-suggestion-chip--life"
               (click)="
@@ -366,9 +368,19 @@
             </button>
             <button
               class="ai-suggestion-chip ai-suggestion-chip--life"
-              (click)="clickChip('Can I afford to have kids in Austin?')"
+              (click)="clickChip('Can I afford to have kids?')"
             >
               👶 Can I afford to have kids?
+            </button>
+            <button
+              class="ai-suggestion-chip ai-suggestion-chip--life"
+              (click)="
+                clickChip(
+                  'What if I buy a home every 2 years for the next 10 years and rent the previous one each time? I want to use moderate assumptions — 4% appreciation, 8% rent yield. Walk me through the projection.'
+                )
+              "
+            >
+              🏘️ What if I buy a house every 2 years?
             </button>
           </div>
         }
