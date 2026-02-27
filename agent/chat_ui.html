@@ -8529,9 +8529,8 @@
         let suggestion = null;
 
         if (dow === 1 && hour >= 8 && hour <= 10) suggestion = { text: '📅 Monday morning — check your weekly portfolio performance?', query: 'How did my portfolio perform this week vs the market?' };
-        else if (month >= 3 && month <= 4) suggestion = { text: '🧾 Tax season — have you estimated your capital gains liability?', query: 'Estimate my capital gains tax liability for this year' };
+        else if (month >= 2 && month <= 4) suggestion = { text: '🧾 Tax season — have you estimated your capital gains liability?', query: 'Estimate my capital gains tax liability for this year' };
         else if (daysSince > 7) suggestion = { text: '📊 It\'s been over a week — want a quick portfolio summary?', query: 'Give me a brief portfolio summary with anything important' };
-        else if (month === 2 || month === 8) suggestion = { text: '🏠 Austin MLS data is fresh — check the market?', query: 'What is the Austin housing market like right now?' };
 
         if (suggestion) {
           const banner = document.getElementById('smart-banner');
