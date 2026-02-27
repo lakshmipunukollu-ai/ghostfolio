@@ -428,6 +428,7 @@ async def classify_node(state: AgentState) -> AgentState:
     _log_path = "/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/.cursor/debug-91957c.log"
     _phrase_matched = any(phrase in query for phrase in followup_trigger_phrases)
     _broad_matched = has_history and any(phrase in query for phrase in _broad_followup_phrases)
+    print(f"[DEBUG:classify] query={query[:80]!r} has_history={has_history} history_len={len(state.get('messages', []))} old_matched={_phrase_matched} broad_matched={_broad_matched}", flush=True)
     try:
         with open(_log_path, "a") as _lf:
             _lf.write(_json_log.dumps({
@@ -448,6 +449,7 @@ async def classify_node(state: AgentState) -> AgentState:
     # #endregion
 
     if has_history and (_phrase_matched or _broad_matched):
+        print(f"[DEBUG:classify] → context_followup (early return)", flush=True)
         return {**state, "query_type": "context_followup"}
 
     # --- Full position analysis — "everything about X" or "full analysis of X position" ---
@@ -740,6 +742,7 @@ async def classify_node(state: AgentState) -> AgentState:
     # #region agent log
     import json as _json_log2, time as _time_log2
     _log_path2 = "/Users/priyankapunukollu/Repos/AgentForge - Project 2 (W2)/.cursor/debug-91957c.log"
+    print(f"[DEBUG:classify] → final query_type={query_type!r} query={query[:80]!r}", flush=True)
     try:
         with open(_log_path2, "a") as _lf2:
             _lf2.write(_json_log2.dumps({
