@@ -557,7 +557,7 @@ async def classify_node(state: AgentState) -> AgentState:
             "how expensive is", "city comparison", "teleport",
         ]
         wealth_net_worth_kws = [
-            "total net worth", "everything i own", "net worth including portfolio",
+            "net worth including portfolio",
             "my portfolio real estate", "portfolio and real estate",
         ]
         if any(kw in query for kw in wealth_down_payment_kws):
@@ -587,7 +587,9 @@ async def classify_node(state: AgentState) -> AgentState:
             "net worth including", "net worth with real estate",
             "total net worth", "total wealth", "all my assets",
             "real estate net worth", "net worth and real estate",
-            "everything i own",
+            "everything i own", "show my total net worth",
+            "complete financial picture", "net worth including my home",
+            "net worth including my investment",
         ]
         property_update_kws = [
             "update my home", "update my property", "update my house",
