@@ -1560,16 +1560,48 @@ async def tools_node(state: AgentState) -> AgentState:
 
     # --- Property Tracker (feature-flagged) ---
     elif query_type == "property_add":
-        details = _extract_property_details(user_query)
-        result = await add_property(
-            address=details["address"] or "Address not specified",
-            purchase_price=details["purchase_price"] or 0.0,
-            current_value=details["current_value"],
-            mortgage_balance=details["mortgage_balance"],
-            county_key=details["county_key"],
-            property_type=details["property_type"],
-        )
-        tool_results.append(result)
+        # Check if the message already contains property details (price/value)
+        has_price = bool(re.search(r'\$[\d,]+|\d+k\b|\d{5,}', user_query, re.IGNORECASE))
+
+        if not has_price:
+            # Onboarding flow: user said "add my home" without details
+            # Return a warm, structured prompt instead of calling add_property
+            onboarding_response = (
+                "Great — let's add your property so we can track "
+                "your equity alongside your investments.\n\n"
+                "I need a few details:\n\n"
+                "1. **Address** (or just a nickname like 'Primary Home')\n"
+                "2. **Purchase price** — what you paid for it\n"
+                "3. **Current estimated value** — your best guess today\n"
+                "4. **Mortgage balance** — what you still owe (enter 0 "
+                "if paid off or purchased with cash)\n"
+                "5. **Monthly rent** — enter 0 if it's your primary home, "
+                "or the monthly rent if it's a rental property\n\n"
+                "You can say something like:\n"
+                "*'My home at 123 Main St, bought for $400k, "
+                "worth about $480k today, mortgage balance $310k'*\n\n"
+                "Or just give me the numbers and I'll figure out the rest."
+            )
+            tool_results.append({
+                "tool_name": "property_onboarding",
+                "success": True,
+                "tool_result_id": "property_onboarding_result",
+                "result": {
+                    "type": "onboarding_prompt",
+                    "message": onboarding_response,
+                },
+            })
+        else:
+            details = _extract_property_details(user_query)
+            result = await add_property(
+                address=details["address"] or "Address not specified",
+                purchase_price=details["purchase_price"] or 0.0,
+                current_value=details["current_value"],
+                mortgage_balance=details["mortgage_balance"],
+                county_key=details["county_key"],
+                property_type=details["property_type"],
+            )
+            tool_results.append(result)
 
     elif query_type == "property_list":
         result = await get_properties()
