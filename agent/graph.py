@@ -70,6 +70,12 @@ try:
 except ImportError:
     _FAMILY_PLANNER_AVAILABLE = False
 
+try:
+    from tools.realestate_strategy import simulate_real_estate_strategy
+    _RE_STRATEGY_AVAILABLE = True
+except ImportError:
+    _RE_STRATEGY_AVAILABLE = False
+
 SYSTEM_PROMPT = """You are a portfolio analysis assistant integrated with Ghostfolio wealth management software.
 
 REASONING PROTOCOL — silently reason through these four steps BEFORE writing your response.
@@ -1268,6 +1274,100 @@ def _extract_current_city(query: str) -> str | None:
 
 
 # ---------------------------------------------------------------------------
+# Strategy param extraction
+# ---------------------------------------------------------------------------
+
+def _extract_strategy_params(message: str) -> dict:
+    """Extract user-provided assumptions from a real estate strategy message."""
+    params = {}
+
+    # Extract appreciation rate
+    # matches: "3% appreciation", "appreciation of 4%", "3 percent appreciation"
+    appr_match = re.search(
+        r'(\d+(?:\.\d+)?)\s*%\s*appreciation|'
+        r'appreciation\s+(?:of\s+)?(\d+(?:\.\d+)?)\s*%|'
+        r'(\d+(?:\.\d+)?)\s*percent\s+appreciation',
+        message, re.IGNORECASE
+    )
+    if appr_match:
+        val = appr_match.group(1) or appr_match.group(2) or appr_match.group(3)
+        params["annual_appreciation"] = float(val) / 100
+
+    # Extract buy interval
+    # matches: "every 2 years", "every two years"
+    interval_match = re.search(
+        r'every\s+(\d+|one|two|three|four|five)\s+years?',
+        message, re.IGNORECASE
+    )
+    if interval_match:
+        word_to_num = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5}
+        val = interval_match.group(1)
+        params["buy_interval_years"] = word_to_num.get(val.lower(), int(val))
+
+    # Extract total years
+    # matches: "for 10 years", "over 15 years"
+    years_match = re.search(
+        r'(?:for|over)\s+(\d+)\s+years',
+        message, re.IGNORECASE
+    )
+    if years_match:
+        params["total_years"] = int(years_match.group(1))
+
+    # Extract home price
+    # matches: "$400k", "$400,000", "400000"
+    price_match = re.search(
+        r'\$(\d+(?:,\d+)*(?:\.\d+)?)\s*k\b|'
+        r'\$(\d+(?:,\d+)*(?:\.\d+)?)\b',
+        message, re.IGNORECASE
+    )
+    if price_match:
+        val = price_match.group(1) or price_match.group(2)
+        val = val.replace(",", "")
+        price = float(val)
+        if price_match.group(1):  # was in thousands (e.g. $400k)
+            price *= 1000
+        if 50000 < price < 5000000:
+            params["first_home_price"] = price
+
+    # Extract rent yield
+    rent_match = re.search(
+        r'(\d+(?:\.\d+)?)\s*%\s*(?:rent\s*yield|rental\s*yield)',
+        message, re.IGNORECASE
+    )
+    if rent_match:
+        params["annual_rent_yield"] = float(rent_match.group(1)) / 100
+
+    # Extract annual income
+    income_match = re.search(
+        r'(?:make|earn|income|salary)\s+\$?(\d+(?:,\d+)*)\s*k?\b',
+        message, re.IGNORECASE
+    )
+    if income_match:
+        val = income_match.group(1).replace(",", "")
+        income = float(val)
+        if income < 10000:
+            income *= 1000
+        if 20000 < income < 2000000:
+            params["annual_income"] = income
+
+    # Conservative / moderate / optimistic presets
+    if "conservative" in message.lower():
+        params.setdefault("annual_appreciation", 0.02)
+        params.setdefault("annual_rent_yield", 0.06)
+        params.setdefault("annual_market_return", 0.05)
+    elif "optimistic" in message.lower():
+        params.setdefault("annual_appreciation", 0.06)
+        params.setdefault("annual_rent_yield", 0.10)
+        params.setdefault("annual_market_return", 0.09)
+    elif "moderate" in message.lower():
+        params.setdefault("annual_appreciation", 0.04)
+        params.setdefault("annual_rent_yield", 0.08)
+        params.setdefault("annual_market_return", 0.07)
+
+    return params
+
+
+# ---------------------------------------------------------------------------
 # Tools node (read-path)
 # ---------------------------------------------------------------------------
 
@@ -1624,7 +1724,66 @@ async def tools_node(state: AgentState) -> AgentState:
 
     # ── Life Decision Advisor ─────────────────────────────────────────────────
     elif query_type == "life_decision":
-        if _LIFE_ADVISOR_AVAILABLE:
+        # Check if this is a real estate strategy simulation query
+        q_lower = user_query.lower()
+        is_strategy_query = any(kw in q_lower for kw in [
+            "buy a house every", "buy every", "keep buying houses",
+            "property every", "buy and rent", "rental portfolio strategy",
+            "what if i keep buying", "real estate strategy",
+            "buy one every", "buy a property every",
+            "keep buying properties", "buy a home every",
+        ])
+
+        if is_strategy_query and _RE_STRATEGY_AVAILABLE:
+            # Extract user-provided assumptions from the message
+            strategy_params = _extract_strategy_params(user_query)
+
+            # Get portfolio value from Ghostfolio (fallback to 94k)
+            perf_result = await portfolio_analysis(token=state.get("bearer_token"))
+            portfolio_value = 94000.0
+            if perf_result.get("success"):
+                portfolio_value = (
+                    perf_result.get("result", {}).get("summary", {})
+                    .get("total_current_value_usd", 94000.0)
+                )
+
+            # Allow message to override portfolio value
+            port_match = re.search(
+                r'(?:have|invested|portfolio)\s+\$?(\d+(?:,\d+)*)\s*k?\b',
+                user_query, re.IGNORECASE
+            )
+            if port_match:
+                val = port_match.group(1).replace(",", "")
+                v = float(val)
+                if v < 10000:
+                    v *= 1000
+                if 1000 < v < 50000000:
+                    portfolio_value = v
+
+            annual_income = strategy_params.pop("annual_income", 120000.0)
+            first_home_price = strategy_params.pop("first_home_price", 400000.0)
+
+            try:
+                result = simulate_real_estate_strategy(
+                    initial_portfolio_value=portfolio_value,
+                    annual_income=annual_income,
+                    first_home_price=first_home_price,
+                    **strategy_params,
+                )
+                tool_results.append({
+                    "tool_name": "realestate_strategy",
+                    "success": True,
+                    "tool_result_id": "realestate_strategy_result",
+                    "result": result,
+                })
+            except Exception as e:
+                tool_results.append({
+                    "tool_name": "realestate_strategy",
+                    "success": False,
+                    "error": {"code": "STRATEGY_ERROR", "message": str(e)},
+                })
+
+        elif _LIFE_ADVISOR_AVAILABLE:
             perf_result = await portfolio_analysis(token=state.get("bearer_token"))
             portfolio_value = 94000.0
             if perf_result.get("success"):
@@ -1644,14 +1803,13 @@ async def tools_node(state: AgentState) -> AgentState:
                         dest_city = candidate.title()
                         break
             # Determine decision type from query
-            q = user_query.lower()
-            if any(kw in q for kw in ["job offer", "salary", "raise", "accept"]):
+            if any(kw in q_lower for kw in ["job offer", "salary", "raise", "accept"]):
                 decision_type = "job_offer"
-            elif any(kw in q for kw in ["move", "reloc", "relocat"]):
+            elif any(kw in q_lower for kw in ["move", "reloc", "relocat"]):
                 decision_type = "relocation"
-            elif any(kw in q for kw in ["buy", "purchase", "home", "house"]):
+            elif any(kw in q_lower for kw in ["buy", "purchase", "home", "house"]):
                 decision_type = "home_purchase"
-            elif any(kw in q for kw in ["rent or buy", "rent vs buy"]):
+            elif any(kw in q_lower for kw in ["rent or buy", "rent vs buy"]):
                 decision_type = "rent_or_buy"
             else:
                 decision_type = "general"
