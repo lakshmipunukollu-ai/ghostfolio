@@ -21,14 +21,29 @@ Mortgage assumption: 30-year fixed at 6.95%, 20% down, payment × 1.25
 """
 
 import asyncio
+import sys
+import os
 from typing import Optional
 
-from agent.tools.real_estate import _MOCK_SNAPSHOTS, _normalize_city
-from agent.tools.teleport_api import (
-    HARDCODED_FALLBACK,
-    _is_austin_area,
-    get_city_housing_data,
-)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+try:
+    from real_estate import _MOCK_SNAPSHOTS, _normalize_city
+except ImportError:
+    from agent.tools.real_estate import _MOCK_SNAPSHOTS, _normalize_city
+
+try:
+    from teleport_api import (
+        HARDCODED_FALLBACK,
+        _is_austin_area,
+        get_city_housing_data,
+    )
+except ImportError:
+    from agent.tools.teleport_api import (
+        HARDCODED_FALLBACK,
+        _is_austin_area,
+        get_city_housing_data,
+    )
 
 # ---------------------------------------------------------------------------
 # COL index values for Austin TX sub-markets (ACTRIS coverage areas)
@@ -468,7 +483,10 @@ async def get_portfolio_real_estate_summary(
     Returns:
         Combined dict with portfolio_summary, down_payment_analysis, quick_answer.
     """
-    from agent.tools.portfolio import portfolio_analysis
+    try:
+        from portfolio import portfolio_analysis
+    except ImportError:
+        from agent.tools.portfolio import portfolio_analysis
 
     portfolio_result = await portfolio_analysis()
 
