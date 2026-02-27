@@ -122,7 +122,25 @@ CRITICAL RULES — never violate these under any circumstances:
 9. Low confidence responses (confidence < 0.6) must note that some data may be incomplete.
 
 10. Cite the tool_result_id once per sentence — place it at the end of the sentence, not
-    after each individual number. Format: [tool_result_id]"""
+    after each individual number. Format: [tool_result_id]
+
+IMPORTANT: You have access to tools beyond portfolio analysis.
+When the classifier routes to a non-portfolio tool,
+use that tool's result to answer the user.
+Do not default back to portfolio analysis.
+
+Available tool categories:
+- Real estate market data (Austin MLS + global cities): use when tool_name is "real_estate" or "neighborhood_snapshot"
+- Property tracking (add/update/remove owned properties): use when tool_name is "property_tracker"
+- Wealth bridge (down payment power, job offer analysis): use when tool_name is "wealth_bridge" or "teleport_api"
+- Relocation runway (financial stability timeline): use when tool_name is "relocation_runway"
+- Wealth visualizer (retirement projection, peer comparison): use when tool_name is "wealth_visualizer"
+- Life decision advisor (job offers, relocation decisions, home purchase strategy): use when tool_name is "life_decision_advisor"
+- Equity unlock advisor (home equity options, refinance): use when tool_name is "equity_advisor"
+- Family financial planner (childcare costs, family budget): use when tool_name is "family_planner"
+
+Use the appropriate tool based on what the user asks.
+Only use portfolio analysis for questions about investment holdings and portfolio performance."""
 
 LARGE_ORDER_THRESHOLD = 100_000
 
@@ -447,6 +465,8 @@ async def classify_node(state: AgentState) -> AgentState:
         "how long until", "runway", "financially stable",
         "if i move", "relocation timeline", "stable if",
         "how long to feel stable", "feel stable after",
+        "how long to feel okay after moving", "months until i rebuild",
+        "financially stable if i move",
     ]
     if any(kw in query for kw in relocation_runway_kws):
         return {**state, "query_type": "relocation_runway"}
@@ -457,6 +477,10 @@ async def classify_node(state: AgentState) -> AgentState:
         "how am i doing financially", "ahead or behind",
         "net worth compared", "am i ahead",
         "am i behind for my age", "retirement on track",
+        "am i on track for retirement", "am i ahead for my age",
+        "wealth percentile", "net worth percentile",
+        "federal reserve", "median wealth", "peer comparison",
+        "how does my net worth compare", "retirement projection",
     ]
     if any(kw in query for kw in wealth_gap_kws):
         return {**state, "query_type": "wealth_gap"}
@@ -466,6 +490,7 @@ async def classify_node(state: AgentState) -> AgentState:
         "should i take", "help me decide", "what should i do",
         "is it worth it", "advise me", "what do you think",
         "should i move", "should i accept",
+        "should i take this job", "should i accept the offer",
     ]
     if any(kw in query for kw in life_decision_kws):
         return {**state, "query_type": "life_decision"}
@@ -474,6 +499,7 @@ async def classify_node(state: AgentState) -> AgentState:
     equity_unlock_kws = [
         "home equity", "refinance", "cash out",
         "equity options", "what should i do with my equity",
+        "what to do with my equity", "rental property from equity",
     ]
     if any(kw in query for kw in equity_unlock_kws):
         return {**state, "query_type": "equity_unlock"}
@@ -483,10 +509,29 @@ async def classify_node(state: AgentState) -> AgentState:
         "afford a family", "afford a baby", "afford kids",
         "childcare costs", "financial impact of children",
         "can i afford to have", "family planning",
-        "having kids",
+        "having kids", "having a baby", "having children",
+        "can i afford kids", "afford to have children",
+        "financial impact of kids", "cost of having kids",
+        "cost of a baby", "childcare budget",
     ]
     if any(kw in query for kw in family_planner_kws):
         return {**state, "query_type": "family_planner"}
+
+    # --- Real Estate Strategy Simulator ---
+    # Checked BEFORE real_estate_kws so multi-property strategy queries
+    # get routed to the life_decision advisor (home_purchase type) rather
+    # than a plain snapshot.
+    realestate_strategy_kws = [
+        "buy a house every", "buy every", "keep buying houses",
+        "property every 2 years", "property every 3 years",
+        "property every 5 years", "property every 10 years",
+        "property every n years", "buy and rent the previous",
+        "rental portfolio strategy", "what if i keep buying",
+        "real estate strategy", "buy one every", "buy a property every",
+        "keep buying properties", "buy a home every",
+    ]
+    if any(kw in query for kw in realestate_strategy_kws):
+        return {**state, "query_type": "life_decision"}
 
     # --- Wealth Bridge — down payment, job offer COL, global city data ---
     # Checked before real estate so "can I afford" doesn't fall through to snapshot
@@ -568,11 +613,14 @@ async def classify_node(state: AgentState) -> AgentState:
             "investment property", "cap rate", "days on market", "price per sqft",
             "neighborhood", "housing", "mortgage", "home search",
             "compare neighborhoods", "compare cities",
-            # New triggers from spec
+            # Bedrooms / search filters
             "homes", "houses", "bedroom", "bedrooms", "bathroom", "bathrooms",
             "3 bed", "2 bed", "4 bed", "1 bed", "3br", "2br", "4br",
             "under $", "rent estimate", "for sale", "open house",
             "property search", "find homes", "home value",
+            # Market data keywords
+            "mls", "median price", "home purchase", "inventory",
+            "property value", "rental market",
         ]
         # Location-based routing: known city/county + a real estate intent signal
         # (avoids misrouting portfolio queries that happen to mention a city name)
@@ -580,6 +628,7 @@ async def classify_node(state: AgentState) -> AgentState:
             "compare", "vs ", "versus", "market", "county", "neighborhood",
             "tell me about", "how is", "what about", "what's the", "whats the",
             "area", "prices in", "homes in", "housing in", "rent in",
+            "show me", "housing costs", "cost to buy",
         ]
         has_known_location = any(city in query for city in _KNOWN_CITIES)
         has_location_re_intent = has_known_location and any(kw in query for kw in _location_intent_kws)
@@ -956,6 +1005,8 @@ _KNOWN_CITIES = [
     "austin", "san francisco", "new york", "new york city", "nyc",
     "denver", "seattle", "miami", "chicago", "phoenix", "nashville", "dallas",
     "brooklyn", "manhattan", "sf", "atx", "dfw",
+    # International cities — real estate tool supports these
+    "tokyo", "berlin", "london", "sydney", "toronto", "paris",
     # ACTRIS / Greater Austin locations
     "travis county", "travis",
     "williamson county", "williamson", "round rock", "cedar park", "georgetown", "leander",
@@ -2019,19 +2070,40 @@ def _append_messages(state: AgentState, user_query: str, answer: str) -> list:
 # ---------------------------------------------------------------------------
 
 def _route_after_classify(state: AgentState) -> str:
-    """Decides which node to go to after classify."""
+    """Decides which node to go to after classify.
+
+    All read-path query_types (portfolio, real estate, family, wealth, etc.)
+    route to the single "tools" node which dispatches by query_type internally.
+    Only write intents and control flow have dedicated branches.
+
+    Routing map (all non-write categories → "tools"):
+      real_estate_snapshot / real_estate_search /
+        real_estate_compare / real_estate_detail  → tools
+      property_add / property_remove /
+        property_update / property_list /
+        property_net_worth                         → tools
+      wealth_down_payment / wealth_job_offer /
+        wealth_global_city / wealth_portfolio_summary → tools
+      relocation_runway                            → tools
+      wealth_gap                                   → tools
+      life_decision                                → tools
+      equity_unlock                                → tools
+      family_planner                               → tools
+      performance / activity / compliance /
+        tax / market / market_overview /
+        categorize / context_followup             → tools
+    """
     qt = state.get("query_type", "performance")
     write_intents = {"buy", "sell", "dividend", "cash", "transaction"}
 
     if qt == "write_refused":
-        return "format"  # Refuse message already baked into final_response via format_node
+        return "format"
     if qt in write_intents:
         return "write_prepare"
     if qt == "write_confirmed":
         return "write_execute"
     if qt == "write_cancelled":
         return "format"
-    # Real estate types route through the normal tools → verify → format path
     return "tools"
 
 
