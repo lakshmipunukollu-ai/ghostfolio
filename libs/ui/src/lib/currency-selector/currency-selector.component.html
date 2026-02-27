@@ -1,0 +1,18 @@
+<input
+  autocapitalize="off"
+  autocomplete="off"
+  matInput
+  [formControl]="control"
+  [matAutocomplete]="currencyAutocomplete"
+/>
+
+<mat-autocomplete
+  #currencyAutocomplete="matAutocomplete"
+  (optionSelected)="onUpdateCurrency($event)"
+>
+  @for (currency of filteredCurrencies; track currency) {
+    <mat-option class="line-height-1" [value]="currency">
+      {{ currency }}
+    </mat-option>
+  }
+</mat-autocomplete>
