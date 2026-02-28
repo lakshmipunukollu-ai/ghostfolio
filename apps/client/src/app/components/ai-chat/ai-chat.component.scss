@@ -597,6 +597,46 @@
 // Suggestion chips
 // ---------------------------------------------------------------------------
 
+.feature-section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 0 6px;
+  margin-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+
+  :host-context(.theme-dark) & {
+    border-top-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.feature-section-icon {
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.feature-section-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary-color, #7c3aed);
+
+  :host-context(.theme-dark) & {
+    color: #a78bfa;
+  }
+}
+
+.feature-section-desc {
+  display: block;
+  font-size: 11px;
+  color: var(--text-secondary, #9ca3af);
+  margin-top: 2px;
+
+  :host-context(.theme-dark) & {
+    color: #9ca3af;
+  }
+}
+
 .ai-suggestions {
   padding: 0.5rem 0.75rem 0.25rem;
   display: flex;
