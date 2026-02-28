@@ -287,7 +287,7 @@ export class GfHeaderComponent implements OnChanges {
     this.assistantElement.initialize();
   }
 
-  public onSignOut() {
+  public onSignOut(): void {
     this.signOut.next();
   }
 
