@@ -95,6 +95,7 @@ export class GfAiChatComponent implements OnInit, OnDestroy {
   public isSeeding = false;
   public enableRealEstate: boolean;
   public agentReachable: boolean | null = null;
+  public copySuccessMap: { [key: number]: boolean } = {};
 
   // Activity log tab
   public activeTab: 'chat' | 'log' = 'chat';
@@ -501,6 +502,49 @@ export class GfAiChatComponent implements OnInit, OnDestroy {
 
   public toolLabel(tool: string): string {
     return tool.replace(/_/g, ' ');
+  }
+
+  // ---------------------------------------------------------------------------
+  // Copy to clipboard
+  // ---------------------------------------------------------------------------
+
+  public copyToClipboard(text: string, index: number): void {
+    const writeToClipboard = (t: string): Promise<void> => {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(t);
+      }
+      return new Promise<void>((resolve, reject) => {
+        const textarea = document.createElement('textarea');
+        textarea.value = t;
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        textarea.style.top = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          resolve();
+        } catch (err) {
+          document.body.removeChild(textarea);
+          reject(err);
+        }
+      });
+    };
+
+    writeToClipboard(text)
+      .then(() => {
+        this.copySuccessMap[index] = true;
+        setTimeout(() => {
+          this.copySuccessMap[index] = false;
+          this.changeDetectorRef.markForCheck();
+        }, 1500);
+        this.changeDetectorRef.markForCheck();
+      })
+      .catch(() => {
+        console.warn('Copy failed');
+      });
   }
 
   // ---------------------------------------------------------------------------

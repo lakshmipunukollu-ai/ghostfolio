@@ -446,6 +446,33 @@
   }
 }
 
+.ai-copy-btn {
+  margin-top: 0.25rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 0.4rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.2);
+  }
+
+  :host-context(.theme-dark) & {
+    background: rgba(99, 102, 241, 0.15);
+    color: #a5b4fc;
+    border-color: rgba(99, 102, 241, 0.35);
+
+    &:hover {
+      background: rgba(99, 102, 241, 0.25);
+    }
+  }
+}
+
 .ai-chip {
   display: inline-flex;
   align-items: center;

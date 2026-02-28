@@ -172,7 +172,7 @@
   @if (activeTab === 'chat') {
     <!-- Messages area -->
     <div #messagesContainer class="ai-messages">
-      @for (msg of messages; track $index) {
+      @for (msg of messages; track $index; let i = $index) {
         <div
           class="ai-message"
           [class.ai-message--assistant]="msg.role === 'assistant'"
@@ -180,6 +180,21 @@
         >
           <!-- Bubble -->
           <div class="ai-bubble" [innerHTML]="msg.content | aiMarkdown"></div>
+
+          <!-- Copy button for assistant messages -->
+          @if (msg.role === 'assistant') {
+            <button
+              class="ai-copy-btn"
+              (click)="copyToClipboard(msg.content, i)"
+              [title]="copySuccessMap[i] ? 'Copied!' : 'Copy response'"
+            >
+              @if (!copySuccessMap[i]) {
+                <span>⎘ Copy</span>
+              } @else {
+                <span>✓ Copied!</span>
+              }
+            </button>
+          }
 
           <!-- Real estate comparison card -->
           @if (msg.comparisonCard) {
