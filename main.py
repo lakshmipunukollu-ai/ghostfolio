@@ -1,8 +1,16 @@
 import json
+import logging
 import time
+import traceback
 import os
 import uuid
 from datetime import datetime, timedelta
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+)
+logger = logging.getLogger("ghostfolio_agent")
 
 from fastapi import FastAPI, Response, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -86,8 +94,27 @@ graph = build_graph()
 
 feedback_log: list[dict] = []
 cost_log: list[dict] = []
+error_log: list[dict] = []  # last 50 errors for metrics
 
 COST_PER_REQUEST_USD = (2000 * 0.000003) + (500 * 0.000015)
+
+
+def log_error(error: Exception, context: dict) -> dict:
+    """Captures error with full context for debugging."""
+    error_record = {
+        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "error_type": type(error).__name__,
+        "error_message": str(error),
+        "traceback": traceback.format_exc(),
+        "context": context,
+    }
+    error_log.append(error_record)
+    if len(error_log) > 50:
+        error_log.pop(0)
+    logger.error(
+        f"{error_record['error_type']}: {error_record['error_message']} | context={context}"
+    )
+    return error_record
 
 
 class ChatRequest(BaseModel):
@@ -146,7 +173,32 @@ async def chat(req: ChatRequest, gf_token: str = Depends(require_auth)):
         "error": None,
     }
 
-    result = await graph.ainvoke(initial_state)
+    try:
+        result = await graph.ainvoke(initial_state)
+    except Exception as e:
+        log_error(
+            e,
+            {
+                "message": req.query[:200],
+                "session_id": None,
+                "query_type": "unknown",
+            },
+        )
+        latency_ms = int((time.time() - start_time) * 1000)
+        return {
+            "response": "I encountered an error processing your request. Please try again.",
+            "error": str(e),
+            "confidence": 0.0,
+            "verified": False,
+            "latency_ms": latency_ms,
+            "trace_id": trace_id,
+            "tokens": {
+                "estimated_input": 0,
+                "estimated_output": 0,
+                "estimated_total": 0,
+                "estimated_cost_usd": 0.0,
+            },
+        }
 
     elapsed = round(time.time() - start_time, 2)
     latency_ms = int((time.time() - start_time) * 1000)
@@ -771,4 +823,22 @@ async def costs(_auth: str = Depends(require_auth)):
             "input_price_per_million": 3.0,
             "output_price_per_million": 15.0,
         },
+    }
+
+
+@app.get("/metrics")
+async def get_metrics():
+    """Observability metrics including recent errors."""
+    total_requests = len(cost_log)
+    total_latency_ms = sum(c.get("latency_seconds", 0) * 1000 for c in cost_log[-100:])
+    return {
+        "total_requests": total_requests,
+        "avg_latency_ms": round(
+            total_latency_ms / max(min(total_requests, 100), 1)
+        )
+        if total_requests > 0
+        else 0,
+        "recent_errors": error_log[-5:],
+        "error_count": len(error_log),
+        "last_updated": datetime.utcnow().isoformat() + "Z",
     }
