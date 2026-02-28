@@ -872,6 +872,7 @@ async def get_metrics():
         "total_latency_ms": total_latency,
         "successful_tool_calls": metrics_store["successful_tool_calls"],
         "failed_tool_calls": metrics_store["failed_tool_calls"],
+        "error_count": len(metrics_store["errors"]),
         "tool_success_rate_pct": success_rate,
         "recent_errors": metrics_store["errors"][-10:],
         "last_updated": datetime.utcnow().isoformat(),
