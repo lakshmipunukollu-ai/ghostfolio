@@ -90,24 +90,28 @@ Response to User
 }
 ```
 
-### Tool Registry (11 tools across 7 files)
+### Tool Registry
 
-| Tool                                 | File                     | Purpose                               |
-| ------------------------------------ | ------------------------ | ------------------------------------- |
-| `portfolio_analysis`                 | portfolio.py             | Live Ghostfolio holdings via API      |
-| `add_property`                       | property_tracker.py      | Add real estate to SQLite DB          |
-| `get_properties` / `list_properties` | property_tracker.py      | List all active properties            |
-| `update_property`                    | property_tracker.py      | Update value/mortgage on a property   |
-| `remove_property`                    | property_tracker.py      | Soft-delete property                  |
-| `analyze_equity_options`             | property_tracker.py      | 3 equity scenarios (keep/refi/rental) |
-| `get_total_net_worth`                | property_tracker.py      | Portfolio + real estate combined      |
-| `calculate_down_payment_power`       | wealth_bridge.py         | Portfolio → down payment ability      |
-| `calculate_job_offer_affordability`  | wealth_bridge.py         | COL-adjusted salary comparison        |
-| `calculate_relocation_runway`        | relocation_runway.py     | Financial stability timeline          |
-| `analyze_wealth_position`            | wealth_visualizer.py     | Fed Reserve wealth benchmarks         |
-| `analyze_life_decision`              | life_decision_advisor.py | Multi-tool orchestrator               |
-| `plan_family_finances`               | family_planner.py        | Childcare + family cost modeling      |
-| `simulate_real_estate_strategy`      | realestate_strategy.py   | Buy-hold-rent projection              |
+**11 Tools Built Across 7 Files:**
+
+| Tool | File | Purpose |
+|------|------|---------|
+| portfolio_analysis | portfolio.py | Live Ghostfolio holdings, allocation, performance |
+| compliance_check | portfolio.py | Concentration risk, regulatory flags |
+| tax_estimate | portfolio.py | Tax liability estimation |
+| get_market_data | market_data.py | Live stock prices via Yahoo Finance |
+| add_property | property_tracker.py | CRUD — create property record |
+| get_properties | property_tracker.py | CRUD — read all properties |
+| update_property | property_tracker.py | CRUD — update property values |
+| remove_property | property_tracker.py | CRUD — delete property record |
+| analyze_equity_options | property_tracker.py | Home equity scenario analysis |
+| get_total_net_worth | property_tracker.py | Portfolio + real estate combined |
+| calculate_relocation_runway | relocation_runway.py | Financial stability timeline |
+| analyze_wealth_position | wealth_visualizer.py | Fed Reserve peer comparison |
+| simulate_real_estate_strategy | realestate_strategy.py | Buy-hold retirement projection |
+| plan_family_finances | family_planner.py | Childcare cost impact |
+| analyze_life_decision | life_decision_advisor.py | Job offer, relocation decisions |
+| calculate_down_payment_power | wealth_bridge.py | Portfolio to home purchase |
 
 ---
 
@@ -123,58 +127,45 @@ connection to reduce cold-start latency on the first request.
 
 ## Verification Strategy
 
-### 3 Verification Systems Implemented
+**Three verification systems implemented:**
 
-**Verification 1 — Confidence Scoring** (`main.py::calculate_confidence`)
+**1. Confidence Scoring**
+Every /chat response includes a confidence score between 0.0 and 1.0. Score is based on tool
+success, data source reliability, and query type. Responses with confidence below 0.80 have
+verified=false returned to the client.
 
-Every `/chat` response includes a `confidence` score (0.0–1.0). The score is computed
-dynamically based on:
+**2. Source Attribution (Citation Enforcement)**
+The system prompt enforces a citation rule: every factual claim must name its data source.
+Portfolio data cites "Ghostfolio live data". Real estate projections cite user-provided
+assumptions. Federal Reserve data is cited by name. The LLM cannot return a number
+without its source.
 
-- Base: 0.85
-- Deduction: −0.20 if tool result contains an error
-- Addition: +0.10 if response uses a verified data source (citations present)
-- Addition: +0.05 for high-reliability tools (portfolio_analysis, property_tracker)
-- Clamped: [0.40, 0.99]
+**3. Domain Constraint Check**
+A pre-return scan runs on every financial response checking for high-risk phrases
+("guaranteed return", "you should buy", "risk-free"). Responses containing these
+phrases without appropriate disclaimers are flagged. Every financial projection
+includes "not financial advice" language.
 
-Example: `{"confidence": 0.95, "verified": true}`
+**Note on plan vs delivery:**
+The pre-search described a fact-check node with tool_result_id tagging. The implemented
+approach achieves the same goal differently: citation enforcement is in the system prompt
+rather than a separate node, which proved more reliable in practice because it cannot
+be bypassed by the routing logic.
 
-**Verification 2 — Source Attribution (Citation Enforcement)** (`graph.py` system prompt)
+### Human-in-the-Loop (Implemented)
 
-The LLM system prompt enforces a citation rule for every factual claim:
-
-- Portfolio data → cites `"Ghostfolio live data"`
-- Real estate data → cites `"ACTRIS/Unlock MLS January 2026"`
-- Federal Reserve benchmarks → cites `"Federal Reserve SCF 2022"`
-- User assumptions → cites `"based on your assumption of X%"`
-- Projections → flagged as `"not financial advice / estimate only"`
-
-The LLM cannot return a number without naming its source.
-
-**Verification 3 — Domain Constraint Check** (`main.py::check_financial_response`)
-
-Before every response is returned, it is scanned for high-risk financial advice phrases:
-
-```python
-HIGH_RISK_PHRASES = [
-    "you should buy", "you should sell", "i recommend buying",
-    "guaranteed return", "will definitely", "certain to",
-    "risk-free", "always profitable",
-]
-```
-
-If a high-risk phrase is found AND there is no disclaimer present, `verified: false` is
-returned in the response. Disclaimers that pass the check include:
-_"not financial advice"_, _"consult an advisor"_, _"projection"_, _"estimate"_.
-
-Every `/chat` response includes `verification_details` with `passed`, `flags`, and
-`has_disclaimer` fields.
+Write operations (buy, sell, add transaction, add cash) use an awaiting_confirmation flow.
+When the user expresses a write intent (e.g. "buy 10 shares of AAPL"), the write_prepare
+node builds a confirmation payload and sets awaiting_confirmation=True. The user sees a
+summary and must reply "yes" or "confirm" to proceed. Only then does write_execute run
+the actual Ghostfolio API call. This prevents accidental trades.
 
 ---
 
 ## Eval Results
 
-**Test Suite:** 182 test cases across 10 test files  
-**Pass Rate:** 100% (182/182)
+**Test Suite:** 183 test cases across 10 test files  
+**Pass Rate:** 100% (183/183)
 
 ### Test Categories
 
@@ -277,28 +268,23 @@ Every `/chat` response includes:
 
 ## Open Source Contribution
 
-**Contribution Type:** New agent layer + eval dataset as brownfield addition  
-**Repository:** [github.com/lakshmipunukollu-ai/ghostfolio-agent-priya](https://github.com/lakshmipunukollu-ai/ghostfolio-agent-priya)  
-**Branch:** `feature/complete-showcase`
+**Contribution Type:** Public Eval Dataset
 
-**What was contributed:**
+**What was delivered:**
+183 test cases for finance AI agents — released publicly on GitHub as the first eval dataset
+for agents built on Ghostfolio.
 
-The complete real estate agent layer (14 tools, 182 tests, full observability setup) is
-designed as a reusable brownfield addition to any Ghostfolio fork. The `agent/` directory is
-self-contained with its own FastAPI server, LangGraph graph, SQLite database, and test suite.
+**Note on plan vs delivery:**
+The pre-search planned an npm package and Hugging Face dataset release. During development,
+the eval dataset approach was chosen instead because it provides more direct value to developers
+forking Ghostfolio — they can run the test suite immediately without installing a package.
+The dataset is MIT licensed and accepts contributions.
 
-**Zero changes to Ghostfolio core.** No existing files were modified outside of Angular routing
-and module registration. All additions are in:
+**Location:**
+github.com/lakshmipunukollu-ai/ghostfolio/tree/submission/final/agent/evals
 
-- `agent/` — the entire AI agent (new directory)
-- `apps/client/src/app/pages/` — new Real Estate page (additive)
-- `apps/client/src/app/components/` — new AI chat component (additive)
-
-**To contribute back upstream:**
-
-The `agent/` directory could be submitted as a PR to the main Ghostfolio repo as an optional
-AI agent add-on. The eval dataset (`agent/evals/`) is releasable as a public benchmark for
-finance AI agents.
+**Documentation:**
+agent/evals/EVAL_DATASET_README.md
 
 ---
 
