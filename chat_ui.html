@@ -5840,14 +5840,18 @@
         }
       })();
 
-      // ── Auth guard — redirect to login if no token ──
-      const _token = localStorage.getItem('gf_token');
-      if (!_token) {
-        window.location.replace('/login');
-      }
-
-      // ── Load user profile from localStorage (set at login) ──
-      (function loadUser() {
+      // ── Auth: auto-fetch token when missing (no login required) ──
+      (async function initAuth() {
+        if (!localStorage.getItem('gf_token')) {
+          try {
+            const r = await fetch('/auth/auto');
+            const d = await r.json();
+            if (d.success && d.token) {
+              localStorage.setItem('gf_token', d.token);
+              if (d.name) localStorage.setItem('gf_user_name', d.name);
+            }
+          } catch { /* continue without token — backend uses env */ }
+        }
         const name = localStorage.getItem('gf_user_name') || 'Investor';
         const initials = name.slice(0, 2).toUpperCase();
         document.getElementById('user-avatar').textContent = initials;
@@ -9125,7 +9129,7 @@
         localStorage.removeItem('gf_user_email');
         localStorage.removeItem(STORAGE_KEY);
         // Clear session-specific memory (keep watchlist / memory by default — user owns those)
-        window.location.replace('/login');
+        window.location.replace('/');
       });
 
       // ── Clear session ──

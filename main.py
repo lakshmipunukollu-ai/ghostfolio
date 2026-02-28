@@ -5,13 +5,15 @@ from datetime import datetime
 
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse, HTMLResponse, JSONResponse
+from fastapi.responses import RedirectResponse, StreamingResponse, HTMLResponse, JSONResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import httpx
 from langchain_core.messages import HumanMessage, AIMessage
 
 load_dotenv()
+# Load agent/.env so ANTHROPIC_API_KEY, GHOSTFOLIO_BEARER_TOKEN, etc. are available
+load_dotenv(os.path.join(os.path.dirname(__file__), "agent", ".env"))
 
 from graph import build_graph
 from state import AgentState
@@ -393,10 +395,34 @@ async def auth_login(req: LoginRequest):
     }
 
 
-@app.get("/login", response_class=HTMLResponse, include_in_schema=False)
+@app.get("/auth/auto")
+async def auth_auto():
+    """
+    No-login auth: returns the configured token and user info without credentials.
+    Enables the app to work without a login page.
+    """
+    token = os.getenv("GHOSTFOLIO_BEARER_TOKEN", "")
+    base_url = os.getenv("GHOSTFOLIO_BASE_URL", "http://localhost:3333")
+    display_name = "Investor"
+    try:
+        async with httpx.AsyncClient(timeout=4.0) as client:
+            r = await client.get(
+                f"{base_url}/api/v1/user",
+                headers={"Authorization": f"Bearer {token}"},
+            )
+            if r.status_code == 200:
+                data = r.json()
+                alias = data.get("settings", {}).get("alias") or ""
+                display_name = alias or "Investor"
+    except Exception:
+        pass
+    return {"success": True, "token": token, "name": display_name}
+
+
+@app.get("/login", include_in_schema=False)
 async def login_page():
-    with open(os.path.join(os.path.dirname(__file__), "login.html")) as f:
-        return f.read()
+    """Redirect to chat — login is bypassed."""
+    return RedirectResponse(url="/", status_code=302)
 
 
 @app.get("/me")
