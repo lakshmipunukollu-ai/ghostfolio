@@ -5471,6 +5471,7 @@
       let pendingWrite = null; // echoed back to agent on confirmation
       let sessionStats = { messages: 0, toolCalls: 0, latencies: [] };
       let lastQuery = ''; // for retry
+      let chatAbortController = null; // abort pending fetch on sign out
 
       const chat = document.getElementById('chat');
       const input = document.getElementById('input');
@@ -5687,10 +5688,12 @@
         let agentBubbleEl = null;
         let agentMsgEl = null;
 
+        chatAbortController = new AbortController();
         try {
           const _authToken = localStorage.getItem('gf_token') || '';
           const res = await fetch('/chat/steps', {
             method: 'POST',
+            signal: chatAbortController.signal,
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${_authToken}`
@@ -5807,11 +5810,14 @@
         } catch (err) {
           thinkingEl.remove();
           if (agentMsgEl) agentMsgEl.remove();
-          addErrorMessage(
-            'Could not reach the agent. Please try again.',
-            query
-          );
+          if (err.name !== 'AbortError') {
+            addErrorMessage(
+              'Could not reach the agent. Please try again.',
+              query
+            );
+          }
         } finally {
+          chatAbortController = null;
           sendBtn.disabled = false;
           input.focus();
         }
@@ -8718,6 +8724,10 @@
 
       // ── Sign out ──
       document.getElementById('logout-btn').addEventListener('click', () => {
+        if (chatAbortController) {
+          chatAbortController.abort();
+          chatAbortController = null;
+        }
         localStorage.removeItem('gf_token');
         localStorage.removeItem('gf_user_name');
         localStorage.removeItem('gf_user_email');
