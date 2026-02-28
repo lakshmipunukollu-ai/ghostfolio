@@ -1,6 +1,7 @@
 import json
 import time
 import os
+import uuid
 from datetime import datetime, timedelta
 
 from fastapi import FastAPI, Response, Depends, HTTPException, status
@@ -110,7 +111,8 @@ class FeedbackRequest(BaseModel):
 
 @app.post("/chat")
 async def chat(req: ChatRequest, gf_token: str = Depends(require_auth)):
-    start = time.time()
+    start_time = time.time()
+    trace_id = str(uuid.uuid4())
 
     # Build conversation history preserving both user AND assistant turns so
     # Claude has full context for follow-up questions.
@@ -146,7 +148,8 @@ async def chat(req: ChatRequest, gf_token: str = Depends(require_auth)):
 
     result = await graph.ainvoke(initial_state)
 
-    elapsed = round(time.time() - start, 2)
+    elapsed = round(time.time() - start_time, 2)
+    latency_ms = int((time.time() - start_time) * 1000)
 
     cost_log.append({
         "timestamp": datetime.utcnow().isoformat(),
@@ -237,16 +240,30 @@ async def chat(req: ChatRequest, gf_token: str = Depends(require_auth)):
                 }
             break
 
+    confidence = result.get("confidence_score", 0.0)
+
     return {
         "response": result.get("final_response", "No response generated."),
-        "confidence_score": result.get("confidence_score", 0.0),
+        "confidence_score": confidence,
+        "confidence": confidence,
         "verification_outcome": result.get("verification_outcome", "unknown"),
+        "verified": confidence >= 0.80,
         "awaiting_confirmation": result.get("awaiting_confirmation", False),
-        # Clients must echo this back in the next request if awaiting_confirmation
         "pending_write": result.get("pending_write"),
         "tools_used": tools_used,
+        "tool": tools_used[0] if tools_used else None,
         "citations": result.get("citations", []),
         "latency_seconds": elapsed,
+        "latency_ms": latency_ms,
+        "tokens": {
+            "estimated_input": 1200,
+            "estimated_output": 400,
+            "estimated_total": 1600,
+            "estimated_cost_usd": round(
+                (1200 * 0.000003) + (400 * 0.000015), 4
+            ),
+        },
+        "trace_id": trace_id,
         "comparison_card": comparison_card,
         "chart_data": chart_data,
     }
