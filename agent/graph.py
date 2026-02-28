@@ -574,6 +574,7 @@ async def classify_node(state: AgentState) -> AgentState:
     market_kws = [
         "price", "current price", "stock price", "market price",
         "trading at", "stock quote", "quote",
+        "share of",  # "what is the share of AAPL" — market price; "my share of" caught by portfolio_ticker_kws first
         "what is aapl", "what is msft", "what is nvda", "what is tsla",
         "what is googl", "what is amzn", "what is meta",
         "worth today", "worth now", "is worth today", "is worth now",
@@ -826,11 +827,33 @@ async def classify_node(state: AgentState) -> AgentState:
     if has_overview:
         return {**state, "query_type": "market_overview"}
 
+    # --- Possessive portfolio queries — check BEFORE stock price keywords ---
+    # "my share of AAPL" = portfolio holding, not stock price
+    portfolio_ticker_kws = [
+        "my share of",
+        "my shares of",
+        "my position in",
+        "my holding of",
+        "my holdings in",
+        "how much do i have in",
+        "how many shares do i have",
+        "how much aapl do i have",
+        "how much msft do i have",
+        "how much nvda do i have",
+        "my allocation in",
+        "my allocation to",
+        "what do i hold",
+        "what am i holding",
+    ]
+    if any(kw in query for kw in portfolio_ticker_kws):
+        return {**state, "query_type": "performance"}
+
     # --- Stock price / market quote queries — MUST route to market_data not portfolio ---
     # Check BEFORE performance/portfolio fallback. User asking about market price of a ticker.
+    # NOTE: "share of" removed — too ambiguous, conflicts with "my share of" portfolio queries
     stock_price_kws = [
         "stock price", "share price", "price of", "current price",
-        "share of", "shares of", "price for", "stock for", "trading for",
+        "shares of", "price for", "stock for", "trading for",
         "worth today", "per share",
         "what is aapl", "what is msft", "what is nvda", "what is tsla",
         "what is googl", "what is amzn", "what is meta", "what is vti",
