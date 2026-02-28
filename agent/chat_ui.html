@@ -6101,14 +6101,15 @@
               ? 'flag'
               : 'fail';
         details.innerHTML = `
-      <summary>🔍 debug</summary>
+      <summary>🔍 Metadata</summary>
       <div class="debug-body">
         <div class="db-row"><span class="db-key">tools_called</span><span class="db-val">${toolList}</span></div>
         <div class="db-row"><span class="db-key">verification</span><span class="db-val ${outCls}">${meta.verification_outcome || '—'}</span></div>
         <div class="db-row"><span class="db-key">confidence</span><span class="db-val ${confCls}">${confPct}</span></div>
-        <div class="db-row"><span class="db-key">latency</span><span class="db-val">${meta.latency_seconds != null ? meta.latency_seconds + 's' : '—'}</span></div>
+        <div class="db-row"><span class="db-key">latency</span><span class="db-val">${meta.latency_seconds != null ? meta.latency_seconds + 's' : (meta.latency_ms != null ? meta.latency_ms + 'ms' : '—')}</span></div>
         <div class="db-row"><span class="db-key">citations</span><span class="db-val">${(meta.citations || []).join(', ') || 'none'}</span></div>
       </div>`;
+        details.open = true;  // Expanded by default so metadata is visible
         footer.appendChild(details);
 
         wrapEl.appendChild(footer);
