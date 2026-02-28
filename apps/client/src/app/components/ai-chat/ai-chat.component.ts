@@ -66,8 +66,6 @@ interface ActivityStats {
   entries: ActivityLogEntry[];
 }
 
-const HISTORY_KEY = 'portfolioAssistantHistory';
-
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
@@ -96,6 +94,10 @@ export class GfAiChatComponent implements OnInit, OnDestroy {
   public enableRealEstate: boolean;
   public agentReachable: boolean | null = null;
   public copySuccessMap: { [key: number]: boolean } = {};
+  private sessionId = '';
+
+  private readonly SESSION_KEY = 'gf_ai_session_id';
+  private readonly MESSAGES_KEY = 'gf_ai_messages';
 
   // Activity log tab
   public activeTab: 'chat' | 'log' = 'chat';
@@ -133,14 +135,8 @@ export class GfAiChatComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    const saved = sessionStorage.getItem(HISTORY_KEY);
-    if (saved) {
-      try {
-        this.messages = JSON.parse(saved);
-      } catch {
-        this.messages = [];
-      }
-    }
+    this.sessionId = this.getOrCreateSessionId();
+    this.loadMessagesFromStorage();
 
     this.checkAgentHealth();
     this.healthCheckTimer = setInterval(() => this.checkAgentHealth(), 30_000);
@@ -192,13 +188,61 @@ export class GfAiChatComponent implements OnInit, OnDestroy {
   // History management
   // ---------------------------------------------------------------------------
 
+  private getOrCreateSessionId(): string {
+    const stored = localStorage.getItem(this.SESSION_KEY);
+    if (stored && stored.length > 5) {
+      return stored;
+    }
+    const newId = this.generateSessionId();
+    localStorage.setItem(this.SESSION_KEY, newId);
+    return newId;
+  }
+
+  private generateSessionId(): string {
+    return (
+      'sess_' +
+      Date.now() +
+      '_' +
+      Math.random().toString(36).substring(2, 9)
+    );
+  }
+
+  private saveMessagesToStorage(): void {
+    try {
+      const key = this.MESSAGES_KEY + '_' + this.sessionId;
+      const toSave = this.messages.slice(-50);
+      localStorage.setItem(key, JSON.stringify(toSave));
+    } catch (e) {
+      console.warn('Could not save messages to storage');
+    }
+  }
+
+  private loadMessagesFromStorage(): void {
+    try {
+      const key = this.MESSAGES_KEY + '_' + this.sessionId;
+      const stored = localStorage.getItem(key);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          this.messages = parsed;
+          return;
+        }
+      }
+      this.messages = [];
+    } catch (e) {
+      this.messages = [];
+    }
+  }
+
   private saveHistory(): void {
-    sessionStorage.setItem(HISTORY_KEY, JSON.stringify(this.messages));
+    this.saveMessagesToStorage();
   }
 
   public clearHistory(): void {
+    this.saveMessagesToStorage();
+    this.sessionId = this.generateSessionId();
+    localStorage.setItem(this.SESSION_KEY, this.sessionId);
     this.messages = [{ role: 'assistant', content: this.welcomeMessage }];
-    sessionStorage.removeItem(HISTORY_KEY);
     this.awaitingConfirmation = false;
     this.pendingWrite = null;
     this.successBanner = '';
@@ -227,6 +271,7 @@ export class GfAiChatComponent implements OnInit, OnDestroy {
     this.isOpen = true;
     if (this.messages.length === 0) {
       this.messages.push({ role: 'assistant', content: this.welcomeMessage });
+      this.saveMessagesToStorage();
     }
     this.changeDetectorRef.markForCheck();
     setTimeout(() => this.scrollToBottom(), 50);
@@ -236,6 +281,7 @@ export class GfAiChatComponent implements OnInit, OnDestroy {
     this.isOpen = !this.isOpen;
     if (this.isOpen && this.messages.length === 0) {
       this.messages.push({ role: 'assistant', content: this.welcomeMessage });
+      this.saveMessagesToStorage();
     }
     this.changeDetectorRef.markForCheck();
     if (this.isOpen) {
