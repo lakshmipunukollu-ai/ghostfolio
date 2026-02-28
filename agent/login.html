@@ -249,13 +249,6 @@
       const btnEl = document.getElementById('sign-in-btn');
       const errorEl = document.getElementById('error-msg');
 
-      // Redirect if already logged in
-      console.log('[LOGIN] page load — checking token');
-      if (localStorage.getItem('gf_token')) {
-        console.log('[LOGIN] token exists — redirecting to chat');
-        window.location.replace('/');
-      }
-
       // Enter key submits
       [emailEl, passEl].forEach((el) => {
         el.addEventListener('keydown', (e) => {
