@@ -939,3 +939,27 @@ def test_ms_strategy_long_horizon():
     timeline = result.get("timeline", [])
     assert len(timeline) >= 20
     assert result["final_picture"]["num_properties_owned"] >= 1
+
+
+# TYPE: happy_path
+# INPUT: simple portfolio query timed end to end
+# EXPECTED: tool executes within 30 seconds
+# CRITERIA: elapsed time under 30s — not a performance
+#           gate but confirms agent responds at all
+def test_latency_agent_responds_within_bounds():
+    """Verify agent tools respond within acceptable
+    time bounds. LLM synthesis is excluded from this
+    test — we test tool execution speed only."""
+    import time
+    from property_tracker import get_properties
+
+    start = time.time()
+    result = _run(get_properties())
+    elapsed = time.time() - start
+
+    assert result is not None
+    assert elapsed < 5.0, (
+        f"Tool execution took {elapsed:.2f}s — "
+        f"should be under 5s. LLM synthesis latency "
+        f"(8-10s) is separate and documented."
+    )
