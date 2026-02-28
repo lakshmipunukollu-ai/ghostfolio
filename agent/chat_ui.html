@@ -5554,7 +5554,7 @@
             const u = hist[i];
             const a = hist[i + 1];
             if (u) addMessage('user', u.content, null, true);
-            if (a) addMessage('agent', a.content, null, true);
+            if (a) addMessage('agent', a.content, (a && a.meta) ? a.meta : null, true);
           }
         } catch {
           /* silently skip */
@@ -5772,7 +5772,7 @@
                 // Extract tickers from response into memory
                 extractTickersIntoMemory(responseText);
                 history.push({ role: 'user', content: query });
-                history.push({ role: 'assistant', content: responseText });
+                history.push({ role: 'assistant', content: responseText, meta: metaData || null });
                 sessionStats.messages++;
                 saveSession();
                 saveCurrentSession();
@@ -6444,7 +6444,10 @@
         emptyEl.style.display = 'none';
         for (let i = 0; i < history.length; i += 2) {
           if (history[i]) addMessage('user', history[i].content, null, true);
-          if (history[i + 1]) addMessage('agent', history[i + 1].content, null, true);
+          if (history[i + 1]) {
+            const a = history[i + 1];
+            addMessage('agent', a.content, (a && a.meta) ? a.meta : null, true);
+          }
         }
         document.title = sess.title + ' — Ghostfolio';
         if (typeof updateHeaderTitle === 'function') updateHeaderTitle();
@@ -7046,7 +7049,10 @@
         emptyEl.style.display = 'none';
         for (let i = 0; i < history.length; i += 2) {
           if (history[i]) addMessage('user', history[i].content, null, true);
-          if (history[i + 1]) addMessage('agent', history[i + 1].content, null, true);
+          if (history[i + 1]) {
+            const a = history[i + 1];
+            addMessage('agent', a.content, (a && a.meta) ? a.meta : null, true);
+          }
         }
         document.title = target.title + ' — Ghostfolio';
         updateHeaderTitle();
