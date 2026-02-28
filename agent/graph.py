@@ -145,6 +145,13 @@ Available tool categories:
 - Equity unlock advisor (home equity options, refinance): use when tool_name is "equity_advisor"
 - Family financial planner (childcare costs, family budget): use when tool_name is "family_planner"
 
+12. Real estate is an INVESTMENT feature, not a home-search feature. If asked to find or search
+   for a home to live in (e.g. "find me a house", "show listings near me", "I want to buy a home
+   in [city]" as a primary residence search), respond:
+   "I help track real estate as investments in your portfolio. I can look up market data for
+   investment research, but I'm not a home search tool. Would you like to add a property you own
+   or analyze a potential investment property?"
+
 Use the appropriate tool based on what the user asks.
 Only use portfolio analysis for questions about investment holdings and portfolio performance."""
 
@@ -286,8 +293,18 @@ async def classify_node(state: AgentState) -> AgentState:
     """
     query = (state.get("user_query") or "").lower().strip()
 
+    # Strip the memory context prefix injected by the frontend before keyword matching.
+    # e.g. "[Context: Tickers I mentioned before: AAPL. My last known net worth: $34,342.] "
+    # Without this strip, words like "worth" in the prefix cause false-positive classification,
+    # AND _extract_ticker picks up the first ticker in the prefix (e.g. AAPL) instead of the
+    # ticker the user actually asked about (e.g. NVDA). Propagate the clean query into state
+    # so all downstream nodes (tools_node, format_node) also use the stripped version.
+    import re as _re_ctx
+    query = _re_ctx.sub(r'^\[context:[^\]]*\]\s*', '', query)
+    state = {**state, "user_query": query}
+
     if not query:
-        return {**state, "query_type": "performance", "error": "empty_query"}
+        return {**state, "query_type": "unknown", "error": "empty_query"}
 
     # --- Write confirmation replies ---
     pending_write = state.get("pending_write")
@@ -310,10 +327,10 @@ async def classify_node(state: AgentState) -> AgentState:
         "speak as", "talk as", "act as", "mode:", "\"mode\":",
     ]
     if any(phrase in query for phrase in adversarial_kws):
-        return {**state, "query_type": "performance"}
+        return {**state, "query_type": "unknown"}
     # JSON-shaped messages (e.g. {"mode":"waifu",...}) are prompt injection attempts
     if query.lstrip().startswith("{") or query.lstrip().startswith("["):
-        return {**state, "query_type": "performance"}
+        return {**state, "query_type": "unknown"}
 
     # --- Destructive operations — always refuse ---
     # Use word boundaries to avoid matching "drop" inside "dropped", "remove" inside "removed", etc.
@@ -362,7 +379,11 @@ async def classify_node(state: AgentState) -> AgentState:
         r"\b(add|record|log)\s+(a\s+)?(transaction|trade|order)\b", query, re.I
     ))
 
-    if buy_write and not re.search(r"\b(show|history|my|how|past|previous)\b", query, re.I):
+    # Exclude real estate / home-buying language from stock buy intent
+    _is_re_purchase = bool(re.search(
+        r"\b(house|home|property|condo|apartment|townhouse|real estate)\b", query, re.I
+    ))
+    if buy_write and not _is_re_purchase and not re.search(r"\b(show|history|my|how|past|previous)\b", query, re.I):
         return {**state, "query_type": "buy"}
     if sell_write and not re.search(r"\b(show|history|my|how|past|previous)\b", query, re.I):
         return {**state, "query_type": "sell"}
@@ -457,13 +478,13 @@ async def classify_node(state: AgentState) -> AgentState:
     if any(phrase in query for phrase in full_position_kws) and _extract_ticker(query):
         return {**state, "query_type": "performance+compliance+activity"}
 
-    # --- Full portfolio report / health check — always include compliance ---
+    # --- Full portfolio report / health check — run all three tools ---
     full_report_kws = [
         "health check", "complete portfolio", "full portfolio", "portfolio report",
         "complete report", "full report", "overall health", "portfolio health",
     ]
     if any(phrase in query for phrase in full_report_kws):
-        return {**state, "query_type": "compliance"}
+        return {**state, "query_type": "performance+compliance+activity"}
 
     # --- Categorize / pattern analysis ---
     categorize_kws = [
@@ -475,13 +496,18 @@ async def classify_node(state: AgentState) -> AgentState:
 
     # --- Read-path classification (existing logic) ---
     performance_kws = [
-        "return", "performance", "gain", "loss", "ytd", "portfolio",
-        "value", "how am i doing", "worth", "1y", "1-year", "max",
-        "best", "worst", "unrealized", "summary", "overview",
+        "performance", "gain", "loss", "ytd", "portfolio",
+        "how am i doing", "worth", "1y", "1-year",
+        "unrealized", "total return", "my return", "rate of return",
+        "portfolio value", "portfolio summary", "portfolio overview",
+        "my best", "my worst", "my gains", "my losses",
+        "best performer", "worst performer",
+        "drawdown", "max drawdown", "biggest holding", "biggest position",
+        "largest holding", "largest position", "top holding", "top position",
     ]
     activity_kws = [
-        "trade", "transaction", "buy", "sell", "history", "activity",
-        "show me", "recent", "order", "purchase", "bought", "sold",
+        "trade", "transaction", "history", "activity",
+        "recent transactions", "recent trades", "order", "purchase", "bought", "sold",
         "dividend", "fee",
     ]
     tax_kws = [
@@ -493,8 +519,12 @@ async def classify_node(state: AgentState) -> AgentState:
         "compliance", "overweight", "balanced", "spread", "alert", "warning",
     ]
     market_kws = [
-        "price", "current price", "today", "market", "stock price",
-        "trading at", "trading", "quote",
+        "price", "current price", "stock price", "market price",
+        "trading at", "stock quote", "quote",
+        "what is aapl", "what is msft", "what is nvda", "what is tsla",
+        "what is googl", "what is amzn", "what is meta",
+        "worth today", "worth now", "is worth today", "is worth now",
+        "currently worth", "currently trading",
     ]
     overview_kws = [
         "what's hot", "whats hot", "hot today", "market overview",
@@ -661,6 +691,36 @@ async def classify_node(state: AgentState) -> AgentState:
         if any(kw in query for kw in property_net_worth_kws):
             return {**state, "query_type": "property_net_worth"}
 
+    # --- Real Estate home-shopping guard (feature-flagged) ---
+    # Must run BEFORE real_estate_kws so buying-intent queries are intercepted
+    # before search_listings is ever called.
+    if is_real_estate_enabled():
+        _home_shopping_kws = [
+            "find me a home", "find me a house", "find a home", "find a house",
+            "search for homes", "search for houses", "looking for a home",
+            "looking for a house", "house hunting", "home search",
+            "homes for sale", "houses for sale", "listings in",
+            "move to", "relocate to", "live in",
+            "find me a place", "apartment for rent",
+            # Active buying intent without investment framing
+            "want to buy a house", "want to buy a home",
+            "looking to buy a house", "looking to buy a home",
+            "i want to buy", "want to purchase a house", "want to purchase a home",
+            # Bedroom/price filter combos that signal active home shopping
+            "bedroom house", "bedroom home", "3br", "4br", "2br",
+            "under $", "for sale under",
+        ]
+        _investment_intent_kws = [
+            "invest", "investment", "rental yield", "cap rate", "roi",
+            "cash flow", "portfolio", "holdings", "equity", "appreciation",
+            "returns", "yield", "rental income", "buy to let",
+            "as an investment", "investment property", "investment research",
+        ]
+        has_home_shopping = any(kw in query for kw in _home_shopping_kws)
+        has_investment_intent = any(kw in query for kw in _investment_intent_kws)
+        if has_home_shopping and not has_investment_intent:
+            return {**state, "query_type": "real_estate_refused"}
+
     # --- Real Estate (feature-flagged) — checked AFTER tax/compliance so portfolio
     #     queries like "housing allocation" still route to portfolio tools ---
     if is_real_estate_enabled():
@@ -688,7 +748,10 @@ async def classify_node(state: AgentState) -> AgentState:
             "area", "prices in", "homes in", "housing in", "rent in",
             "show me", "housing costs", "cost to buy",
         ]
-        has_known_location = any(city in query for city in _KNOWN_CITIES)
+        has_known_location = any(
+            (re.search(r'\b' + re.escape(city) + r'\b', query) if len(city) <= 4 else city in query)
+            for city in _KNOWN_CITIES
+        )
         has_location_re_intent = has_known_location and any(kw in query for kw in _location_intent_kws)
         has_real_estate = any(kw in query for kw in real_estate_kws) or has_location_re_intent
         if has_real_estate:
@@ -710,6 +773,36 @@ async def classify_node(state: AgentState) -> AgentState:
     if has_overview:
         return {**state, "query_type": "market_overview"}
 
+    # --- Natural language phrasing catch-all (before the scored fallback) ---
+    # These are common phrasings that don't match the terse keyword lists above.
+    natural_performance_kws = [
+        "how am i doing", "how have i done", "how is my money",
+        "how are my investments", "how are my stocks",
+        "am i making money", "am i losing money",
+        "what is my portfolio worth", "what's my portfolio worth",
+        "show me my portfolio", "give me a summary",
+        "how much have i made", "how much have i lost",
+        # Common typos / alternate spellings of "portfolio"
+        "portflio", "portfoio", "portfolo", "porfolio", "portfoilio",
+        # Holdings / shares queries
+        "total shares", "how many shares", "shares i have", "shares do i have",
+        "how many", "my holdings", "what do i own", "what do i hold",
+        "what stocks do i have", "what positions", "my positions",
+        "show me my holdings", "show my holdings", "list my holdings",
+        "biggest holdings", "biggest positions", "largest holdings",
+        "top holdings", "top positions",
+    ]
+    natural_activity_kws = [
+        "what have i bought", "what have i sold",
+        "show me my trades", "show me my transactions",
+        "what did i buy", "what did i sell",
+        "my purchase history", "my trading history",
+    ]
+    if any(kw in query for kw in natural_performance_kws):
+        return {**state, "query_type": "performance"}
+    if any(kw in query for kw in natural_activity_kws):
+        return {**state, "query_type": "activity"}
+
     matched = {
         "performance": has_performance,
         "activity": has_activity,
@@ -728,6 +821,8 @@ async def classify_node(state: AgentState) -> AgentState:
         query_type = "activity+compliance"
     elif has_performance and has_compliance:
         query_type = "compliance"
+    elif has_performance and has_activity:
+        query_type = "performance"
     elif has_compliance:
         query_type = "compliance"
     elif has_market:
@@ -737,7 +832,7 @@ async def classify_node(state: AgentState) -> AgentState:
     elif has_performance:
         query_type = "performance"
     else:
-        query_type = "performance"
+        query_type = "unknown"
 
     # #region agent log
     import json as _json_log2, time as _time_log2
@@ -1451,7 +1546,7 @@ async def tools_node(state: AgentState) -> AgentState:
     All tool results appended to state["tool_results"].
     Never raises — errors returned as structured dicts.
     """
-    query_type = state.get("query_type", "performance")
+    query_type = state.get("query_type", "unknown")
     user_query = state.get("user_query", "")
     tool_results = list(state.get("tool_results", []))
     portfolio_snapshot = state.get("portfolio_snapshot", {})
@@ -1604,6 +1699,24 @@ async def tools_node(state: AgentState) -> AgentState:
         else:
             comp_result = await compliance_check({})
         tool_results.append(comp_result)
+
+    # --- Real Estate home-shopping refusal ---
+    elif query_type == "real_estate_refused":
+        tool_results.append({
+            "tool_name": "real_estate_refused",
+            "success": True,
+            "tool_result_id": "re_refused",
+            "result": (
+                "I help track real estate as investments in your portfolio — "
+                "I'm not a home search tool. Here's what I can do:\n\n"
+                "• **Add a property you own** — track address, value, and mortgage\n"
+                "• **Calculate your equity** — see equity across all your properties\n"
+                "• **Analyze rental yields** — cap rates and cash flow for investment research\n"
+                "• **Look up market data** — median prices, days on market, inventory levels\n"
+                "• **Simulate a buy-and-rent strategy** — model buying properties over time\n\n"
+                "Would you like to do any of these?"
+            ),
+        })
 
     # --- Real Estate (feature-flagged) ---
     # These branches are ONLY reachable when ENABLE_REAL_ESTATE=true because
@@ -2154,6 +2267,22 @@ async def format_node(state: AgentState) -> AgentState:
         updated_messages = _append_messages(state, user_query, response)
         return {**state, "final_response": response, "messages": updated_messages}
 
+    # Short-circuit: query didn't match any known intent
+    if query_type == "unknown":
+        response = (
+            "I'm not sure what you're asking. Here are some things I can help you with:\n\n"
+            "- **Portfolio performance**: \"What is my total return?\" or \"How is my portfolio doing?\"\n"
+            "- **Transactions**: \"Show my recent trades\" or \"What did I buy this year?\"\n"
+            "- **Tax estimates**: \"What are my capital gains?\" or \"Do I owe taxes?\"\n"
+            "- **Risk & compliance**: \"Am I over-concentrated?\" or \"How diversified am I?\"\n"
+            "- **Market data**: \"What is AAPL trading at?\" or \"What's the market doing today?\"\n"
+            "- **Real estate holdings**: \"What are my properties worth?\" or \"What's my total net worth including real estate?\"\n"
+            "- **Investment strategy**: \"Simulate buying rental properties over 10 years\" or \"Analyze my equity options\"\n\n"
+            "Try rephrasing your question around one of these topics."
+        )
+        updated_messages = _append_messages(state, user_query, response)
+        return {**state, "final_response": response, "messages": updated_messages}
+
     # Short-circuit: awaiting user yes/no (write_prepare already built the message)
     if awaiting_confirmation and state.get("confirmation_message"):
         response = state["confirmation_message"]
@@ -2182,12 +2311,34 @@ async def format_node(state: AgentState) -> AgentState:
 
     if not tool_results:
         if query_type == "context_followup":
-            # No tools called — answer entirely from conversation history
+            # No tools called — answer entirely from conversation history.
+            # Guard: if the only assistant message in history is the "unknown" help menu,
+            # there is no real portfolio data to synthesise from — return the menu again.
             messages_history = state.get("messages", [])
             if not messages_history:
                 response = "I don't have enough context to answer that. Could you rephrase your question?"
                 return {**state, "final_response": response}
-
+            _UNKNOWN_SENTINEL = "I'm not sure what you're asking"
+            assistant_messages = [
+                m for m in messages_history
+                if hasattr(m, "type") and m.type != "human"
+            ]
+            last_assistant = assistant_messages[-1].content if assistant_messages else ""
+            if _UNKNOWN_SENTINEL in last_assistant:
+                # The conversation context is just the help menu — re-surface it.
+                response = (
+                    "I'm not sure what you're asking. Here are some things I can help you with:\n\n"
+                    "- **Portfolio performance**: \"What is my total return?\" or \"How is my portfolio doing?\"\n"
+                    "- **Transactions**: \"Show my recent trades\" or \"What did I buy this year?\"\n"
+                    "- **Tax estimates**: \"What are my capital gains?\" or \"Do I owe taxes?\"\n"
+                    "- **Risk & compliance**: \"Am I over-concentrated?\" or \"How diversified am I?\"\n"
+                    "- **Market data**: \"What is AAPL trading at?\" or \"What's the market doing today?\"\n"
+                    "- **Real estate holdings**: \"What are my properties worth?\" or \"What's my total net worth including real estate?\"\n"
+                    "- **Investment strategy**: \"Simulate buying rental properties over 10 years\" or \"Analyze my equity options\"\n\n"
+                    "Try rephrasing your question around one of these topics."
+                )
+                updated_messages = _append_messages(state, user_query, response)
+                return {**state, "final_response": response, "messages": updated_messages}
             api_messages_ctx = []
             for m in messages_history:
                 if hasattr(m, "type"):
@@ -2301,12 +2452,17 @@ async def format_node(state: AgentState) -> AgentState:
         "Only present the data. End your response by saying the decision is entirely the user's."
     ) if _is_invest_advice else ""
 
-    # Real estate context injection — prevents Claude from claiming it lacks RE data
+    # Real estate context injection — frames RE data as investment analysis, not home shopping
     _re_context = (
-        "\n\nIMPORTANT: This question is about real estate or housing. "
+        "\n\nIMPORTANT: You are helping the user analyze real estate as part of their investment portfolio. "
+        "You can look up market data for investment research, track properties they own, calculate equity "
+        "and net worth, and simulate long-term buy-and-rent strategies. "
+        "You are NOT a real estate agent. Do not help users shop for homes. "
+        "Frame all real estate data in terms of investment analysis — returns, equity, cash flow, "
+        "appreciation, allocation within their overall portfolio. "
         "You have been given structured real estate tool data above. "
         "Use ONLY that data to answer the question. "
-        "NEVER say you lack access to real estate listings, home prices, or housing data — "
+        "NEVER say you lack access to market data, home prices, or housing statistics — "
         "the tool results above ARE that data. "
         "NEVER fabricate listing counts, prices, or neighborhood stats not present in the tool results."
     ) if query_type.startswith("real_estate") else ""
@@ -2332,6 +2488,8 @@ async def format_node(state: AgentState) -> AgentState:
         ),
     })
 
+    actual_input_tokens: int | None = None
+    actual_output_tokens: int | None = None
     try:
         response_obj = client.messages.create(
             model="claude-sonnet-4-20250514",
@@ -2341,6 +2499,9 @@ async def format_node(state: AgentState) -> AgentState:
             timeout=25.0,
         )
         answer = response_obj.content[0].text
+        if hasattr(response_obj, "usage") and response_obj.usage:
+            actual_input_tokens = response_obj.usage.input_tokens
+            actual_output_tokens = response_obj.usage.output_tokens
     except Exception as e:
         answer = (
             f"I encountered an error generating your response: {str(e)}. "
@@ -2391,6 +2552,8 @@ async def format_node(state: AgentState) -> AgentState:
         "final_response": final,
         "messages": updated_messages,
         "citations": citations,
+        "input_tokens": actual_input_tokens,
+        "output_tokens": actual_output_tokens,
     }
 
 
@@ -2429,7 +2592,7 @@ def _route_after_classify(state: AgentState) -> str:
         tax / market / market_overview /
         categorize / context_followup             → tools
     """
-    qt = state.get("query_type", "performance")
+    qt = state.get("query_type", "unknown")
     write_intents = {"buy", "sell", "dividend", "cash", "transaction"}
 
     if qt == "write_refused":
@@ -2439,6 +2602,10 @@ def _route_after_classify(state: AgentState) -> str:
     if qt == "write_confirmed":
         return "write_execute"
     if qt == "write_cancelled":
+        return "format"
+    if qt == "unknown":
+        return "format"
+    if qt == "context_followup":
         return "format"
     return "tools"
 

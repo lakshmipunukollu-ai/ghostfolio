@@ -8,5 +8,8 @@ httpx
 python-dotenv
 pytest
 pytest-asyncio
+passlib[bcrypt]
+bcrypt>=3.2,<4.0
+python-jose[cryptography]
 
 # cache-bust-1772149708

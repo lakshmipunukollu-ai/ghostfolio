@@ -1,15 +1,17 @@
 import json
 import time
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse, StreamingResponse, HTMLResponse, JSONResponse
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import httpx
 from langchain_core.messages import HumanMessage, AIMessage
+from jose import JWTError, jwt
 
 load_dotenv()
 # Load agent/.env so ANTHROPIC_API_KEY, GHOSTFOLIO_BEARER_TOKEN, etc. are available
@@ -17,6 +19,53 @@ load_dotenv(os.path.join(os.path.dirname(__file__), "agent", ".env"))
 
 from graph import build_graph
 from state import AgentState
+
+# ── Auth configuration ──
+# The agent issues its own short-lived JWT whose `sub` is the user's
+# Ghostfolio bearer token. This way we never store credentials server-side;
+# Ghostfolio is the identity provider.
+_JWT_ALGORITHM = "HS256"
+_JWT_EXPIRE_HOURS = 24
+_http_bearer = HTTPBearer(auto_error=False)
+
+
+def _get_jwt_secret() -> str:
+    secret = os.getenv("JWT_SECRET_KEY", "")
+    if not secret:
+        raise RuntimeError("JWT_SECRET_KEY env var is required")
+    return secret
+
+
+def _create_access_token(subject: str) -> str:
+    expire = datetime.utcnow() + timedelta(hours=_JWT_EXPIRE_HOURS)
+    payload = {"sub": subject, "exp": expire}
+    return jwt.encode(payload, _get_jwt_secret(), algorithm=_JWT_ALGORITHM)
+
+
+def _verify_jwt(token: str) -> str:
+    try:
+        payload = jwt.decode(token, _get_jwt_secret(), algorithms=[_JWT_ALGORITHM])
+        sub: str = payload.get("sub", "")
+        if not sub:
+            raise ValueError("missing sub")
+        return sub
+    except JWTError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired token",
+            headers={"WWW-Authenticate": "Bearer"},
+        ) from exc
+
+
+def require_auth(credentials: HTTPAuthorizationCredentials = Depends(_http_bearer)) -> str:
+    if credentials is None or not credentials.credentials:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return _verify_jwt(credentials.credentials)
+
 
 app = FastAPI(
     title="Ghostfolio AI Agent",
@@ -30,6 +79,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 graph = build_graph()
 
@@ -59,7 +109,7 @@ class FeedbackRequest(BaseModel):
 
 
 @app.post("/chat")
-async def chat(req: ChatRequest):
+async def chat(req: ChatRequest, gf_token: str = Depends(require_auth)):
     start = time.time()
 
     # Build conversation history preserving both user AND assistant turns so
@@ -86,8 +136,7 @@ async def chat(req: ChatRequest):
         "confirmation_payload": None,
         # Carry forward any pending write payload the client echoed back
         "pending_write": req.pending_write,
-        # Per-user token — overrides env var when present
-        "bearer_token": req.bearer_token,
+        "bearer_token": gf_token,
         "confirmation_message": None,
         "missing_fields": [],
         "final_response": None,
@@ -204,12 +253,13 @@ async def chat(req: ChatRequest):
 
 
 @app.post("/chat/stream")
-async def chat_stream(req: ChatRequest):
+async def chat_stream(req: ChatRequest, gf_token: str = Depends(require_auth)):
     """
     Streaming variant of /chat — returns SSE (text/event-stream).
     Runs the full graph, then streams the final response word by word so
     the user sees output immediately rather than waiting for the full response.
     """
+
     history_messages = []
     for m in req.history:
         role = m.get("role", "")
@@ -231,7 +281,7 @@ async def chat_stream(req: ChatRequest):
         "awaiting_confirmation": False,
         "confirmation_payload": None,
         "pending_write": req.pending_write,
-        "bearer_token": req.bearer_token,
+        "bearer_token": gf_token,
         "confirmation_message": None,
         "missing_fields": [],
         "final_response": None,
@@ -356,42 +406,45 @@ class LoginRequest(BaseModel):
 @app.post("/auth/login")
 async def auth_login(req: LoginRequest):
     """
-    Demo auth endpoint.
-    Validates against DEMO_EMAIL / DEMO_PASSWORD env vars (defaults: test@example.com / password).
-    On success, returns the configured GHOSTFOLIO_BEARER_TOKEN so the client can use it.
+    Simple email/password auth for the agent.
+    Credentials are validated against ADMIN_USERNAME / ADMIN_PASSWORD env vars,
+    falling back to the built-in demo credentials (test@example.com / password).
+    All authenticated users share the GHOSTFOLIO_BEARER_TOKEN from the environment.
     """
-    demo_email    = os.getenv("DEMO_EMAIL", "test@example.com")
-    demo_password = os.getenv("DEMO_PASSWORD", "password")
+    admin_email = os.getenv("ADMIN_USERNAME", "test@example.com").strip().lower()
+    admin_password = os.getenv("ADMIN_PASSWORD", "password")
 
-    if req.email.strip().lower() != demo_email.lower() or req.password != demo_password:
+    if req.email.strip().lower() != admin_email or req.password != admin_password:
         return JSONResponse(
             status_code=401,
             content={"success": False, "message": "Invalid email or password."},
         )
 
-    token = os.getenv("GHOSTFOLIO_BEARER_TOKEN", "")
+    gf_token = os.getenv("GHOSTFOLIO_BEARER_TOKEN", "")
+    session_token = _create_access_token(subject=gf_token or "demo")
 
-    # Fetch display name for this token
-    base_url = os.getenv("GHOSTFOLIO_BASE_URL", "http://localhost:3333")
-    display_name = "Investor"
-    try:
-        async with httpx.AsyncClient(timeout=4.0) as client:
-            r = await client.get(
-                f"{base_url}/api/v1/user",
-                headers={"Authorization": f"Bearer {token}"},
-            )
-            if r.status_code == 200:
-                data = r.json()
-                alias = data.get("settings", {}).get("alias") or ""
-                display_name = alias or demo_email.split("@")[0] or "Investor"
-    except Exception:
-        display_name = demo_email.split("@")[0] or "Investor"
+    # Try to get a display name from Ghostfolio if a token is configured
+    display_name = admin_email.split("@")[0]
+    if gf_token:
+        base_url = os.getenv("GHOSTFOLIO_BASE_URL", "http://localhost:3333")
+        try:
+            async with httpx.AsyncClient(timeout=4.0) as client:
+                r = await client.get(
+                    f"{base_url}/api/v1/user",
+                    headers={"Authorization": f"Bearer {gf_token}"},
+                )
+                if r.status_code == 200:
+                    data = r.json()
+                    alias = data.get("settings", {}).get("alias") or ""
+                    display_name = alias or display_name
+        except Exception:
+            pass
 
     return {
         "success": True,
-        "token": token,
+        "token": session_token,
         "name": display_name,
-        "email": demo_email,
+        "email": req.email.strip().lower(),
     }
 
 
@@ -478,7 +531,7 @@ _OUR_NODES = set(_NODE_LABELS.keys())
 
 
 @app.post("/chat/steps")
-async def chat_steps(req: ChatRequest):
+async def chat_steps(req: ChatRequest, gf_token: str = Depends(require_auth)):
     """
     SSE endpoint that streams LangGraph node events in real time.
     Clients receive step events as each graph node starts/ends,
@@ -507,7 +560,7 @@ async def chat_steps(req: ChatRequest):
         "awaiting_confirmation": False,
         "confirmation_payload": None,
         "pending_write": req.pending_write,
-        "bearer_token": req.bearer_token,
+        "bearer_token": gf_token,
         "confirmation_message": None,
         "missing_fields": [],
         "final_response": None,
@@ -624,7 +677,7 @@ async def health():
 
 
 @app.post("/feedback")
-async def feedback(req: FeedbackRequest):
+async def feedback(req: FeedbackRequest, _auth: str = Depends(require_auth)):
     entry = {
         "timestamp": datetime.utcnow().isoformat(),
         "query": req.query,
@@ -637,7 +690,7 @@ async def feedback(req: FeedbackRequest):
 
 
 @app.get("/feedback/summary")
-async def feedback_summary():
+async def feedback_summary(_auth: str = Depends(require_auth)):
     if not feedback_log:
         return {
             "total": 0,
@@ -686,7 +739,7 @@ async def real_estate_log():
 
 
 @app.get("/costs")
-async def costs():
+async def costs(_auth: str = Depends(require_auth)):
     total = sum(c["estimated_cost_usd"] for c in cost_log)
     avg = total / max(len(cost_log), 1)
 

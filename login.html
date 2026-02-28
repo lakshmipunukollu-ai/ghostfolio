@@ -39,7 +39,6 @@
         justify-content: center;
       }
 
-      /* Subtle grid background */
       body::before {
         content: '';
         position: fixed;
@@ -54,7 +53,7 @@
       .card {
         width: 100%;
         max-width: 380px;
-        padding: 36px 32px 32px;
+        padding: 36px 32px 28px;
         background: var(--surface);
         border: 1px solid var(--border2);
         border-radius: 18px;
@@ -88,6 +87,7 @@
         font-weight: 700;
         color: var(--text);
       }
+
       .brand p {
         font-size: 13px;
         color: var(--text3);
@@ -121,10 +121,12 @@
           border-color 0.15s,
           box-shadow 0.15s;
       }
+
       input:focus {
         border-color: var(--indigo);
         box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
       }
+
       input::placeholder {
         color: var(--text3);
       }
@@ -139,6 +141,7 @@
         margin-bottom: 16px;
         display: none;
       }
+
       .error-msg.show {
         display: block;
       }
@@ -160,16 +163,10 @@
         margin-top: 4px;
         position: relative;
       }
-      .sign-in-btn:hover {
-        opacity: 0.9;
-      }
-      .sign-in-btn:active {
-        transform: scale(0.99);
-      }
-      .sign-in-btn:disabled {
-        opacity: 0.45;
-        cursor: not-allowed;
-      }
+
+      .sign-in-btn:hover { opacity: 0.9; }
+      .sign-in-btn:active { transform: scale(0.99); }
+      .sign-in-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
       .spinner {
         display: none;
@@ -184,29 +181,13 @@
         top: 50%;
         transform: translateY(-50%);
       }
-      .sign-in-btn.loading .spinner {
-        display: block;
-      }
+
+      .sign-in-btn.loading .spinner { display: block; }
+
       @keyframes spin {
-        to {
-          transform: translateY(-50%) rotate(360deg);
-        }
+        to { transform: translateY(-50%) rotate(360deg); }
       }
 
-      .demo-hint {
-        text-align: center;
-        font-size: 11px;
-        color: var(--text3);
-        margin-top: 20px;
-      }
-      .demo-hint code {
-        font-family: 'SF Mono', 'Fira Code', monospace;
-        color: var(--text2);
-        background: var(--surface2);
-        padding: 1px 5px;
-        border-radius: 4px;
-        font-size: 11px;
-      }
     </style>
   </head>
   <body>
@@ -244,9 +225,6 @@
         <div class="spinner"></div>
       </button>
 
-      <p class="demo-hint">
-        MVP demo — use <code>test@example.com</code> / <code>password</code>
-      </p>
     </div>
 
     <script>
@@ -255,12 +233,10 @@
       const btnEl = document.getElementById('sign-in-btn');
       const errorEl = document.getElementById('error-msg');
 
-      // Redirect if already logged in
       if (localStorage.getItem('gf_token')) {
         window.location.replace('/');
       }
 
-      // Enter key submits
       [emailEl, passEl].forEach((el) => {
         el.addEventListener('keydown', (e) => {
           if (e.key === 'Enter') signIn();

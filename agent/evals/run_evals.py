@@ -8,12 +8,34 @@ import json
 import os
 import sys
 import time
+from statistics import median
 
 import httpx
 
 BASE_URL = os.getenv("AGENT_BASE_URL", "http://localhost:8000")
 RESULTS_FILE = os.path.join(os.path.dirname(__file__), "results.json")
 TEST_CASES_FILE = os.path.join(os.path.dirname(__file__), "test_cases.json")
+
+# Optional Bearer token — set EVAL_AUTH_TOKEN env var when the server requires auth.
+# If not set, requests are sent without an Authorization header.
+_EVAL_TOKEN = os.getenv("EVAL_AUTH_TOKEN", "")
+_AUTH_HEADERS: dict[str, str] = (
+    {"Authorization": f"Bearer {_EVAL_TOKEN}"} if _EVAL_TOKEN else {}
+)
+
+# Parallelism — how many cases run simultaneously.
+# 3 balances speed (~3x faster than serial) with API concurrency pressure.
+# Raise to 5+ on higher Anthropic tiers; set to 1 for serial mode.
+CONCURRENCY = int(os.getenv("EVAL_CONCURRENCY", "3"))
+
+
+def _percentile(values: list[float], p: int) -> float:
+    if not values:
+        return 0.0
+    sorted_vals = sorted(values)
+    idx = (p / 100) * (len(sorted_vals) - 1)
+    lo, hi = int(idx), min(int(idx) + 1, len(sorted_vals) - 1)
+    return round(sorted_vals[lo] + (idx - lo) * (sorted_vals[hi] - sorted_vals[lo]), 2)
 
 
 def _check_assertions(
@@ -23,9 +45,14 @@ def _check_assertions(
     step: dict,
     elapsed: float,
     category: str,
-) -> list[str]:
-    """Returns a list of failure strings (empty = pass)."""
-    failures = []
+) -> tuple[list[str], list[str]]:
+    """Returns (failures, warnings).
+
+    failures — hard failures that mark the test as FAIL (wrong tool, missing phrase, etc.)
+    warnings — informational notes that don't affect pass/fail (e.g. slow latency)
+    """
+    failures: list[str] = []
+    warnings: list[str] = []
     rt = response_text.lower()
 
     for phrase in step.get("must_not_contain", []):
@@ -74,11 +101,12 @@ def _check_assertions(
                 f"awaiting_confirmation={awaiting_confirmation}, expected {expected_ac}"
             )
 
-    latency_limit = 35.0 if category in ("multi_step", "write") else 25.0
+    # Latency is a warning only — API times vary with concurrency and network.
+    latency_limit = 60.0 if category in ("multi_step", "write") else 30.0
     if elapsed > latency_limit:
-        failures.append(f"Latency {elapsed}s exceeded limit {latency_limit}s")
+        warnings.append(f"SLOW {elapsed:.1f}s (limit {latency_limit}s)")
 
-    return failures
+    return failures, warnings
 
 
 async def _post_chat(
@@ -89,7 +117,9 @@ async def _post_chat(
     body = {"query": query, "history": []}
     if pending_write is not None:
         body["pending_write"] = pending_write
-    resp = await client.post(f"{BASE_URL}/chat", json=body, timeout=45.0)
+    resp = await client.post(
+        f"{BASE_URL}/chat", json=body, headers=_AUTH_HEADERS
+    )
     elapsed = round(time.time() - start, 2)
     return resp.json(), elapsed
 
@@ -125,7 +155,7 @@ async def run_single_case(
         tools_used = data.get("tools_used", [])
         awaiting_confirmation = data.get("awaiting_confirmation", False)
 
-        failures = _check_assertions(
+        failures, warnings = _check_assertions(
             response_text, tools_used, awaiting_confirmation, case, elapsed, category
         )
 
@@ -136,6 +166,7 @@ async def run_single_case(
             "passed": len(failures) == 0,
             "latency": elapsed,
             "failures": failures,
+            "warnings": warnings,
             "tools_used": tools_used,
             "confidence": data.get("confidence_score"),
         }
@@ -148,6 +179,7 @@ async def run_single_case(
             "passed": False,
             "latency": round(time.time() - start, 2),
             "failures": [f"Exception: {str(e)}"],
+            "warnings": [],
             "tools_used": [],
         }
 
@@ -162,6 +194,7 @@ async def run_multistep_case(client: httpx.AsyncClient, case: dict) -> dict:
     category = case.get("category", "unknown")
     steps = case.get("steps", [])
     all_failures = []
+    all_warnings = []
     total_latency = 0.0
     pending_write = None
     tools_used_all = []
@@ -178,11 +211,13 @@ async def run_multistep_case(client: httpx.AsyncClient, case: dict) -> dict:
             tools_used_all.extend(tools_used)
             awaiting_confirmation = data.get("awaiting_confirmation", False)
 
-            step_failures = _check_assertions(
+            step_failures, step_warnings = _check_assertions(
                 response_text, tools_used, awaiting_confirmation, step, elapsed, category
             )
             if step_failures:
                 all_failures.extend([f"Step {i+1} ({query!r}): {f}" for f in step_failures])
+            if step_warnings:
+                all_warnings.extend([f"Step {i+1} ({query!r}): {w}" for w in step_warnings])
 
             # Carry pending_write forward for next step
             pending_write = data.get("pending_write")
@@ -197,6 +232,7 @@ async def run_multistep_case(client: httpx.AsyncClient, case: dict) -> dict:
         "passed": len(all_failures) == 0,
         "latency": round(time.time() - start_total, 2),
         "failures": all_failures,
+        "warnings": all_warnings,
         "tools_used": list(set(tools_used_all)),
     }
 
@@ -224,18 +260,31 @@ async def run_evals() -> float:
         sys.exit(1)
 
     print("✅ Agent health check passed\n")
+    print(f"Running {len(cases)} cases with concurrency={CONCURRENCY} "
+          f"(set EVAL_CONCURRENCY env var to change)\n")
 
-    results = []
-    async with httpx.AsyncClient(timeout=httpx.Timeout(35.0)) as client:
-        for case in cases:
+    # Build an index so results can be re-sorted into original case order.
+    case_order = {c["id"]: i for i, c in enumerate(cases)}
+    semaphore = asyncio.Semaphore(CONCURRENCY)
+
+    async def _run_bounded(case: dict) -> dict:
+        async with semaphore:
             result = await run_single_case(client, case)
-            results.append(result)
+        # Print immediately so progress is visible as cases complete.
+        status = "✅ PASS" if result["passed"] else "❌ FAIL"
+        slow = " ⏱" if result.get("warnings") else ""
+        print(f"{status} | {result['id']} ({result['category']}) | {result['latency']:.1f}s{slow}")
+        for failure in result.get("failures", []):
+            print(f"       ❌ {failure}")
+        for warning in result.get("warnings", []):
+            print(f"       ⚠️  {warning}")
+        return result
 
-            status = "✅ PASS" if result["passed"] else "❌ FAIL"
-            latency_str = f"{result['latency']:.1f}s"
-            print(f"{status} | {result['id']} ({result['category']}) | {latency_str}")
-            for failure in result.get("failures", []):
-                print(f"       → {failure}")
+    async with httpx.AsyncClient(timeout=httpx.Timeout(65.0)) as client:
+        raw_results = await asyncio.gather(*[_run_bounded(c) for c in cases])
+
+    # Re-sort into original case order for deterministic reporting / diffs.
+    results = sorted(raw_results, key=lambda r: case_order.get(r["id"], 9999))
 
     total = len(results)
     passed = sum(1 for r in results if r["passed"])
@@ -258,19 +307,43 @@ async def run_evals() -> float:
         bar = "✅" if cat_rate >= 0.8 else ("⚠️" if cat_rate >= 0.5 else "❌")
         print(f"  {bar} {cat}: {counts['passed']}/{counts['total']} ({cat_rate:.0%})")
 
+    latencies = [r["latency"] for r in results if r["latency"] > 0]
+    p50 = _percentile(latencies, 50)
+    p95 = _percentile(latencies, 95)
+    p99 = _percentile(latencies, 99)
+    avg = round(sum(latencies) / len(latencies), 2) if latencies else 0.0
+
+    print(f"\nLatency stats ({len(latencies)} cases):")
+    print(f"  avg={avg}s  p50={p50}s  p95={p95}s  p99={p99}s")
+
     failed_cases = [r for r in results if not r["passed"]]
     if failed_cases:
         print(f"\nFailed cases ({len(failed_cases)}):")
         for r in failed_cases:
             print(f"  ❌ {r['id']}: {r['failures']}")
 
+    slow_cases = [r for r in results if r.get("warnings")]
+    if slow_cases:
+        print(f"\nSlow cases ({len(slow_cases)}) — passed but exceeded latency guideline:")
+        for r in slow_cases:
+            print(f"  ⚠️  {r['id']}: {r['warnings']}")
+
+    slow_count = sum(1 for r in results if r.get("warnings"))
     with open(RESULTS_FILE, "w") as f:
         json.dump(
             {
                 "run_timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "concurrency": CONCURRENCY,
                 "total": total,
                 "passed": passed,
+                "slow_warnings": slow_count,
                 "pass_rate": round(pass_rate, 4),
+                "latency_stats": {
+                    "avg": avg,
+                    "p50": p50,
+                    "p95": p95,
+                    "p99": p99,
+                },
                 "by_category": by_category,
                 "results": results,
             },

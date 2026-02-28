@@ -85,27 +85,6 @@
         gap: 16px;
       }
 
-      .status-pill {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 11px;
-        color: var(--text3);
-      }
-
-      .dot {
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: var(--green);
-        box-shadow: 0 0 5px var(--green);
-        animation: pulse 2s infinite;
-      }
-      .dot.offline {
-        background: var(--red);
-        box-shadow: 0 0 5px var(--red);
-        animation: none;
-      }
 
       @keyframes pulse {
         0%,
@@ -125,6 +104,8 @@
         border-radius: 999px;
         padding: 3px 9px;
         transition: opacity 0.2s;
+        cursor: default;
+        user-select: none;
       }
       .latency-chip.hidden {
         opacity: 0;
@@ -392,6 +373,8 @@
         display: inline-flex;
         align-items: center;
         gap: 4px;
+        cursor: default;
+        user-select: none;
       }
       .badge.tool {
         border-color: var(--indigo);
@@ -737,14 +720,22 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: opacity 0.15s;
+        transition: opacity 0.15s, transform 0.1s, box-shadow 0.15s;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
       }
-      .send-btn:hover {
-        opacity: 0.85;
+      .send-btn:hover:not(:disabled) {
+        opacity: 0.9;
+        transform: scale(1.06);
+        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.6);
+      }
+      .send-btn:active:not(:disabled) {
+        transform: scale(0.97);
+        opacity: 1;
       }
       .send-btn:disabled {
         opacity: 0.35;
         cursor: not-allowed;
+        box-shadow: none;
       }
 
       /* ── Markdown content inside bubbles ── */
@@ -910,107 +901,6 @@
         background: #052e16;
       }
 
-      /* ── Onboarding tour ── */
-      .tour-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.6);
-        z-index: 900;
-        pointer-events: none;
-      }
-      .tour-tooltip {
-        position: fixed;
-        z-index: 910;
-        background: var(--surface2);
-        border: 1px solid var(--indigo);
-        border-radius: var(--radius);
-        padding: 14px 16px;
-        max-width: 280px;
-        box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
-        pointer-events: all;
-      }
-      .tour-tooltip::before {
-        content: '';
-        position: absolute;
-        width: 10px;
-        height: 10px;
-        background: var(--indigo);
-        border-radius: 2px;
-        transform: rotate(45deg);
-      }
-      .tour-tooltip.arrow-top::before {
-        top: -5px;
-        left: 20px;
-      }
-      .tour-tooltip.arrow-bottom::before {
-        bottom: -5px;
-        left: 20px;
-      }
-      .tour-tooltip.arrow-right::before {
-        right: -5px;
-        top: 20px;
-      }
-      .tour-step-label {
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 0.8px;
-        text-transform: uppercase;
-        color: var(--indigo2);
-        margin-bottom: 6px;
-      }
-      .tour-title {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text);
-        margin-bottom: 4px;
-      }
-      .tour-desc {
-        font-size: 12px;
-        color: var(--text2);
-        line-height: 1.5;
-        margin-bottom: 12px;
-      }
-      .tour-actions {
-        display: flex;
-        gap: 8px;
-        justify-content: flex-end;
-      }
-      .tour-skip {
-        font-size: 11px;
-        padding: 5px 10px;
-        border-radius: 7px;
-        border: 1px solid var(--border2);
-        background: transparent;
-        color: var(--text3);
-        cursor: pointer;
-      }
-      .tour-next {
-        font-size: 11px;
-        padding: 5px 12px;
-        border-radius: 7px;
-        border: none;
-        background: linear-gradient(135deg, var(--indigo), #8b5cf6);
-        color: #fff;
-        cursor: pointer;
-        font-weight: 600;
-      }
-      .tour-dots {
-        display: flex;
-        gap: 4px;
-        margin-right: auto;
-        align-items: center;
-      }
-      .tour-dot {
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-        background: var(--border2);
-        transition: background 0.2s;
-      }
-      .tour-dot.active {
-        background: var(--indigo2);
-      }
-
       /* ── Session history drawer ── */
       .drawer-overlay {
         position: fixed;
@@ -1080,17 +970,19 @@
         margin: 10px 12px;
         padding: 8px 12px;
         border-radius: 9px;
-        border: 1px dashed var(--border2);
-        background: transparent;
+        border: 1px solid var(--indigo);
+        background: var(--indigo-bg);
         color: var(--indigo2);
         font-size: 12px;
+        font-weight: 600;
         cursor: pointer;
         text-align: left;
         transition: all 0.15s;
         flex-shrink: 0;
       }
       .drawer-new-btn:hover {
-        background: var(--indigo-bg);
+        background: var(--indigo);
+        color: #fff;
         border-color: var(--indigo);
       }
 
@@ -1178,6 +1070,8 @@
         display: inline-flex;
         align-items: center;
         gap: 4px;
+        cursor: default;
+        user-select: none;
       }
       .context-tag.active {
         border-color: var(--indigo);
@@ -1597,11 +1491,18 @@
         color: var(--text3);
         cursor: pointer;
         transition: all 0.12s;
+        font-weight: 500;
+      }
+      .length-pill:hover {
+        border-color: var(--indigo);
+        color: var(--indigo2);
+        background: var(--indigo-bg);
       }
       .length-pill.active {
         border-color: var(--indigo);
         color: var(--indigo2);
         background: var(--indigo-bg);
+        font-weight: 600;
       }
 
       /* ── Scenario mode badge ── */
@@ -1804,9 +1705,15 @@
         border: 1px solid var(--indigo);
         background: var(--indigo);
         color: #fff;
+        font-weight: 600;
         cursor: pointer;
         white-space: nowrap;
         flex-shrink: 0;
+        transition: opacity 0.15s, transform 0.1s;
+      }
+      .greeting-action:hover {
+        opacity: 0.85;
+        transform: scale(0.98);
       }
       .greeting-dismiss {
         color: var(--text3);
@@ -1930,8 +1837,7 @@
         .reaction-row,
         .annotation-btn,
         .pin-bubble-btn,
-        .help-fab,
-        .discovery-tip {
+        .help-fab {
           display: none !important;
         }
         .annotation-wrap.open {
@@ -2354,57 +2260,6 @@
         color: var(--text3);
         margin-top: 2px;
         line-height: 1.4;
-      }
-
-      /* ── Feature discovery tooltip (post-first-message) ── */
-      .discovery-tip {
-        position: fixed;
-        bottom: 130px;
-        right: 20px;
-        background: var(--surface2);
-        border: 1px solid var(--indigo);
-        border-radius: var(--radius);
-        padding: 12px 14px;
-        max-width: 240px;
-        z-index: 390;
-        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
-        display: none;
-        flex-direction: column;
-        gap: 8px;
-        animation: slideUp 0.2s ease;
-      }
-      .discovery-tip.show {
-        display: flex;
-      }
-      .discovery-tip-title {
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--indigo2);
-      }
-      .discovery-tip-body {
-        font-size: 11px;
-        color: var(--text2);
-        line-height: 1.5;
-      }
-      .discovery-tip-close {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        background: transparent;
-        border: none;
-        color: var(--text3);
-        cursor: pointer;
-        font-size: 12px;
-      }
-      .discovery-tip-arrow {
-        position: absolute;
-        bottom: -6px;
-        right: 22px;
-        width: 10px;
-        height: 10px;
-        background: var(--indigo);
-        transform: rotate(45deg);
-        border-radius: 2px;
       }
 
       /* ── Export as image card ── */
@@ -3385,7 +3240,7 @@
         border-radius: 2px;
       }
 
-      /* ── User profile / onboarding modal ── */
+      /* ── User profile modal ── */
       .profile-step {
         display: none;
         flex-direction: column;
@@ -3760,10 +3615,7 @@
         >
           🧠 <span id="memory-label">0 items</span>
         </div>
-        <div class="status-pill">
-          <div class="dot" id="dot"></div>
-          <span id="status-label">Connecting…</span>
-        </div>
+
         <span class="latency-chip hidden" id="latency-chip">—</span>
         <div class="user-badge">
           <div class="user-avatar" id="user-avatar">??</div>
@@ -4159,8 +4011,8 @@
         <div class="empty-icon">💼</div>
         <h2>What would you like to know?</h2>
         <p>
-          Ask about your portfolio, explore Austin real estate data, track
-          properties, or run a compliance check.
+          Ask about your portfolio, track real estate holdings, analyze
+          investments, or run a compliance check.
         </p>
 
         <div class="quick-grid">
@@ -4231,27 +4083,7 @@
           </div>
 
           <div class="quick-category">
-            <span class="quick-cat-label">🏠 Real Estate &amp; Property</span>
-            <div class="quick-row">
-              <button
-                class="quick-btn"
-                onclick="
-                  sendQuick('What is the Austin housing market like right now?')
-                "
-              >
-                <span class="qb-icon">🏡</span>
-                <span class="qb-title">Austin Market</span>
-                <span class="qb-sub">Jan 2026 ACTRIS MLS data</span>
-              </button>
-              <button
-                class="quick-btn"
-                onclick="sendQuick('Compare Round Rock vs Hays County')"
-              >
-                <span class="qb-icon">🔀</span>
-                <span class="qb-title">Compare Counties</span>
-                <span class="qb-sub">Side-by-side analysis</span>
-              </button>
-            </div>
+            <span class="quick-cat-label">🏘 Real Estate Holdings</span>
             <div class="quick-row">
               <button
                 class="quick-btn"
@@ -4269,7 +4101,25 @@
               >
                 <span class="qb-icon">💰</span>
                 <span class="qb-title">Total Net Worth</span>
-                <span class="qb-sub">Portfolio + real estate</span>
+                <span class="qb-sub">Portfolio + real estate equity</span>
+              </button>
+            </div>
+            <div class="quick-row">
+              <button
+                class="quick-btn"
+                onclick="sendQuick('Add a property to my portfolio')"
+              >
+                <span class="qb-icon">➕</span>
+                <span class="qb-title">Add a Property</span>
+                <span class="qb-sub">Track address, value &amp; mortgage</span>
+              </button>
+              <button
+                class="quick-btn"
+                onclick="sendQuick('What is my real estate equity?')"
+              >
+                <span class="qb-icon">📈</span>
+                <span class="qb-title">Real Estate Equity</span>
+                <span class="qb-sub">Equity across all properties</span>
               </button>
             </div>
           </div>
@@ -4395,20 +4245,6 @@
       ?
     </button>
 
-    <!-- ── Feature discovery tip ── -->
-    <div class="discovery-tip" id="discovery-tip">
-      <button class="discovery-tip-close" onclick="dismissDiscovery()">
-        ✕
-      </button>
-      <div class="discovery-tip-arrow"></div>
-      <div class="discovery-tip-title">✨ Did you know?</div>
-      <div class="discovery-tip-body">
-        Press <strong>⌘P</strong> for command palette · Type
-        <strong>~</strong> for templates · <strong>⌘K</strong> focus · Click
-        <strong>⚙</strong> for settings · <strong>?</strong> for help
-      </div>
-    </div>
-
     <!-- ── Help guide panel ── -->
     <div class="help-panel-overlay" id="help-overlay">
       <div class="help-panel">
@@ -4430,15 +4266,11 @@
             </div>
             <div
               class="help-feature"
-              onclick="
-                closeHelpAndSend(
-                  'What is the Austin housing market like right now?'
-                )
-              "
+              onclick="closeHelpAndSend('What is my real estate equity?')"
             >
-              <div class="help-feature-icon">🏠</div>
-              <div class="help-feature-name">Austin Real Estate</div>
-              <div class="help-feature-desc">Jan 2026 ACTRIS MLS data</div>
+              <div class="help-feature-icon">🏘</div>
+              <div class="help-feature-name">Real Estate Equity</div>
+              <div class="help-feature-desc">Equity across all tracked properties</div>
             </div>
             <div
               class="help-feature"
@@ -4472,11 +4304,11 @@
             </div>
             <div
               class="help-feature"
-              onclick="closeHelpAndSend('Compare Round Rock vs Hays County')"
+              onclick="closeHelpAndSend('Compare Round Rock vs Hays County investment returns and rental yield')"
             >
               <div class="help-feature-icon">🔀</div>
-              <div class="help-feature-name">Compare Counties</div>
-              <div class="help-feature-desc">Side-by-side market data</div>
+              <div class="help-feature-name">Compare Markets</div>
+              <div class="help-feature-desc">Investment returns &amp; rental yield</div>
             </div>
           </div>
         </div>
@@ -4778,10 +4610,7 @@
             </div>
             <div
               class="help-feature"
-              onclick="
-                closeHelp();
-                openProfile();
-              "
+              onclick="closeHelp(); openProfile();"
             >
               <div class="help-feature-icon">👤</div>
               <div class="help-feature-name">My Profile</div>
@@ -5106,203 +4935,74 @@
       </div>
     </div>
 
-    <!-- ── User profile / onboarding modal ── -->
+    <!-- ── User profile modal ── -->
     <div class="modal-overlay" id="profile-modal">
       <div class="modal-box" style="max-width: 420px">
         <div class="modal-title">
           👤 Your Investor Profile
           <button
             class="modal-close-btn"
-            onclick="
-              document.getElementById('profile-modal').classList.remove('open')
-            "
-          >
-            ✕
-          </button>
+            onclick="document.getElementById('profile-modal').classList.remove('open')"
+          >✕</button>
         </div>
         <div class="profile-progress" id="profile-progress"></div>
         <div class="profile-step active" id="profile-step-0">
-          <div
-            style="
-              font-size: 13px;
-              font-weight: 600;
-              color: var(--text);
-              margin-bottom: 4px;
-            "
-          >
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">
             What best describes your risk tolerance?
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('risk', 'conservative', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('risk','conservative',this)">
             <span class="profile-option-icon">🛡</span>
-            <div>
-              <div style="font-weight: 600">Conservative</div>
-              <div style="font-size: 11px; color: var(--text3)">
-                Capital preservation first
-              </div>
-            </div>
+            <div><div style="font-weight:600">Conservative</div><div style="font-size:11px;color:var(--text3)">Capital preservation first</div></div>
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('risk', 'moderate', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('risk','moderate',this)">
             <span class="profile-option-icon">⚖️</span>
-            <div>
-              <div style="font-weight: 600">Moderate</div>
-              <div style="font-size: 11px; color: var(--text3)">
-                Balanced growth and stability
-              </div>
-            </div>
+            <div><div style="font-weight:600">Moderate</div><div style="font-size:11px;color:var(--text3)">Balanced growth and stability</div></div>
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('risk', 'aggressive', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('risk','aggressive',this)">
             <span class="profile-option-icon">🚀</span>
-            <div>
-              <div style="font-weight: 600">Aggressive</div>
-              <div style="font-size: 11px; color: var(--text3)">
-                Maximum growth, higher volatility
-              </div>
-            </div>
+            <div><div style="font-weight:600">Aggressive</div><div style="font-size:11px;color:var(--text3)">Maximum growth, higher volatility</div></div>
           </div>
-          <button
-            onclick="nextProfileStep()"
-            style="
-              padding: 9px;
-              border-radius: 9px;
-              border: none;
-              background: linear-gradient(135deg, var(--indigo), #8b5cf6);
-              color: #fff;
-              font-size: 13px;
-              font-weight: 600;
-              cursor: pointer;
-              margin-top: 4px;
-            "
-          >
+          <button onclick="nextProfileStep()" style="padding:9px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--indigo),#8b5cf6);color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px">
             Next →
           </button>
         </div>
         <div class="profile-step" id="profile-step-1">
-          <div
-            style="
-              font-size: 13px;
-              font-weight: 600;
-              color: var(--text);
-              margin-bottom: 4px;
-            "
-          >
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">
             Primary investment focus?
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('focus', 'real_estate', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('focus','real_estate',this)">
             <span class="profile-option-icon">🏠</span>
-            <div>
-              <div style="font-weight: 600">Real Estate</div>
-              <div style="font-size: 11px; color: var(--text3)">
-                Properties, REITs, land
-              </div>
-            </div>
+            <div><div style="font-weight:600">Real Estate</div><div style="font-size:11px;color:var(--text3)">Properties, REITs, land</div></div>
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('focus', 'equities', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('focus','equities',this)">
             <span class="profile-option-icon">📈</span>
-            <div>
-              <div style="font-weight: 600">Equities</div>
-              <div style="font-size: 11px; color: var(--text3)">
-                Stocks, ETFs, growth
-              </div>
-            </div>
+            <div><div style="font-weight:600">Equities</div><div style="font-size:11px;color:var(--text3)">Stocks, ETFs, growth</div></div>
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('focus', 'mixed', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('focus','mixed',this)">
             <span class="profile-option-icon">🌐</span>
-            <div>
-              <div style="font-weight: 600">Diversified</div>
-              <div style="font-size: 11px; color: var(--text3)">
-                Mix of asset classes
-              </div>
-            </div>
+            <div><div style="font-weight:600">Diversified</div><div style="font-size:11px;color:var(--text3)">Mix of asset classes</div></div>
           </div>
-          <button
-            onclick="nextProfileStep()"
-            style="
-              padding: 9px;
-              border-radius: 9px;
-              border: none;
-              background: linear-gradient(135deg, var(--indigo), #8b5cf6);
-              color: #fff;
-              font-size: 13px;
-              font-weight: 600;
-              cursor: pointer;
-              margin-top: 4px;
-            "
-          >
+          <button onclick="nextProfileStep()" style="padding:9px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--indigo),#8b5cf6);color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px">
             Next →
           </button>
         </div>
         <div class="profile-step" id="profile-step-2">
-          <div
-            style="
-              font-size: 13px;
-              font-weight: 600;
-              color: var(--text);
-              margin-bottom: 4px;
-            "
-          >
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">
             Investment horizon?
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('horizon', 'short', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('horizon','short',this)">
             <span class="profile-option-icon">⚡</span>
-            <div>
-              <div style="font-weight: 600">Short-term (&lt;2 years)</div>
-            </div>
+            <div><div style="font-weight:600">Short-term (&lt;2 years)</div></div>
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('horizon', 'medium', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('horizon','medium',this)">
             <span class="profile-option-icon">📅</span>
-            <div>
-              <div style="font-weight: 600">Medium-term (2–10 years)</div>
-            </div>
+            <div><div style="font-weight:600">Medium-term (2–10 years)</div></div>
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('horizon', 'long', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('horizon','long',this)">
             <span class="profile-option-icon">🌱</span>
-            <div>
-              <div style="font-weight: 600">
-                Long-term (10+ years / retirement)
-              </div>
-            </div>
+            <div><div style="font-weight:600">Long-term (10+ years / retirement)</div></div>
           </div>
-          <button
-            onclick="saveProfile()"
-            style="
-              padding: 9px;
-              border-radius: 9px;
-              border: none;
-              background: linear-gradient(135deg, var(--indigo), #8b5cf6);
-              color: #fff;
-              font-size: 13px;
-              font-weight: 600;
-              cursor: pointer;
-              margin-top: 4px;
-            "
-          >
+          <button onclick="saveProfile()" style="padding:9px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--indigo),#8b5cf6);color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px">
             Save Profile ✓
           </button>
         </div>
@@ -5772,8 +5472,6 @@
       const input = document.getElementById('input');
       const sendBtn = document.getElementById('send-btn');
       const emptyEl = document.getElementById('empty');
-      const dotEl = document.getElementById('dot');
-      const statusLbl = document.getElementById('status-label');
       const latChip = document.getElementById('latency-chip');
       const toastEl = document.getElementById('session-toast');
 
@@ -5812,30 +5510,14 @@
         },
         {
           name: 'real_estate',
-          desc: 'Austin-area housing market data from ACTRIS/Unlock MLS (January 2026) — median prices, days on market, rental data for 7 counties/areas.'
+          desc: 'Market data and neighborhood analysis for your investment research — median prices, rental yields, cap rates, and days on market for Austin-area counties and major US metros.'
         },
         {
           name: 'property_tracker',
-          desc: 'Track properties you own — add address, purchase price, current value, and mortgage to see equity alongside your investment portfolio.'
+          desc: 'Track properties you own — equity, appreciation, mortgage balance, and net worth alongside your investment portfolio.'
         }
       ];
 
-      // ── Health check ──
-      (async () => {
-        try {
-          const r = await fetch('/health');
-          const d = await r.json();
-          if (d.status === 'ok') {
-            dotEl.classList.remove('offline');
-            statusLbl.textContent = d.ghostfolio_reachable
-              ? 'Live'
-              : 'Online · Ghostfolio unreachable';
-          } else throw new Error();
-        } catch {
-          dotEl.classList.add('offline');
-          statusLbl.textContent = 'Agent offline';
-        }
-      })();
 
       // ── Auth guard — redirect to login if no token ──
       const _token = localStorage.getItem('gf_token');
@@ -5983,9 +5665,13 @@
         let agentMsgEl = null;
 
         try {
+          const _authToken = localStorage.getItem('gf_token') || '';
           const res = await fetch('/chat/steps', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${_authToken}`
+            },
             body: JSON.stringify({
               query: finalQuery,
               history,
@@ -5993,6 +5679,13 @@
             })
           });
 
+          if (res.status === 401) {
+            localStorage.removeItem('gf_token');
+            localStorage.removeItem('gf_user_name');
+            localStorage.removeItem('gf_user_email');
+            window.location.replace('/login');
+            return;
+          }
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
           const reader = res.body.getReader();
@@ -6082,8 +5775,6 @@
                 saveSession();
                 saveCurrentSession();
                 if (typeof updateChatsBadge === 'function') updateChatsBadge();
-                // Show feature discovery tip after first successful exchange
-                if (history.length === 2) showDiscoveryTip();
               } else if (evt.type === 'error') {
                 thinkingEl.remove();
                 addErrorMessage(evt.message, query);
@@ -6557,8 +6248,8 @@
 
         // ── Tool-based fallbacks (used when text parsing finds nothing) ──
         const toolFallbacks = {
-          real_estate: ['Show me rental data for this area', 'Compare Austin vs Williamson County', 'What areas are most affordable?'],
-          property_tracker: ['Show all my properties', 'What is my total net worth?', 'Add another property'],
+          real_estate: ['Add this to my portfolio', 'What\'s the rental yield on this property?', 'How does this affect my net worth?'],
+          property_tracker: ['Compare to my other properties', 'What\'s my total real estate equity?', 'How does real estate fit my overall allocation?'],
           compliance_check: ['How can I rebalance?', 'What is my YTD return?', 'Show my biggest holdings'],
           portfolio_analysis: ['Am I over-concentrated?', 'Estimate my tax liability', 'Show my recent trades'],
           market_data: ['Compare this to my portfolio performance', 'What is my YTD return?', 'Show me SPY price'],
@@ -6684,103 +6375,13 @@
         }
       });
 
-      // ── Onboarding tour ──
-      const TOUR_KEY = 'gf_tour_done_v2';
-      const tourSteps = [
-        {
-          targetId: 'empty',
-          title: 'Quick actions',
-          desc: 'Click any card to jump right in — real estate market data, portfolio, compliance, and more.',
-          arrow: 'arrow-top',
-          placement: 'below'
-        },
-        {
-          targetId: 'mic-btn',
-          title: 'Voice input',
-          desc: 'Click 🎙 to speak your question. The agent will transcribe and answer in real time.',
-          arrow: 'arrow-bottom',
-          placement: 'above'
-        },
-        {
-          targetId: 'input',
-          title: 'Type anything',
-          desc: 'The agent figures out which tool to use automatically. Try: "Austin market" or "my portfolio".\n\nTip: Press ↑ to restore your last message, Cmd+K to focus here.',
-          arrow: 'arrow-bottom',
-          placement: 'above'
-        }
-      ];
-      let tourStep = 0;
-      let tourOverlay = null;
-      let tourTooltip = null;
-
-      function startTour() {
-        if (localStorage.getItem(TOUR_KEY)) return;
-        tourOverlay = document.createElement('div');
-        tourOverlay.className = 'tour-overlay';
-        document.body.appendChild(tourOverlay);
-        showTourStep(0);
-      }
-
-      function showTourStep(idx) {
-        if (tourTooltip) tourTooltip.remove();
-        if (idx >= tourSteps.length) { endTour(true); return; }
-        tourStep = idx;
-        const step = tourSteps[idx];
-        const target = document.getElementById(step.targetId);
-
-        tourTooltip = document.createElement('div');
-        tourTooltip.className = `tour-tooltip ${step.arrow}`;
-
-        const dots = tourSteps.map((_, i) =>
-          `<div class="tour-dot${i === idx ? ' active' : ''}"></div>`
-        ).join('');
-
-        tourTooltip.innerHTML = `
-          <div class="tour-step-label">Step ${idx + 1} of ${tourSteps.length}</div>
-          <div class="tour-title">${step.title}</div>
-          <div class="tour-desc">${step.desc.replace(/\n/g, '<br>')}</div>
-          <div class="tour-actions">
-            <div class="tour-dots">${dots}</div>
-            <button class="tour-skip" onclick="endTour(false)">Skip</button>
-            <button class="tour-next" onclick="showTourStep(${idx + 1})">
-              ${idx < tourSteps.length - 1 ? 'Next →' : 'Got it!'}
-            </button>
-          </div>`;
-        document.body.appendChild(tourTooltip);
-
-        // Position tooltip relative to target (measure after DOM append)
-        requestAnimationFrame(() => {
-          if (!tourTooltip) return;
-          if (target) {
-            const rect = target.getBoundingClientRect();
-            const ttH = tourTooltip.offsetHeight;
-            if (step.placement === 'below') {
-              tourTooltip.style.top = (rect.bottom + 14) + 'px';
-            } else {
-              tourTooltip.style.top = Math.max(10, rect.top - ttH - 18) + 'px';
-            }
-            tourTooltip.style.left = Math.max(10, Math.min(rect.left, window.innerWidth - 310)) + 'px';
-          } else {
-            tourTooltip.style.top = '40%';
-            tourTooltip.style.left = '50%';
-            tourTooltip.style.transform = 'translate(-50%, -50%)';
-          }
-        });
-      }
-
-      function endTour(completed) {
-        if (tourOverlay) { tourOverlay.remove(); tourOverlay = null; }
-        if (tourTooltip) { tourTooltip.remove(); tourTooltip = null; }
-        if (completed) localStorage.setItem(TOUR_KEY, '1');
-      }
-
-      // Start tour after a short delay (let page settle)
-      setTimeout(startTour, 800);
-
       // ── Session history (multi-session localStorage) ──
       const SESSIONS_KEY = 'gf_sessions_v1';
+      const ACTIVE_SESSION_KEY = 'gf_active_session';
       const MAX_SESSIONS = 15;
-      let currentSessionId = Date.now().toString();
+      // Restore the session ID from the previous page load so saves stay linked
+      // to the same entry in gf_sessions_v1 rather than creating a duplicate.
+      let currentSessionId = localStorage.getItem(ACTIVE_SESSION_KEY) || Date.now().toString();
       let currentSessionTitle = null;
 
       function getSessions() {
@@ -6807,6 +6408,8 @@
       function startNewChat() {
         saveCurrentSession();
         currentSessionId = Date.now().toString();
+        localStorage.setItem(ACTIVE_SESSION_KEY, currentSessionId);
+        localStorage.setItem('gf_new_chat', '1'); // user explicitly started fresh
         currentSessionTitle = null;
         history = [];
         pendingWrite = null;
@@ -6827,6 +6430,8 @@
       function loadSession(sess) {
         saveCurrentSession();
         currentSessionId = sess.id;
+        localStorage.setItem(ACTIVE_SESSION_KEY, sess.id);
+        localStorage.removeItem('gf_new_chat'); // resume clears the new-chat flag
         currentSessionTitle = sess.title;
         history = sess.messages.slice();
         pendingWrite = null;
@@ -7315,7 +6920,7 @@
             `Good ${tod}, ${userName}!`;
           document.getElementById('greeting-sub').textContent = lastQueryTs
             ? `It's been ${Math.round(daysSince)} days since your last check-in. Want a quick portfolio summary?`
-            : `Welcome! You can start with a portfolio summary, real estate data, or just type a question.`;
+            : `Welcome! You can start with a portfolio summary, check your real estate equity, or just type a question.`;
           banner.classList.add('show');
           document.getElementById('greeting-action').onclick = () => {
             banner.classList.remove('show');
@@ -7417,6 +7022,41 @@
         else badge.style.display = 'none';
       }
       updateChatsBadge();
+
+      // ── Auto-resume last session on page load ──
+      // When STORAGE_KEY (flat cache) was empty — e.g. user never sent a message
+      // this session, or the flat cache was cleared — try restoring from SESSIONS_KEY.
+      (function autoResumeSession() {
+        if (history.length > 0) return; // already restored by restoreSession()
+        // If user deliberately clicked "New Chat" before reloading, respect that.
+        if (localStorage.getItem('gf_new_chat')) {
+          localStorage.removeItem('gf_new_chat');
+          return;
+        }
+        const sessions = getSessions();
+        if (sessions.length === 0) return;
+        // Prefer the session the user was last in; fall back to most recent.
+        const activeId = localStorage.getItem(ACTIVE_SESSION_KEY);
+        const target = (activeId && sessions.find(s => s.id === activeId)) || sessions[0];
+        if (!target || target.messages.length === 0) return;
+        // Restore without calling saveCurrentSession() (current history is empty).
+        currentSessionId = target.id;
+        currentSessionTitle = target.title;
+        localStorage.setItem(ACTIVE_SESSION_KEY, target.id);
+        history = target.messages.slice();
+        emptyEl.style.display = 'none';
+        const notice = document.createElement('div');
+        notice.className = 'session-restored';
+        notice.textContent = `↑ Resumed: ${target.title}`;
+        chat.appendChild(notice);
+        for (let i = 0; i < history.length; i += 2) {
+          if (history[i]) addMessage('user', history[i].content, null, true);
+          if (history[i + 1]) addMessage('agent', history[i + 1].content, null, true);
+        }
+        document.title = target.title + ' — Ghostfolio';
+        updateHeaderTitle();
+        updateChatsBadge();
+      })();
 
       // ── Rename session inline in drawer ──
       function startDrawerRename(id, titleEl) {
@@ -7622,20 +7262,6 @@
         closeHelp();
         input.value = query;
         send();
-      }
-
-      // ── Feature discovery tip ──
-      const DISCOVERY_KEY = 'gf_discovery_shown';
-      function showDiscoveryTip() {
-        if (localStorage.getItem(DISCOVERY_KEY)) return;
-        setTimeout(() => {
-          document.getElementById('discovery-tip').classList.add('show');
-          setTimeout(() => dismissDiscovery(), 12000); // auto-hide after 12s
-        }, 1500);
-      }
-      function dismissDiscovery() {
-        document.getElementById('discovery-tip').classList.remove('show');
-        localStorage.setItem(DISCOVERY_KEY, '1');
       }
 
       // ── Query History ──
@@ -7930,7 +7556,6 @@
         const parts = [];
         if (mem.tickers.length) parts.push(`Tickers I mentioned before: ${mem.tickers.slice(0, 8).join(', ')}.`);
         if (mem.netWorth) parts.push(`My last known net worth: $${mem.netWorth.toLocaleString()}.`);
-        // Add user profile context
         try {
           const p = JSON.parse(localStorage.getItem('gf_user_profile_v1') || '{}');
           if (p.risk) parts.push(`My risk profile: ${p.risk}, focus: ${p.focus || 'mixed'}, horizon: ${p.horizon || 'medium'}.`);
@@ -8472,8 +8097,8 @@
 
       // ── Context-Aware Input Placeholder ──
       const PLACEHOLDERS = {
-        real_estate: 'Ask about Austin housing market, compare counties, or add a property…',
-        property_tracker: 'Ask about your properties, equity, or total net worth…',
+        real_estate: 'Analyze investment returns, rental yields, or compare markets for your portfolio…',
+        property_tracker: 'Ask about your property equity, appreciation, or total net worth…',
         portfolio_analysis: 'Try: rebalance suggestions, tax harvest opportunities…',
         market_data: 'Ask about any ticker — price, analyst consensus, YTD…',
         compliance_check: 'Ask about concentration risk, compliance rules…',
@@ -8594,7 +8219,7 @@
 
       const CMD_LIST = [
         { icon: '📊', label: 'Portfolio Summary', sub: 'Full holdings, allocation, YTD', action: () => sendQuick('Give me a full portfolio summary'), kbd: '' },
-        { icon: '🏠', label: 'Austin Market', sub: 'Jan 2026 ACTRIS MLS data', action: () => sendQuick('What is the Austin housing market like right now?') },
+        { icon: '🏘', label: 'Austin Market Data', sub: 'Investment research — Jan 2026 ACTRIS MLS', action: () => sendQuick('What are the investment metrics for the Austin real estate market right now?') },
         { icon: '💰', label: 'Total Net Worth', sub: 'Portfolio + real estate', action: () => sendQuick('What is my total net worth including real estate?') },
         { icon: '🧾', label: 'Tax Estimate', sub: 'Capital gains liability', action: () => sendQuick('Estimate my tax liability') },
         { icon: '⚖️', label: 'Risk Check', sub: 'Concentration & compliance', action: () => sendQuick('Am I over-concentrated in any stock?') },
@@ -8719,7 +8344,6 @@
           const step = document.getElementById(`profile-step-${i}`);
           step.classList.toggle('active', i === 0);
         });
-        // Pre-select saved values
         ['risk', 'focus', 'horizon'].forEach(field => {
           document.querySelectorAll(`[onclick*="selectProfile('${field}'"]`).forEach(btn => btn.classList.remove('selected'));
           if (profileData[field]) {

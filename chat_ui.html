@@ -912,107 +912,6 @@
         background: #052e16;
       }
 
-      /* ── Onboarding tour ── */
-      .tour-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.6);
-        z-index: 900;
-        pointer-events: none;
-      }
-      .tour-tooltip {
-        position: fixed;
-        z-index: 910;
-        background: var(--surface2);
-        border: 1px solid var(--indigo);
-        border-radius: var(--radius);
-        padding: 14px 16px;
-        max-width: 280px;
-        box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
-        pointer-events: all;
-      }
-      .tour-tooltip::before {
-        content: '';
-        position: absolute;
-        width: 10px;
-        height: 10px;
-        background: var(--indigo);
-        border-radius: 2px;
-        transform: rotate(45deg);
-      }
-      .tour-tooltip.arrow-top::before {
-        top: -5px;
-        left: 20px;
-      }
-      .tour-tooltip.arrow-bottom::before {
-        bottom: -5px;
-        left: 20px;
-      }
-      .tour-tooltip.arrow-right::before {
-        right: -5px;
-        top: 20px;
-      }
-      .tour-step-label {
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 0.8px;
-        text-transform: uppercase;
-        color: var(--indigo2);
-        margin-bottom: 6px;
-      }
-      .tour-title {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text);
-        margin-bottom: 4px;
-      }
-      .tour-desc {
-        font-size: 12px;
-        color: var(--text2);
-        line-height: 1.5;
-        margin-bottom: 12px;
-      }
-      .tour-actions {
-        display: flex;
-        gap: 8px;
-        justify-content: flex-end;
-      }
-      .tour-skip {
-        font-size: 11px;
-        padding: 5px 10px;
-        border-radius: 7px;
-        border: 1px solid var(--border2);
-        background: transparent;
-        color: var(--text3);
-        cursor: pointer;
-      }
-      .tour-next {
-        font-size: 11px;
-        padding: 5px 12px;
-        border-radius: 7px;
-        border: none;
-        background: linear-gradient(135deg, var(--indigo), #8b5cf6);
-        color: #fff;
-        cursor: pointer;
-        font-weight: 600;
-      }
-      .tour-dots {
-        display: flex;
-        gap: 4px;
-        margin-right: auto;
-        align-items: center;
-      }
-      .tour-dot {
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-        background: var(--border2);
-        transition: background 0.2s;
-      }
-      .tour-dot.active {
-        background: var(--indigo2);
-      }
-
       /* ── Session history drawer ── */
       .drawer-overlay {
         position: fixed;
@@ -1932,8 +1831,7 @@
         .reaction-row,
         .annotation-btn,
         .pin-bubble-btn,
-        .help-fab,
-        .discovery-tip {
+        .help-fab {
           display: none !important;
         }
         .annotation-wrap.open {
@@ -2356,57 +2254,6 @@
         color: var(--text3);
         margin-top: 2px;
         line-height: 1.4;
-      }
-
-      /* ── Feature discovery tooltip (post-first-message) ── */
-      .discovery-tip {
-        position: fixed;
-        bottom: 130px;
-        right: 20px;
-        background: var(--surface2);
-        border: 1px solid var(--indigo);
-        border-radius: var(--radius);
-        padding: 12px 14px;
-        max-width: 240px;
-        z-index: 390;
-        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
-        display: none;
-        flex-direction: column;
-        gap: 8px;
-        animation: slideUp 0.2s ease;
-      }
-      .discovery-tip.show {
-        display: flex;
-      }
-      .discovery-tip-title {
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--indigo2);
-      }
-      .discovery-tip-body {
-        font-size: 11px;
-        color: var(--text2);
-        line-height: 1.5;
-      }
-      .discovery-tip-close {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        background: transparent;
-        border: none;
-        color: var(--text3);
-        cursor: pointer;
-        font-size: 12px;
-      }
-      .discovery-tip-arrow {
-        position: absolute;
-        bottom: -6px;
-        right: 22px;
-        width: 10px;
-        height: 10px;
-        background: var(--indigo);
-        transform: rotate(45deg);
-        border-radius: 2px;
       }
 
       /* ── Export as image card ── */
@@ -3387,7 +3234,7 @@
         border-radius: 2px;
       }
 
-      /* ── User profile / onboarding modal ── */
+      /* ── User profile modal ── */
       .profile-step {
         display: none;
         flex-direction: column;
@@ -4398,20 +4245,6 @@
       ?
     </button>
 
-    <!-- ── Feature discovery tip ── -->
-    <div class="discovery-tip" id="discovery-tip">
-      <button class="discovery-tip-close" onclick="dismissDiscovery()">
-        ✕
-      </button>
-      <div class="discovery-tip-arrow"></div>
-      <div class="discovery-tip-title">✨ Did you know?</div>
-      <div class="discovery-tip-body">
-        Press <strong>⌘P</strong> for command palette · Type
-        <strong>~</strong> for templates · <strong>⌘K</strong> focus · Click
-        <strong>⚙</strong> for settings · <strong>?</strong> for help
-      </div>
-    </div>
-
     <!-- ── Help guide panel ── -->
     <div class="help-panel-overlay" id="help-overlay">
       <div class="help-panel">
@@ -4781,10 +4614,7 @@
             </div>
             <div
               class="help-feature"
-              onclick="
-                closeHelp();
-                openProfile();
-              "
+              onclick="closeHelp(); openProfile();"
             >
               <div class="help-feature-icon">👤</div>
               <div class="help-feature-name">My Profile</div>
@@ -5109,203 +4939,74 @@
       </div>
     </div>
 
-    <!-- ── User profile / onboarding modal ── -->
+    <!-- ── User profile modal ── -->
     <div class="modal-overlay" id="profile-modal">
       <div class="modal-box" style="max-width: 420px">
         <div class="modal-title">
           👤 Your Investor Profile
           <button
             class="modal-close-btn"
-            onclick="
-              document.getElementById('profile-modal').classList.remove('open')
-            "
-          >
-            ✕
-          </button>
+            onclick="document.getElementById('profile-modal').classList.remove('open')"
+          >✕</button>
         </div>
         <div class="profile-progress" id="profile-progress"></div>
         <div class="profile-step active" id="profile-step-0">
-          <div
-            style="
-              font-size: 13px;
-              font-weight: 600;
-              color: var(--text);
-              margin-bottom: 4px;
-            "
-          >
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">
             What best describes your risk tolerance?
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('risk', 'conservative', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('risk','conservative',this)">
             <span class="profile-option-icon">🛡</span>
-            <div>
-              <div style="font-weight: 600">Conservative</div>
-              <div style="font-size: 11px; color: var(--text3)">
-                Capital preservation first
-              </div>
-            </div>
+            <div><div style="font-weight:600">Conservative</div><div style="font-size:11px;color:var(--text3)">Capital preservation first</div></div>
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('risk', 'moderate', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('risk','moderate',this)">
             <span class="profile-option-icon">⚖️</span>
-            <div>
-              <div style="font-weight: 600">Moderate</div>
-              <div style="font-size: 11px; color: var(--text3)">
-                Balanced growth and stability
-              </div>
-            </div>
+            <div><div style="font-weight:600">Moderate</div><div style="font-size:11px;color:var(--text3)">Balanced growth and stability</div></div>
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('risk', 'aggressive', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('risk','aggressive',this)">
             <span class="profile-option-icon">🚀</span>
-            <div>
-              <div style="font-weight: 600">Aggressive</div>
-              <div style="font-size: 11px; color: var(--text3)">
-                Maximum growth, higher volatility
-              </div>
-            </div>
+            <div><div style="font-weight:600">Aggressive</div><div style="font-size:11px;color:var(--text3)">Maximum growth, higher volatility</div></div>
           </div>
-          <button
-            onclick="nextProfileStep()"
-            style="
-              padding: 9px;
-              border-radius: 9px;
-              border: none;
-              background: linear-gradient(135deg, var(--indigo), #8b5cf6);
-              color: #fff;
-              font-size: 13px;
-              font-weight: 600;
-              cursor: pointer;
-              margin-top: 4px;
-            "
-          >
+          <button onclick="nextProfileStep()" style="padding:9px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--indigo),#8b5cf6);color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px">
             Next →
           </button>
         </div>
         <div class="profile-step" id="profile-step-1">
-          <div
-            style="
-              font-size: 13px;
-              font-weight: 600;
-              color: var(--text);
-              margin-bottom: 4px;
-            "
-          >
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">
             Primary investment focus?
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('focus', 'real_estate', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('focus','real_estate',this)">
             <span class="profile-option-icon">🏠</span>
-            <div>
-              <div style="font-weight: 600">Real Estate</div>
-              <div style="font-size: 11px; color: var(--text3)">
-                Properties, REITs, land
-              </div>
-            </div>
+            <div><div style="font-weight:600">Real Estate</div><div style="font-size:11px;color:var(--text3)">Properties, REITs, land</div></div>
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('focus', 'equities', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('focus','equities',this)">
             <span class="profile-option-icon">📈</span>
-            <div>
-              <div style="font-weight: 600">Equities</div>
-              <div style="font-size: 11px; color: var(--text3)">
-                Stocks, ETFs, growth
-              </div>
-            </div>
+            <div><div style="font-weight:600">Equities</div><div style="font-size:11px;color:var(--text3)">Stocks, ETFs, growth</div></div>
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('focus', 'mixed', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('focus','mixed',this)">
             <span class="profile-option-icon">🌐</span>
-            <div>
-              <div style="font-weight: 600">Diversified</div>
-              <div style="font-size: 11px; color: var(--text3)">
-                Mix of asset classes
-              </div>
-            </div>
+            <div><div style="font-weight:600">Diversified</div><div style="font-size:11px;color:var(--text3)">Mix of asset classes</div></div>
           </div>
-          <button
-            onclick="nextProfileStep()"
-            style="
-              padding: 9px;
-              border-radius: 9px;
-              border: none;
-              background: linear-gradient(135deg, var(--indigo), #8b5cf6);
-              color: #fff;
-              font-size: 13px;
-              font-weight: 600;
-              cursor: pointer;
-              margin-top: 4px;
-            "
-          >
+          <button onclick="nextProfileStep()" style="padding:9px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--indigo),#8b5cf6);color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px">
             Next →
           </button>
         </div>
         <div class="profile-step" id="profile-step-2">
-          <div
-            style="
-              font-size: 13px;
-              font-weight: 600;
-              color: var(--text);
-              margin-bottom: 4px;
-            "
-          >
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">
             Investment horizon?
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('horizon', 'short', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('horizon','short',this)">
             <span class="profile-option-icon">⚡</span>
-            <div>
-              <div style="font-weight: 600">Short-term (&lt;2 years)</div>
-            </div>
+            <div><div style="font-weight:600">Short-term (&lt;2 years)</div></div>
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('horizon', 'medium', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('horizon','medium',this)">
             <span class="profile-option-icon">📅</span>
-            <div>
-              <div style="font-weight: 600">Medium-term (2–10 years)</div>
-            </div>
+            <div><div style="font-weight:600">Medium-term (2–10 years)</div></div>
           </div>
-          <div
-            class="profile-option"
-            onclick="selectProfile('horizon', 'long', this)"
-          >
+          <div class="profile-option" onclick="selectProfile('horizon','long',this)">
             <span class="profile-option-icon">🌱</span>
-            <div>
-              <div style="font-weight: 600">
-                Long-term (10+ years / retirement)
-              </div>
-            </div>
+            <div><div style="font-weight:600">Long-term (10+ years / retirement)</div></div>
           </div>
-          <button
-            onclick="saveProfile()"
-            style="
-              padding: 9px;
-              border-radius: 9px;
-              border: none;
-              background: linear-gradient(135deg, var(--indigo), #8b5cf6);
-              color: #fff;
-              font-size: 13px;
-              font-weight: 600;
-              cursor: pointer;
-              margin-top: 4px;
-            "
-          >
+          <button onclick="saveProfile()" style="padding:9px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--indigo),#8b5cf6);color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px">
             Save Profile ✓
           </button>
         </div>
@@ -5990,9 +5691,13 @@
         let agentMsgEl = null;
 
         try {
+          const _authToken = localStorage.getItem('gf_token') || '';
           const res = await fetch('/chat/steps', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${_authToken}`
+            },
             body: JSON.stringify({
               query: finalQuery,
               history,
@@ -6000,6 +5705,13 @@
             })
           });
 
+          if (res.status === 401) {
+            localStorage.removeItem('gf_token');
+            localStorage.removeItem('gf_user_name');
+            localStorage.removeItem('gf_user_email');
+            window.location.replace('/login');
+            return;
+          }
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
           const reader = res.body.getReader();
@@ -6089,8 +5801,6 @@
                 saveSession();
                 saveCurrentSession();
                 if (typeof updateChatsBadge === 'function') updateChatsBadge();
-                // Show feature discovery tip after first successful exchange
-                if (history.length === 2) showDiscoveryTip();
               } else if (evt.type === 'error') {
                 thinkingEl.remove();
                 addErrorMessage(evt.message, query);
@@ -6690,99 +6400,6 @@
           }
         }
       });
-
-      // ── Onboarding tour ──
-      const TOUR_KEY = 'gf_tour_done_v2';
-      const tourSteps = [
-        {
-          targetId: 'empty',
-          title: 'Quick actions',
-          desc: 'Click any card to jump right in — real estate market data, portfolio, compliance, and more.',
-          arrow: 'arrow-top',
-          placement: 'below'
-        },
-        {
-          targetId: 'mic-btn',
-          title: 'Voice input',
-          desc: 'Click 🎙 to speak your question. The agent will transcribe and answer in real time.',
-          arrow: 'arrow-bottom',
-          placement: 'above'
-        },
-        {
-          targetId: 'input',
-          title: 'Type anything',
-          desc: 'The agent figures out which tool to use automatically. Try: "Austin market" or "my portfolio".\n\nTip: Press ↑ to restore your last message, Cmd+K to focus here.',
-          arrow: 'arrow-bottom',
-          placement: 'above'
-        }
-      ];
-      let tourStep = 0;
-      let tourOverlay = null;
-      let tourTooltip = null;
-
-      function startTour() {
-        if (localStorage.getItem(TOUR_KEY)) return;
-        tourOverlay = document.createElement('div');
-        tourOverlay.className = 'tour-overlay';
-        document.body.appendChild(tourOverlay);
-        showTourStep(0);
-      }
-
-      function showTourStep(idx) {
-        if (tourTooltip) tourTooltip.remove();
-        if (idx >= tourSteps.length) { endTour(true); return; }
-        tourStep = idx;
-        const step = tourSteps[idx];
-        const target = document.getElementById(step.targetId);
-
-        tourTooltip = document.createElement('div');
-        tourTooltip.className = `tour-tooltip ${step.arrow}`;
-
-        const dots = tourSteps.map((_, i) =>
-          `<div class="tour-dot${i === idx ? ' active' : ''}"></div>`
-        ).join('');
-
-        tourTooltip.innerHTML = `
-          <div class="tour-step-label">Step ${idx + 1} of ${tourSteps.length}</div>
-          <div class="tour-title">${step.title}</div>
-          <div class="tour-desc">${step.desc.replace(/\n/g, '<br>')}</div>
-          <div class="tour-actions">
-            <div class="tour-dots">${dots}</div>
-            <button class="tour-skip" onclick="endTour(false)">Skip</button>
-            <button class="tour-next" onclick="showTourStep(${idx + 1})">
-              ${idx < tourSteps.length - 1 ? 'Next →' : 'Got it!'}
-            </button>
-          </div>`;
-        document.body.appendChild(tourTooltip);
-
-        // Position tooltip relative to target (measure after DOM append)
-        requestAnimationFrame(() => {
-          if (!tourTooltip) return;
-          if (target) {
-            const rect = target.getBoundingClientRect();
-            const ttH = tourTooltip.offsetHeight;
-            if (step.placement === 'below') {
-              tourTooltip.style.top = (rect.bottom + 14) + 'px';
-            } else {
-              tourTooltip.style.top = Math.max(10, rect.top - ttH - 18) + 'px';
-            }
-            tourTooltip.style.left = Math.max(10, Math.min(rect.left, window.innerWidth - 310)) + 'px';
-          } else {
-            tourTooltip.style.top = '40%';
-            tourTooltip.style.left = '50%';
-            tourTooltip.style.transform = 'translate(-50%, -50%)';
-          }
-        });
-      }
-
-      function endTour(completed) {
-        if (tourOverlay) { tourOverlay.remove(); tourOverlay = null; }
-        if (tourTooltip) { tourTooltip.remove(); tourTooltip = null; }
-        if (completed) localStorage.setItem(TOUR_KEY, '1');
-      }
-
-      // Start tour after a short delay (let page settle)
-      setTimeout(startTour, 800);
 
       // ── Session history (multi-session localStorage) ──
       const SESSIONS_KEY = 'gf_sessions_v1';
@@ -7631,20 +7248,6 @@
         send();
       }
 
-      // ── Feature discovery tip ──
-      const DISCOVERY_KEY = 'gf_discovery_shown';
-      function showDiscoveryTip() {
-        if (localStorage.getItem(DISCOVERY_KEY)) return;
-        setTimeout(() => {
-          document.getElementById('discovery-tip').classList.add('show');
-          setTimeout(() => dismissDiscovery(), 12000); // auto-hide after 12s
-        }, 1500);
-      }
-      function dismissDiscovery() {
-        document.getElementById('discovery-tip').classList.remove('show');
-        localStorage.setItem(DISCOVERY_KEY, '1');
-      }
-
       // ── Query History ──
       const QH_KEY = 'gf_query_history';
       const QH_MAX = 20;
@@ -7937,7 +7540,6 @@
         const parts = [];
         if (mem.tickers.length) parts.push(`Tickers I mentioned before: ${mem.tickers.slice(0, 8).join(', ')}.`);
         if (mem.netWorth) parts.push(`My last known net worth: $${mem.netWorth.toLocaleString()}.`);
-        // Add user profile context
         try {
           const p = JSON.parse(localStorage.getItem('gf_user_profile_v1') || '{}');
           if (p.risk) parts.push(`My risk profile: ${p.risk}, focus: ${p.focus || 'mixed'}, horizon: ${p.horizon || 'medium'}.`);
@@ -8727,7 +8329,6 @@
           const step = document.getElementById(`profile-step-${i}`);
           step.classList.toggle('active', i === 0);
         });
-        // Pre-select saved values
         ['risk', 'focus', 'horizon'].forEach(field => {
           document.querySelectorAll(`[onclick*="selectProfile('${field}'"]`).forEach(btn => btn.classList.remove('selected'));
           if (profileData[field]) {

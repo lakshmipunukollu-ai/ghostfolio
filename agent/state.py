@@ -41,3 +41,7 @@ class AgentState(TypedDict):
     final_response: Optional[str]
     citations: list[str]
     error: Optional[str]
+
+    # Actual token usage from Anthropic API (populated by format_node)
+    input_tokens: Optional[int]
+    output_tokens: Optional[int]
