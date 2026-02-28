@@ -471,6 +471,20 @@ async def classify_node(state: AgentState) -> AgentState:
     if not query:
         return {**state, "query_type": "unknown", "error": "empty_query"}
 
+    # --- Handle capability/help queries first ---
+    help_kws = [
+        "what can you do", "what can this do", "what do you do",
+        "tell me what you can do", "tell me what i can do",
+        "what are your capabilities", "what features",
+        "how do you work", "what is this", "what does this do",
+    ]
+    if any(kw in query for kw in help_kws):
+        return {
+            **state,
+            "query_type": "capabilities",
+            "_classification_source": "keyword",
+        }
+
     # --- Write confirmation replies ---
     pending_write = state.get("pending_write")
     if pending_write:
@@ -643,6 +657,11 @@ async def classify_node(state: AgentState) -> AgentState:
     if any(phrase in query for phrase in full_position_kws) and _extract_ticker(query):
         return {**state, "query_type": "performance+compliance+activity"}
 
+    # --- Full portfolio summary (performance only) — before full_report ---
+    full_summary_kws = ["full portfolio summary", "give me a full portfolio"]
+    if any(phrase in query for phrase in full_summary_kws):
+        return {**state, "query_type": "performance"}
+
     # --- Full portfolio report / health check — run all three tools ---
     full_report_kws = [
         "health check", "complete portfolio", "full portfolio", "portfolio report",
@@ -719,6 +738,10 @@ async def classify_node(state: AgentState) -> AgentState:
         "how long to feel stable", "feel stable after",
         "how long to feel okay after moving", "months until i rebuild",
         "financially stable if i move",
+        "actually a raise", "is a raise", "raise from", "raise vs",
+        "better salary", "salary comparison", "cost of living raise",
+        "col adjusted", "adjusted for cost of living",
+        "raise if i move", "effective raise",
     ]
     if any(kw in query for kw in relocation_runway_kws):
         return {**state, "query_type": "relocation_runway"}
@@ -788,6 +811,11 @@ async def classify_node(state: AgentState) -> AgentState:
     if any(kw in query for kw in realestate_strategy_kws):
         return {**state, "query_type": "life_decision"}
 
+    # --- Afford a house (run regardless of feature flag for correct routing) ---
+    afford_house_kws = ["can i afford a house", "afford a house", "afford a home"]
+    if any(kw in query for kw in afford_house_kws):
+        return {**state, "query_type": "wealth_down_payment"}
+
     # --- Wealth Bridge — down payment, job offer COL, global city data ---
     # Checked before real estate so "can I afford" doesn't fall through to snapshot
     if is_real_estate_enabled():
@@ -823,6 +851,8 @@ async def classify_node(state: AgentState) -> AgentState:
         "my house", "my home", "my property", "my real estate",
         "about my house", "about my home", "about my property",
         "my home value", "my house value", "my property value",
+        "rental yield", "rental income", "yield on", "rental return",
+        "rent vs market", "property yield", "rental rate",
     ]
     if any(kw in query for kw in property_general_kws):
         if any(v in query for v in ["value", "worth"]):
@@ -987,6 +1017,16 @@ async def classify_node(state: AgentState) -> AgentState:
         "my allocation to",
         "what do i hold",
         "what am i holding",
+        "how many shares of",
+        "shares do i have",
+        "shares of appl do i",
+        "shares of aapl do i",
+        "how many appl",
+        "how many aapl",
+        "how many msft",
+        "how many nvda",
+        "how many tsla",
+        "shared of",  # typo for "shares of"
     ]
     if any(kw in query for kw in portfolio_ticker_kws):
         return {**state, "query_type": "performance"}
@@ -1012,6 +1052,9 @@ async def classify_node(state: AgentState) -> AgentState:
         "what about aapl", "what about msft", "what about nvda", "what about tsla",
         "what about apple", "what about nvidia", "what about tesla", "what about microsoft",
         "aapl number", "msft number", "nvda number", "stock check",
+        "prize of", "prise of", "how much is 1 share", "how much is one share",
+        "1 share of", "one share of", "cost of 1 share", "cost of one share",
+        "price of appl", "price of 1",
     ]
     if any(kw in query for kw in stock_price_kws) and _extract_ticker(query):
         return {**state, "query_type": "market"}
@@ -1034,6 +1077,8 @@ async def classify_node(state: AgentState) -> AgentState:
         "show me my holdings", "show my holdings", "list my holdings",
         "biggest holdings", "biggest positions", "largest holdings",
         "top holdings", "top positions",
+        "give me a full portfolio", "full portfolio summary", "full portfolio",
+        "can i afford a house", "afford a house", "afford a home",
     ]
     natural_activity_kws = [
         "what have i bought", "what have i sold",
@@ -2506,6 +2551,22 @@ async def format_node(state: AgentState) -> AgentState:
     awaiting_confirmation = state.get("awaiting_confirmation", False)
     error = state.get("error")
     query_type = state.get("query_type", "")
+
+    # Short-circuit: capabilities/help query
+    if query_type == "capabilities":
+        response = (
+            "I can help you with:\n\n"
+            "**Portfolio** — holdings, returns, allocation, performance vs benchmarks\n\n"
+            "**Market Data** — live stock prices for any ticker (AAPL, MSFT, NVDA, TSLA, GOOGL, AMZN, META)\n\n"
+            "**Tax** — capital gains estimate, tax-loss harvesting opportunities, wash sale warnings\n\n"
+            "**Risk & Compliance** — concentration check, diversification analysis\n\n"
+            "**Transactions** — trade history, recent buys/sells\n\n"
+            "**Real Estate** — add and track properties, equity analysis, net worth including real estate\n\n"
+            "**Life Decisions** — job offer comparison, relocation analysis, retirement readiness, family planning costs, real estate strategy\n\n"
+            "Just ask naturally — I understand variations like 'check apple', 'how much is AAPL', 'tell me about my portfolio', etc."
+        )
+        updated_messages = _append_messages(state, user_query, response)
+        return {**state, "final_response": response, "messages": updated_messages}
 
     # Short-circuit: agent refused a destructive operation
     if query_type == "write_refused":
