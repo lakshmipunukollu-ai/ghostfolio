@@ -5543,10 +5543,7 @@
           history = hist;
           if (stats) sessionStats = stats;
           emptyEl.style.display = 'none';
-          const notice = document.createElement('div');
-          notice.className = 'session-restored';
-          notice.textContent = `↑ Restored ${Math.floor(hist.length / 2)} messages from last session`;
-          chat.appendChild(notice);
+          // Messages appear silently — no notification needed
           // Replay messages into DOM
           for (let i = 0; i < hist.length; i += 2) {
             const u = hist[i];
@@ -6439,10 +6436,6 @@
         chat.innerHTML = '';
         chat.appendChild(emptyEl);
         emptyEl.style.display = 'none';
-        const notice = document.createElement('div');
-        notice.className = 'session-restored';
-        notice.textContent = `↑ Restored: ${sess.title}`;
-        chat.appendChild(notice);
         for (let i = 0; i < history.length; i += 2) {
           if (history[i]) addMessage('user', history[i].content, null, true);
           if (history[i + 1]) addMessage('agent', history[i + 1].content, null, true);
@@ -7045,10 +7038,6 @@
         localStorage.setItem(ACTIVE_SESSION_KEY, target.id);
         history = target.messages.slice();
         emptyEl.style.display = 'none';
-        const notice = document.createElement('div');
-        notice.className = 'session-restored';
-        notice.textContent = `↑ Resumed: ${target.title}`;
-        chat.appendChild(notice);
         for (let i = 0; i < history.length; i += 2) {
           if (history[i]) addMessage('user', history[i].content, null, true);
           if (history[i + 1]) addMessage('agent', history[i + 1].content, null, true);
