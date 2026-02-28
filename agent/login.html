@@ -250,7 +250,9 @@
       const errorEl = document.getElementById('error-msg');
 
       // Redirect if already logged in
+      console.log('[LOGIN] page load — checking token');
       if (localStorage.getItem('gf_token')) {
+        console.log('[LOGIN] token exists — redirecting to chat');
         window.location.replace('/');
       }
 
@@ -273,6 +275,7 @@
         setLoading(true);
         hideError();
 
+        console.log('[LOGIN] submitting credentials...');
         try {
           const res = await fetch('/auth/login', {
             method: 'POST',
@@ -281,6 +284,8 @@
           });
           const data = await res.json();
 
+          console.log('[LOGIN] response status:', res.status);
+          console.log('[LOGIN] saving token:', data.token ? 'yes' : 'no');
           if (!data.success) {
             showError(data.message || 'Invalid credentials.');
             return;
@@ -289,6 +294,7 @@
           localStorage.setItem('gf_token', data.token);
           localStorage.setItem('gf_user_name', data.name);
           localStorage.setItem('gf_user_email', data.email);
+          console.log('[LOGIN] token saved, redirecting...');
           window.location.replace('/');
         } catch {
           showError('Could not reach the server. Please try again.');

@@ -5525,9 +5525,15 @@
 
 
       // ── Auth guard — redirect to login if no token ──
+      console.log('[AUTH] checking token...');
       const _token = localStorage.getItem('gf_token');
+      console.log('[AUTH] token exists:', !!_token);
+      console.log('[AUTH] token value:', _token ? _token.substring(0, 20) + '...' : 'null');
       if (!_token) {
+        console.log('[AUTH] no token — redirecting to login');
         window.location.replace('/login');
+      } else {
+        console.log('[AUTH] token found — proceeding');
       }
 
       // ── Load user profile from localStorage (set at login) ──
@@ -5684,6 +5690,7 @@
           });
 
           if (res.status === 401) {
+            console.log('[AUTH] 401 response — clearing token and redirecting to login');
             localStorage.removeItem('gf_token');
             localStorage.removeItem('gf_user_name');
             localStorage.removeItem('gf_user_email');
@@ -8745,11 +8752,13 @@
 
       // ── Sign out ──
       document.getElementById('logout-btn').addEventListener('click', () => {
+        console.log('[SIGNOUT] clearing token...');
         localStorage.removeItem('gf_token');
         localStorage.removeItem('gf_user_name');
         localStorage.removeItem('gf_user_email');
         localStorage.removeItem(STORAGE_KEY);
         // Clear session-specific memory (keep watchlist / memory by default — user owns those)
+        console.log('[SIGNOUT] redirecting to login...');
         window.location.replace('/login');
       });
 
