@@ -91,6 +91,22 @@ app.add_middleware(
 )
 
 
+@app.on_event("startup")
+async def warmup():
+    """Pre-warm the LLM connection on startup to reduce first-request latency."""
+    try:
+        import anthropic
+        client = anthropic.Anthropic()
+        client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=10,
+            messages=[{"role": "user", "content": "hi"}],
+        )
+        logger.info("LLM connection warmed up")
+    except Exception as e:
+        logger.warning(f"Warmup failed: {e}")
+
+
 graph = build_graph()
 
 feedback_log: list[dict] = []

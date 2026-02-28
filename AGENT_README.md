@@ -111,6 +111,16 @@ Response to User
 
 ---
 
+## Latency Notes
+
+Single-tool queries average 5–10 seconds due to Claude Sonnet response generation time.
+The classify step (keyword matching) adds <10ms. Tool execution adds 50–200ms. The majority
+of latency is LLM synthesis. Streaming responses (`/chat/steps`, `/chat/stream`) are
+implemented to improve perceived performance. A startup warmup pre-establishes the LLM
+connection to reduce cold-start latency on the first request.
+
+---
+
 ## Verification Strategy
 
 ### 3 Verification Systems Implemented
