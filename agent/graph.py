@@ -773,6 +773,18 @@ async def classify_node(state: AgentState) -> AgentState:
     if has_overview:
         return {**state, "query_type": "market_overview"}
 
+    # --- Stock price / market quote queries — MUST route to market_data not portfolio ---
+    # Check BEFORE performance/portfolio fallback. User asking about market price of a ticker.
+    stock_price_kws = [
+        "stock price", "share price", "price of", "current price",
+        "what is aapl", "what is msft", "what is nvda", "what is tsla",
+        "what is googl", "what is amzn", "what is meta",
+        "trading at", "price today", "how much is", "ticker", "quote",
+        "what's the stock price", "whats the stock price",
+    ]
+    if any(kw in query for kw in stock_price_kws) and _extract_ticker(query):
+        return {**state, "query_type": "market"}
+
     # --- Natural language phrasing catch-all (before the scored fallback) ---
     # These are common phrasings that don't match the terse keyword lists above.
     natural_performance_kws = [
