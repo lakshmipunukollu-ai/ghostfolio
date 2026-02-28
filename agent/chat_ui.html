@@ -319,8 +319,9 @@
         position: absolute;
         top: 8px;
         right: 8px;
-        width: 26px;
+        min-width: 26px;
         height: 26px;
+        padding: 0 6px;
         border-radius: 6px;
         border: 1px solid var(--border2);
         background: var(--surface);
@@ -329,6 +330,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        gap: 4px;
         font-size: 12px;
         opacity: 0;
         transition:
@@ -346,6 +348,9 @@
         color: var(--green);
         border-color: var(--green);
         opacity: 1;
+      }
+      .copy-btn .copy-label {
+        font-size: 11px;
       }
 
       /* ── Message footer (badges, confidence, timestamp) ── */
@@ -5858,7 +5863,7 @@
 
       function agentBubbleButtons(savedId) {
         const isStarred = favorites.some(f => f.id === savedId);
-        return `<button class="md-copy-btn" title="Copy as Markdown" onclick="copyBubbleMd(this)">MD</button><button class="pin-bubble-btn" title="Pin to top" onclick="pinBubble(this)">📌</button><button class="annotation-btn" title="Add sticky note" onclick="toggleAnnotation(this)">📝</button><button class="star-btn${isStarred ? ' starred' : ''}" title="Save response" onclick="toggleFavorite(this)" data-fav-id="${savedId}">★</button><button class="speak-btn" title="Read aloud" onclick="speakBubble(this)">🔊</button><button class="copy-btn" title="Copy response" onclick="copyBubble(this)">⎘</button>`;
+        return `<button class="md-copy-btn" title="Copy as Markdown" onclick="copyBubbleMd(this)">MD</button><button class="pin-bubble-btn" title="Pin to top" onclick="pinBubble(this)">📌</button><button class="annotation-btn" title="Add sticky note" onclick="toggleAnnotation(this)">📝</button><button class="star-btn${isStarred ? ' starred' : ''}" title="Save response" onclick="toggleFavorite(this)" data-fav-id="${savedId}">★</button><button class="speak-btn" title="Read aloud" onclick="speakBubble(this)">🔊</button><button class="copy-btn" title="Copy response" onclick="copyBubble(this)"><span class="copy-icon">⎘</span><span class="copy-label">Copy</span></button>`;
       }
 
       function copyBubble(btn) {
@@ -5869,10 +5874,10 @@
         const text = clone.innerText.trim();
         navigator.clipboard.writeText(text).then(() => {
           btn.classList.add('copied');
-          btn.textContent = '✓';
+          btn.innerHTML = '<span class="copy-icon">✓</span><span class="copy-label">Copied!</span>';
           setTimeout(() => {
             btn.classList.remove('copied');
-            btn.textContent = '⎘';
+            btn.innerHTML = '<span class="copy-icon">⎘</span><span class="copy-label">Copy</span>';
           }, 1800);
         });
       }
