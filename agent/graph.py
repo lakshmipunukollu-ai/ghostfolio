@@ -108,28 +108,89 @@ def llm_classify_intent(query: str) -> str:
     Returns a valid query_type string."""
     client = anthropic.Anthropic()
 
-    prompt = f"""You are a routing classifier for a finance AI agent.
-Given a user query, return ONLY one of these exact labels — nothing else:
+    prompt = f"""You are a routing classifier for a personal finance AI agent.
+The user has a portfolio of stocks and may own properties.
 
-market         - user wants stock price, market data, or info about a specific ticker
-performance    - user wants their portfolio summary, holdings, returns, or allocation
-compliance     - user asks about risk, diversification, concentration, or regulatory concerns
-tax            - user asks about taxes, capital gains, tax-loss harvesting, wash sales
-activity       - user asks about trades, buys, sells, transaction history
-property_list  - user wants to add, view, update, or remove a property they own
-property_net_worth - user asks about total net worth including real estate
-equity_unlock  - user asks about home equity, cash-out refinance, HELOC options
-relocation_runway - user asks about moving cities, cost of living comparison, runway
-wealth_gap     - user asks about retirement, savings rate, financial benchmarks, age
-life_decision  - user asks about job offers, major life decisions, affordability, buying multiple properties, rental strategy
-family_planner - user asks about kids, childcare, family planning costs
-market_overview - user asks about general market trends, not a specific stock
-unknown        - cannot determine intent
+Classify the user query into EXACTLY ONE label.
+Respond with only the label — no explanation, no punctuation, just the label.
+
+LABELS AND WHEN TO USE THEM:
+
+market
+  User wants current stock price or market data for a specific company or ticker symbol.
+  Examples:
+  - "check apple for me"
+  - "what is AAPL at"
+  - "give me the nvidia number"
+  - "apple stock check"
+  - "what about my nvidia" (asking about price)
+  - "how is tesla doing" (price/market performance)
+  - "what is AAPL worth today"
+  KEY SIGNAL: company name or ticker + price/check/at/worth
+
+performance
+  User wants to see their own portfolio holdings, returns, allocation, or overall financial picture.
+  Examples:
+  - "show me my money"
+  - "how am I doing financially"
+  - "what does my investment look like"
+  - "pull up my stocks" (their holdings)
+  - "run the numbers on my portfolio"
+  KEY SIGNAL: "my" + portfolio/investments/stocks/money
+
+property_list
+  User wants info about real estate they own.
+  Examples:
+  - "tell me about my house"
+  - "what is my home worth"
+  - "my property value"
+  KEY SIGNAL: my house, my home, my property
+
+wealth_gap
+  User asks about retirement readiness, savings rate, or financial benchmarks.
+  Examples:
+  - "can I afford to retire"
+  - "am I on track financially"
+  - "when can I retire"
+  KEY SIGNAL: retire, retirement, savings rate
+
+life_decision
+  User asks about major life decisions like job offers, moving cities, buying a home.
+  Examples:
+  - "should I take this job offer"
+  - "can I afford to move to Seattle"
+  KEY SIGNAL: should I, can I afford, job offer
+
+compliance
+  User asks about portfolio risk or diversification.
+  Examples:
+  - "am I too concentrated"
+  - "how diversified am I"
+  KEY SIGNAL: diversified, concentrated, risk
+
+tax
+  User asks about taxes or capital gains.
+  Examples:
+  - "what are my capital gains"
+  - "do I owe taxes"
+  KEY SIGNAL: tax, capital gains, wash sale
+
+activity
+  User asks about trade history.
+  Examples:
+  - "show my recent trades"
+  - "what did I buy this year"
+  KEY SIGNAL: trades, bought, sold, transactions
+
+IMPORTANT DISTINCTION:
+"what about my nvidia" = market (price question)
+"my nvidia position" = performance (holding question)
+"check apple" = market (price check)
+"my apple shares" = performance (holding question)
 
 User query: {query}
 
-Respond with exactly one label from the list above.
-No explanation. No punctuation. Just the label."""
+Respond with exactly one label."""
 
     valid_types = {
         "market", "performance", "compliance", "tax", "activity",
@@ -672,6 +733,9 @@ async def classify_node(state: AgentState) -> AgentState:
         "wealth percentile", "net worth percentile",
         "federal reserve", "median wealth", "peer comparison",
         "how does my net worth compare", "retirement projection",
+        "can i afford to retire", "afford to retire", "retirement plan",
+        "on track to retire", "retirement savings", "retire early",
+        "when can i retire",
     ]
     if any(kw in query for kw in wealth_gap_kws):
         return {**state, "query_type": "wealth_gap"}
@@ -754,6 +818,17 @@ async def classify_node(state: AgentState) -> AgentState:
         if any(kw in query for kw in wealth_net_worth_kws):
             return {**state, "query_type": "wealth_portfolio_summary"}
 
+    # --- Property queries (run regardless of feature flag for correct routing) ---
+    property_general_kws = [
+        "my house", "my home", "my property", "my real estate",
+        "about my house", "about my home", "about my property",
+        "my home value", "my house value", "my property value",
+    ]
+    if any(kw in query for kw in property_general_kws):
+        if any(v in query for v in ["value", "worth"]):
+            return {**state, "query_type": "property_net_worth"}
+        return {**state, "query_type": "property_list"}
+
     # --- Property Tracker (feature-flagged) — checked BEFORE general real estate
     #     so "add my property" doesn't fall through to real_estate_snapshot ---
     if is_property_tracking_enabled():
@@ -767,6 +842,8 @@ async def classify_node(state: AgentState) -> AgentState:
             "my properties", "list my properties", "show my properties",
             "my real estate holdings", "properties i own", "my property portfolio",
             "what properties", "show my homes",
+            "my house", "my home", "my property", "my real estate",
+            "about my house", "about my home", "about my property",
         ]
         property_net_worth_kws = [
             "net worth including", "net worth with real estate",
@@ -775,6 +852,7 @@ async def classify_node(state: AgentState) -> AgentState:
             "everything i own", "show my total net worth",
             "complete financial picture", "net worth including my home",
             "net worth including my investment",
+            "my home value", "my house value", "my property value",
         ]
         property_update_kws = [
             "update my home", "update my property", "update my house",
@@ -927,6 +1005,13 @@ async def classify_node(state: AgentState) -> AgentState:
         "what is googl", "what is amzn", "what is meta", "what is vti",
         "trading at", "price today", "how much is", "ticker", "quote",
         "what's the stock price", "whats the stock price",
+        "check apple", "check aapl", "check msft", "check nvda", "check tsla",
+        "check googl", "check amzn", "check meta",
+        "apple stock", "msft stock", "nvda stock", "tsla stock", "aapl stock",
+        "apple price", "nvidia price", "microsoft price", "tesla price", "amazon price",
+        "what about aapl", "what about msft", "what about nvda", "what about tsla",
+        "what about apple", "what about nvidia", "what about tesla", "what about microsoft",
+        "aapl number", "msft number", "nvda number", "stock check",
     ]
     if any(kw in query for kw in stock_price_kws) and _extract_ticker(query):
         return {**state, "query_type": "market"}
@@ -935,7 +1020,7 @@ async def classify_node(state: AgentState) -> AgentState:
     # These are common phrasings that don't match the terse keyword lists above.
     natural_performance_kws = [
         "how am i doing", "how have i done", "how is my money",
-        "how are my investments", "how are my stocks",
+        "show me my money", "how are my investments", "how are my stocks",
         "am i making money", "am i losing money",
         "what is my portfolio worth", "what's my portfolio worth",
         "show me my portfolio", "give me a summary",
