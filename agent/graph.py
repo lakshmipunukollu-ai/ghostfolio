@@ -103,6 +103,57 @@ def get_model_for_query(query_type: str) -> str:
     return FAST_MODEL
 
 
+def llm_classify_intent(query: str) -> str:
+    """Uses LLM to classify query intent when keyword matching fails.
+    Returns a valid query_type string."""
+    client = anthropic.Anthropic()
+
+    prompt = f"""You are a routing classifier for a finance AI agent.
+Given a user query, return ONLY one of these exact labels — nothing else:
+
+market         - user wants stock price, market data, or info about a specific ticker
+performance    - user wants their portfolio summary, holdings, returns, or allocation
+compliance     - user asks about risk, diversification, concentration, or regulatory concerns
+tax            - user asks about taxes, capital gains, tax-loss harvesting, wash sales
+activity       - user asks about trades, buys, sells, transaction history
+property_list  - user wants to add, view, update, or remove a property they own
+property_net_worth - user asks about total net worth including real estate
+equity_unlock  - user asks about home equity, cash-out refinance, HELOC options
+relocation_runway - user asks about moving cities, cost of living comparison, runway
+wealth_gap     - user asks about retirement, savings rate, financial benchmarks, age
+life_decision  - user asks about job offers, major life decisions, affordability, buying multiple properties, rental strategy
+family_planner - user asks about kids, childcare, family planning costs
+market_overview - user asks about general market trends, not a specific stock
+unknown        - cannot determine intent
+
+User query: {query}
+
+Respond with exactly one label from the list above.
+No explanation. No punctuation. Just the label."""
+
+    valid_types = {
+        "market", "performance", "compliance", "tax", "activity",
+        "property_list", "property_net_worth", "equity_unlock",
+        "relocation_runway", "wealth_gap", "life_decision", "family_planner",
+        "market_overview", "unknown",
+    }
+
+    try:
+        response = client.messages.create(
+            model=FAST_MODEL,
+            max_tokens=20,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        label = response.content[0].text.strip().lower()
+
+        if label in valid_types:
+            return label
+        return "performance"  # safe default
+    except Exception as e:
+        print(f"LLM classify failed: {e}")
+        return "performance"  # safe default
+
+
 SYSTEM_PROMPT = """You are a portfolio analysis assistant integrated with Ghostfolio wealth management software.
 
 REASONING PROTOCOL — silently reason through these four steps BEFORE writing your response.
@@ -939,7 +990,14 @@ async def classify_node(state: AgentState) -> AgentState:
     elif has_performance:
         query_type = "performance"
     else:
-        query_type = "unknown"
+        # Keyword matching failed — use LLM to classify
+        llm_type = llm_classify_intent(query)
+        print(f"LLM classified '{query[:50]}' as: {llm_type}")
+        return {
+            **state,
+            "query_type": llm_type,
+            "_classification_source": "llm",
+        }
 
     # #region agent log
     import json as _json_log2, time as _time_log2
@@ -963,7 +1021,7 @@ async def classify_node(state: AgentState) -> AgentState:
         pass
     # #endregion
 
-    return {**state, "query_type": query_type}
+    return {**state, "query_type": query_type, "_classification_source": "keyword"}
 
 
 # ---------------------------------------------------------------------------
@@ -2377,15 +2435,12 @@ async def format_node(state: AgentState) -> AgentState:
     # Short-circuit: query didn't match any known intent
     if query_type == "unknown":
         response = (
-            "I'm not sure what you're asking. Here are some things I can help you with:\n\n"
-            "- **Portfolio performance**: \"What is my total return?\" or \"How is my portfolio doing?\"\n"
-            "- **Transactions**: \"Show my recent trades\" or \"What did I buy this year?\"\n"
-            "- **Tax estimates**: \"What are my capital gains?\" or \"Do I owe taxes?\"\n"
-            "- **Risk & compliance**: \"Am I over-concentrated?\" or \"How diversified am I?\"\n"
-            "- **Market data**: \"What is AAPL trading at?\" or \"What's the market doing today?\"\n"
-            "- **Real estate holdings**: \"What are my properties worth?\" or \"What's my total net worth including real estate?\"\n"
-            "- **Investment strategy**: \"Simulate buying rental properties over 10 years\" or \"Analyze my equity options\"\n\n"
-            "Try rephrasing your question around one of these topics."
+            "I wasn't sure what you meant — I've analyzed your query and am fetching the most relevant "
+            "information. If this is not what you wanted, try being more specific about:\n\n"
+            "- A stock ticker (e.g. 'AAPL price')\n"
+            "- Your portfolio ('how is my portfolio')\n"
+            "- A property ('add my home')\n"
+            "- A life decision ('can I afford to retire')"
         )
         updated_messages = _append_messages(state, user_query, response)
         return {**state, "final_response": response, "messages": updated_messages}
@@ -2425,7 +2480,7 @@ async def format_node(state: AgentState) -> AgentState:
             if not messages_history:
                 response = "I don't have enough context to answer that. Could you rephrase your question?"
                 return {**state, "final_response": response}
-            _UNKNOWN_SENTINEL = "I'm not sure what you're asking"
+            _UNKNOWN_SENTINEL = "I wasn't sure what you meant"
             assistant_messages = [
                 m for m in messages_history
                 if hasattr(m, "type") and m.type != "human"
@@ -2434,15 +2489,12 @@ async def format_node(state: AgentState) -> AgentState:
             if _UNKNOWN_SENTINEL in last_assistant:
                 # The conversation context is just the help menu — re-surface it.
                 response = (
-                    "I'm not sure what you're asking. Here are some things I can help you with:\n\n"
-                    "- **Portfolio performance**: \"What is my total return?\" or \"How is my portfolio doing?\"\n"
-                    "- **Transactions**: \"Show my recent trades\" or \"What did I buy this year?\"\n"
-                    "- **Tax estimates**: \"What are my capital gains?\" or \"Do I owe taxes?\"\n"
-                    "- **Risk & compliance**: \"Am I over-concentrated?\" or \"How diversified am I?\"\n"
-                    "- **Market data**: \"What is AAPL trading at?\" or \"What's the market doing today?\"\n"
-                    "- **Real estate holdings**: \"What are my properties worth?\" or \"What's my total net worth including real estate?\"\n"
-                    "- **Investment strategy**: \"Simulate buying rental properties over 10 years\" or \"Analyze my equity options\"\n\n"
-                    "Try rephrasing your question around one of these topics."
+                    "I wasn't sure what you meant — I've analyzed your query and am fetching the most relevant "
+                    "information. If this is not what you wanted, try being more specific about:\n\n"
+                    "- A stock ticker (e.g. 'AAPL price')\n"
+                    "- Your portfolio ('how is my portfolio')\n"
+                    "- A property ('add my home')\n"
+                    "- A life decision ('can I afford to retire')"
                 )
                 updated_messages = _append_messages(state, user_query, response)
                 return {**state, "final_response": response, "messages": updated_messages}
