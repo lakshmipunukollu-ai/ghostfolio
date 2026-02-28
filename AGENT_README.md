@@ -92,14 +92,14 @@ Response to User
 
 ### Tool Registry
 
-**11 Tools Built Across 7 Files:**
+**16 Tools Built Across 7 Files:**
 
 | Tool | File | Purpose |
 |------|------|---------|
 | portfolio_analysis | portfolio.py | Live Ghostfolio holdings, allocation, performance |
 | compliance_check | portfolio.py | Concentration risk, regulatory flags |
 | tax_estimate | portfolio.py | Tax liability estimation |
-| get_market_data | market_data.py | Live stock prices via Yahoo Finance |
+| market_data | market_data.py | Live stock prices via Yahoo Finance |
 | add_property | property_tracker.py | CRUD — create property record |
 | get_properties | property_tracker.py | CRUD — read all properties |
 | update_property | property_tracker.py | CRUD — update property values |
