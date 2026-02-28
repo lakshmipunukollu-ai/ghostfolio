@@ -5539,7 +5539,7 @@
       })();
 
       // ── Restore session from localStorage ──
-      (function restoreSession() {
+      function restoreSession() {
         try {
           const saved = localStorage.getItem(STORAGE_KEY);
           if (!saved) return;
@@ -5548,18 +5548,20 @@
           history = hist;
           if (stats) sessionStats = stats;
           emptyEl.style.display = 'none';
-          // Messages appear silently — no notification needed
-          // Replay messages into DOM
-          for (let i = 0; i < hist.length; i += 2) {
-            const u = hist[i];
-            const a = hist[i + 1];
-            if (u) addMessage('user', u.content, null, true);
-            if (a) addMessage('agent', a.content, (a && a.meta) ? a.meta : null, true);
+          // Replay messages into DOM (stored role is 'user'|'assistant'; addMessage expects 'user'|'agent')
+          for (let i = 0; i < hist.length; i++) {
+            const msg = hist[i];
+            if (!msg) continue;
+            if (msg.role === 'user') {
+              addMessage('user', msg.content, null, true);
+            } else {
+              addMessage('agent', msg.content, msg.meta || null, true);
+            }
           }
-        } catch {
-          /* silently skip */
+        } catch (e) {
+          console.warn('restoreSession failed:', e);
         }
-      })();
+      }
 
       function saveSession() {
         try {
@@ -7028,7 +7030,7 @@
       // ── Auto-resume last session on page load ──
       // When STORAGE_KEY (flat cache) was empty — e.g. user never sent a message
       // this session, or the flat cache was cleared — try restoring from SESSIONS_KEY.
-      (function autoResumeSession() {
+      function autoResumeSession() {
         if (history.length > 0) return; // already restored by restoreSession()
         // If user deliberately clicked "New Chat" before reloading, respect that.
         if (localStorage.getItem('gf_new_chat')) {
@@ -7047,17 +7049,19 @@
         localStorage.setItem(ACTIVE_SESSION_KEY, target.id);
         history = target.messages.slice();
         emptyEl.style.display = 'none';
-        for (let i = 0; i < history.length; i += 2) {
-          if (history[i]) addMessage('user', history[i].content, null, true);
-          if (history[i + 1]) {
-            const a = history[i + 1];
-            addMessage('agent', a.content, (a && a.meta) ? a.meta : null, true);
+        for (let i = 0; i < history.length; i++) {
+          const msg = history[i];
+          if (!msg) continue;
+          if (msg.role === 'user') {
+            addMessage('user', msg.content, null, true);
+          } else {
+            addMessage('agent', msg.content, msg.meta || null, true);
           }
         }
         document.title = target.title + ' — Ghostfolio';
         updateHeaderTitle();
         updateChatsBadge();
-      })();
+      }
 
       // ── Rename session inline in drawer ──
       function startDrawerRename(id, titleEl) {
@@ -8785,6 +8789,21 @@
         document.getElementById('memory-panel').classList.remove('open');
         updateHeaderTitle();
       });
+
+      // Run after DOM is fully ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () {
+          restoreSession();
+          if (typeof autoResumeSession === 'function') {
+            autoResumeSession();
+          }
+        });
+      } else {
+        restoreSession();
+        if (typeof autoResumeSession === 'function') {
+          autoResumeSession();
+        }
+      }
     </script>
   </body>
 </html>
