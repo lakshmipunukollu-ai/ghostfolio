@@ -1,0 +1,7 @@
+providers = ["node"]
+
+[phases.install]
+cmds = ["NPM_CONFIG_IGNORE_SCRIPTS=true npm ci --legacy-peer-deps"]
+
+[phases.build]
+cmds = ["npx prisma generate && npm run build:production"]
