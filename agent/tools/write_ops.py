@@ -95,7 +95,7 @@ async def buy_stock(
     payload = {
         "activities": [{
             "currency": "USD",
-            "dataSource": "YAHOO",
+            "dataSource": "MANUAL",
             "date": f"{date_str}T00:00:00.000Z",
             "fee": fee,
             "quantity": quantity,
@@ -120,7 +120,7 @@ async def sell_stock(
     payload = {
         "activities": [{
             "currency": "USD",
-            "dataSource": "YAHOO",
+            "dataSource": "MANUAL",
             "date": f"{date_str}T00:00:00.000Z",
             "fee": fee,
             "quantity": quantity,
@@ -158,7 +158,7 @@ async def add_transaction(
         }
 
     date_str = date_str or _today_str()
-    data_source = "YAHOO" if transaction_type in {"BUY", "SELL"} else "MANUAL"
+    data_source = "MANUAL"
     payload = {
         "activities": [{
             "currency": "USD",
