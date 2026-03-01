@@ -1,5 +1,12 @@
 providers = ["node"]
 
+[phases.setup]
+nixPkgs = ["nodejs_22", "npm-10_x", "openssl"]
+
+[variables]
+NODE_VERSION = "22.18.0"
+NIXPACKS_NODE_VERSION = "22.18.0"
+
 [phases.install]
 cmds = ["npm cache clean --force && npm install --legacy-peer-deps"]
 
