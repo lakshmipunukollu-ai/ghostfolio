@@ -48,7 +48,7 @@
             "command": "shx cp -r apps/api/src/assets/* dist/apps/api/assets"
           },
           {
-            "command": "shx cp -r apps/client/src/locales/* dist/apps/api/assets/locales"
+            "command": "(shx cp -r apps/client/src/locales/. dist/apps/api/assets/locales/ 2>/dev/null) || true"
           }
         ],
         "parallel": false
