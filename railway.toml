@@ -1,6 +1,6 @@
 [build]
 builder = "nixpacks"
-buildCommand = "npm ci && npx prisma generate && npm run build:production"
+buildCommand = "npm ci --legacy-peer-deps && npx prisma generate && npm run build:production"
 
 [deploy]
 startCommand = "npx prisma migrate deploy && npm run start"

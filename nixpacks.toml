@@ -1,17 +1,4 @@
 providers = ["node"]
 
 [variables]
-NODE_VERSION = "22"
-NPM_CONFIG_PRODUCTION = "false"
-
-[phases.setup]
-nixPkgs = ["openssl"]
-
-[phases.install]
-cmds = ["npm ci --legacy-peer-deps"]
-
-[phases.build]
-cmds = ["npx prisma generate", "npm run build:production"]
-
-[start]
-cmd = "npx prisma migrate deploy && npm run start"
+NIXPACKS_NODE_VERSION = "20"
