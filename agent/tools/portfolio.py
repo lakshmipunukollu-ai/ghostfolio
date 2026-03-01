@@ -91,13 +91,25 @@ def consolidate_holdings(holdings: list) -> list:
 _portfolio_cache: dict[str, dict] = {}
 _PORTFOLIO_CACHE_TTL = 60
 
+# Cash/currency symbols — worth 1.0 in their own currency. Skip Yahoo Finance
+# to avoid forex rates inflating values (e.g. 10M USD * 52.85 = 528M).
+CASH_SYMBOLS = frozenset({
+    "USD", "EUR", "GBP", "JPY", "CHF",
+    "AUD", "CAD", "HKD", "SGD", "NZD",
+    "USDC", "USDT", "DAI",
+})
+
 
 async def _fetch_prices(client: httpx.AsyncClient, symbol: str) -> dict:
     """
     Fetches current price and YTD start price (Jan 2, 2026) from Yahoo Finance.
+    Cash/currency symbols return 1.0 (no Yahoo call) to avoid forex rate inflation.
     Caches results for _CACHE_TTL_SECONDS to avoid rate limiting during eval runs.
     Returns dict with 'current' and 'ytd_start' prices (both may be None on failure).
     """
+    if symbol and symbol.upper() in CASH_SYMBOLS:
+        return {"current": 1.0, "ytd_start": 1.0}
+
     cached = _price_cache.get(symbol)
     if cached and cached["expires_at"] > time.time():
         return cached["data"]
