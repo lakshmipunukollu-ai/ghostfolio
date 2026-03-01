@@ -1080,14 +1080,20 @@ async def classify_node(state: AgentState) -> AgentState:
         "give me a full portfolio", "full portfolio summary", "full portfolio",
         "can i afford a house", "afford a house", "afford a home",
     ]
+    natural_transactions_kws = [
+        "show me my transactions", "show my transactions",
+        "my transactions", "transaction history", "show transactions",
+    ]
     natural_activity_kws = [
         "what have i bought", "what have i sold",
-        "show me my trades", "show me my transactions",
+        "show me my trades",
         "what did i buy", "what did i sell",
         "my purchase history", "my trading history",
     ]
     if any(kw in query for kw in natural_performance_kws):
         return {**state, "query_type": "performance"}
+    if any(kw in query for kw in natural_transactions_kws):
+        return {**state, "query_type": "transactions"}
     if any(kw in query for kw in natural_activity_kws):
         return {**state, "query_type": "activity"}
 
@@ -1867,6 +1873,11 @@ async def tools_node(state: AgentState) -> AgentState:
                 tool_results.append(comp_result)
 
     elif query_type == "activity":
+        symbol = _extract_ticker(user_query)
+        result = await transaction_query(symbol=symbol, token=tok)
+        tool_results.append(result)
+
+    elif query_type == "transactions":
         symbol = _extract_ticker(user_query)
         result = await transaction_query(symbol=symbol, token=tok)
         tool_results.append(result)
