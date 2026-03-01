@@ -191,10 +191,28 @@ clear disclaimers about what is a projection vs. a prediction.
 
 ## Eval & Verification
 
-- **182 tests** (100% pass rate) covering portfolio logic, CRUD flows, strategy simulation,
+- **183 tests** (100% pass rate) covering portfolio logic, CRUD flows, strategy simulation,
   edge cases, adversarial inputs, and multi-step chains
 - **3 verification systems:** confidence scoring, source attribution (citation enforcement),
   and domain constraint check (no guaranteed-return language)
 - **LangSmith tracing** active — every request traced at `smith.langchain.com`
 - All tool failures return structured error codes (e.g., `PROPERTY_TRACKER_NOT_FOUND`)
 - Conversation history maintained across all turns via `AgentState.messages`
+
+---
+
+## Open Source Contribution
+
+### Eval Test Dataset (183 cases)
+The agent ships with 183 open-source evaluation
+test cases in `agent/evals/` covering:
+- Happy path queries (portfolio, market, property)
+- Edge cases (typos, ambiguous queries, empty data)
+- Adversarial inputs (prompt injection, nonsense)
+- Multi-step conversations (add property then analyze)
+
+These tests are freely available for any developer
+building an AI agent on top of Ghostfolio. They
+cover the full Ghostfolio API surface and can be
+used as a benchmark for future Ghostfolio agents.
+See `agent/evals/EVAL_DATASET_README.md` for details.
