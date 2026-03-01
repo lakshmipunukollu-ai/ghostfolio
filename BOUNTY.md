@@ -119,6 +119,18 @@ existing Ghostfolio data the agent is built on top of.
 frontend, uses it to call the Ghostfolio REST API, and incorporates the live portfolio
 data into property-aware calculations (e.g., net worth = portfolio value + real estate equity).
 
+### Supporting: Yahoo Finance
+
+Live stock prices for portfolio performance and YTD calculations. The agent fetches current
+prices from Yahoo Finance when computing gains, allocations, and real-time portfolio value.
+Used by `portfolio_analysis` to work around Ghostfolio's local Yahoo feed limitations.
+
+### Supporting: Teleport API
+
+Cost of living and housing data for 200+ cities worldwide. Powers the Job Offer
+Affordability Calculator and Relocation Runway features. Fetched from
+`api.teleport.org` for cities outside Austin; Austin areas use ACTRIS instead.
+
 ### Supporting: ACTRIS/Unlock MLS January 2026
 
 Licensed Austin TX real estate market data for listing search and neighborhood comparisons.
