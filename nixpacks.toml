@@ -1,1 +1,13 @@
-providers = ["python"]
+providers = ["node"]
+
+[phases.setup]
+nixPkgs = ["nodejs-22_x", "openssl"]
+
+[phases.install]
+cmds = ["npm ci"]
+
+[phases.build]
+cmds = ["npx prisma generate", "npm run build:production"]
+
+[start]
+cmd = "npx prisma migrate deploy && npm run start"
